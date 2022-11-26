@@ -1,13 +1,16 @@
 package br.com.dbc.chronosapi.security;
 
-import br.com.dbc.chronosapi.entity.classes.CargoEntity;
-import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
+import br.com.dbc.chronosapi.dto.LoginDTO;
+import br.com.dbc.chronosapi.entity.CargoEntity;
+import br.com.dbc.chronosapi.entity.UsuarioEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
@@ -30,16 +33,16 @@ public class TokenService {
     public String getToken(UsuarioEntity usuarioEntity, Boolean recuperacao) {
 
         LocalDateTime dataLocalDateTime = LocalDateTime.now();
-        Date date = Date.from(dataLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        Date dateNow = Date.from(dataLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
-        Date dateExperition;
+        Date dateExpiration;
 
         if(recuperacao) {
-            LocalDateTime localDateExperation = dataLocalDateTime.plusMinutes(VALIDADE_TOKEN_CINCO_MINUTOS);
-            dateExperition = Date.from(localDateExperation.atZone(ZoneId.systemDefault()).toInstant());
+            LocalDateTime localDateExpiration = dataLocalDateTime.plusMinutes(VALIDADE_TOKEN_CINCO_MINUTOS);
+            dateExpiration = Date.from(localDateExpiration.atZone(ZoneId.systemDefault()).toInstant());
         }else {
-            LocalDateTime localDateExperation = dataLocalDateTime.plusDays(VALIDADE_TOKEN_UM_DIA);
-            dateExperition = Date.from(localDateExperation.atZone(ZoneId.systemDefault()).toInstant());
+            LocalDateTime localDateExpiration = dataLocalDateTime.plusDays(VALIDADE_TOKEN_UM_DIA);
+            dateExpiration = Date.from(localDateExpiration.atZone(ZoneId.systemDefault()).toInstant());
         }
 
         List<String> cargosDoUsuario = usuarioEntity.getCargos().stream()
@@ -47,11 +50,11 @@ public class TokenService {
                 .toList();
 
         return Jwts.builder()
-                .setIssuer("vemser-api")
+                .setIssuer("chronos-api")
                 .claim(Claims.ID, usuarioEntity.getIdUsuario().toString())
                 .claim(CHAVE_CARGOS,cargosDoUsuario)
-                .setIssuedAt(date)
-                .setExpiration(dateExperition)
+                .setIssuedAt(dateNow)
+                .setExpiration(dateExpiration)
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
@@ -80,4 +83,18 @@ public class TokenService {
         return new UsernamePasswordAuthenticationToken(idUsuario,
                 null, cargosList);
     }
+
+    public String authAccess(LoginDTO loginDTO, AuthenticationManager authenticationManager) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(
+                        loginDTO.getEmail(),
+                        loginDTO.getSenha()
+                );
+        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+
+        Object principal = authentication.getPrincipal();
+        UsuarioEntity usuarioEntity = (UsuarioEntity) principal;
+        return getToken(usuarioEntity, false);
+    }
+
 }

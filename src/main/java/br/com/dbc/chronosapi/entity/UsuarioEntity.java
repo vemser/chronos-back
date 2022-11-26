@@ -1,4 +1,4 @@
-package br.com.dbc.chronosapi.entity.classes;
+package br.com.dbc.chronosapi.entity;
 
 import br.com.dbc.chronosapi.entity.enums.Atividade;
 import com.fasterxml.jackson.annotation.JsonIgnore;

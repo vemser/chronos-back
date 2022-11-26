@@ -1,13 +1,15 @@
 package br.com.dbc.chronosapi.dto;
 
-import br.com.dbc.chronosapi.entity.enums.Atividade;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-@Data
-public class UsuarioDTO {
+import javax.validation.constraints.NotNull;
 
-    private Integer idUsuario;
-    private String nome;
-    private String email;
-    private Atividade ativo;
+@Data
+public class UsuarioDTO extends UsuarioCreateDTO {
+
+    @NotNull
+    @Schema(description = "Id do usuário", example = "1")
+    private Integer IdUsuario;
+
 }
