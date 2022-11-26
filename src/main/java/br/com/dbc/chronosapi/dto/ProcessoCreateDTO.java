@@ -30,7 +30,6 @@ public class ProcessoCreateDTO {
     @NotBlank
     private String ordemExecucao;
 
-    @NotNull
     private LocalDate duracaoProcesso;
 
     @NotNull
