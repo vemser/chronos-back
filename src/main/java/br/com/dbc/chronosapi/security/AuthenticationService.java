@@ -15,11 +15,11 @@ public class AuthenticationService implements UserDetailsService {
     private final UsuarioService usuarioService;
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-            UsuarioEntity usuario = usuarioService.findByEmail(email);
-            if(usuario == null) {
-                throw new UsernameNotFoundException("Usuario inválido");
-            } else {
-                return usuario;
-            }
+        UsuarioEntity usuario = usuarioService.findByEmail(email);
+        if(usuario == null) {
+            throw new UsernameNotFoundException("Usuario inválido");
+        } else {
+            return usuario;
+        }
     }
 }

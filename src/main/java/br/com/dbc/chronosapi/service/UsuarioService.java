@@ -32,7 +32,7 @@ public class UsuarioService {
 
     public UsuarioDTO create(UsuarioCreateDTO usuario) {
         UsuarioEntity usuarioEntity = objectMapper.convertValue(usuario, UsuarioEntity.class);
-        String senha = "vEmSeR10@2022";
+        String senha = "teste";
         String senhaCriptografada = passwordEncoder.encode(senha);
         usuarioEntity.setSenha(senhaCriptografada);
         // Fazer Foto -Pesquisar como fazer uploados de fotos no banco de dados.
@@ -56,15 +56,18 @@ public class UsuarioService {
         return null;
     }
 
-    public PageDTO<UsuarioDTO> list(Integer pagina, Integer tamanho){
+    public PageDTO<UsuarioDTO> list(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<UsuarioEntity> paginaRepository = usuarioRepository.findAll(pageRequest);
-
-        List<UsuarioDTO> usuariosDaPagina = paginaRepository.getContent().stream()
-                .map(this::getUsuarioDTO)
+        Page<UsuarioEntity> paginaDoRepositorio = usuarioRepository.findAll(pageRequest);
+        List<UsuarioDTO> usuarios = paginaDoRepositorio.getContent().stream()
+                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
                 .toList();
-
-        return new PageDTO<>(paginaRepository.getTotalElements(), paginaRepository.getTotalPages(), pagina, tamanho, usuariosDaPagina);
+        return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                paginaDoRepositorio.getTotalPages(),
+                pagina,
+                tamanho,
+                usuarios
+        );
     }
 
     public UsuarioEntity
