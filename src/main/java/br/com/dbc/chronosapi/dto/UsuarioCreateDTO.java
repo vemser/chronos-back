@@ -18,5 +18,8 @@ public class UsuarioCreateDTO {
     @Schema(description = "Email do usuário", example = "fulano@gmail.com")
     private String email;
 
+    private String fotoFaseDeTeste;
+
+    @NotNull
     private List<CargoDTO> cargos;
 }
