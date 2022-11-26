@@ -29,13 +29,6 @@ public class UsuarioService {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
 
-    public Integer getIdLoggedUser() {
-        return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-    }
-
-    public UsuarioDTO getLoggedUser() throws RegraDeNegocioException {
-        return objectMapper.convertValue(findById(getIdLoggedUser()), UsuarioDTO.class);
-    }
 
     public UsuarioDTO create(UsuarioCreateDTO usuario) {
         UsuarioEntity usuarioEntity = objectMapper.convertValue(usuario, UsuarioEntity.class);
@@ -74,7 +67,8 @@ public class UsuarioService {
         return new PageDTO<>(paginaRepository.getTotalElements(), paginaRepository.getTotalPages(), pagina, tamanho, usuariosDaPagina);
     }
 
-    public Optional<UsuarioEntity> findByEmail(String email) throws RegraDeNegocioException {
+    public UsuarioEntity
+    findByEmail(String email) {
         return usuarioRepository.findByEmail(email);
     }
 
