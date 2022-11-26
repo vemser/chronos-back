@@ -24,20 +24,13 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.headers().frameOptions().disable().and()
-                .cors().and()
-                .csrf().disable()
-                .authorizeHttpRequests((authz) ->
-                        authz.antMatchers("/auth", "/auth/cadastro-usuario", "/auth/recuperacao-senha").permitAll()
-//                                .antMatchers("/auth/alteracao-senha").hasRole("RECUPERACAO")
-//                                .antMatchers(HttpMethod.GET, "/item", "/item/itens-paginados", "/item/filtro").hasAnyRole("CLIENTE", "ADMIN")
-//                                .antMatchers(HttpMethod.GET, "/avaliacao/{idUsuario}/user", "/avaliacao/ids").hasRole("ADMIN")
-//                                .antMatchers("/lancamentos/**").hasAnyRole("CLIENTE", "ADMIN")
-//                                .antMatchers("/assistidos/**").hasAnyRole("CLIENTE", "ADMIN")
-//                                .antMatchers("/avaliacao/**").hasAnyRole("CLIENTE", "ADMIN")
-//                                .antMatchers("/indicacao/**").hasAnyRole("CLIENTE", "ADMIN")
-//                                .antMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
-//                                .antMatchers("/**").hasRole("ADMIN")
+        http.headers()
+                .frameOptions().disable()
+                .and().cors()
+                .and().csrf().disable()
+                .authorizeHttpRequests((auth) -> auth.antMatchers("/").permitAll()
+
+                                // permissões
 
                                 .anyRequest().authenticated()
                 );

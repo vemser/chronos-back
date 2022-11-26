@@ -2,12 +2,17 @@ package br.com.dbc.chronosapi.controller;
 
 
 import br.com.dbc.chronosapi.dto.LoginDTO;
+import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
+import br.com.dbc.chronosapi.entity.enums.Atividade;
+import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +36,6 @@ public class LoginController {
         log.info("Verificando autenticação . . .");
         return new ResponseEntity<>(tokenService.authAccess(loginDTO, authenticationManager), HttpStatus.OK);
     }
-
 
 //    @PostMapping("/forgot-password")
 //    public ResponseEntity<String> sendRecoverPasswordMail(String email) throws RegraDeNegocioException {

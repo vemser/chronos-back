@@ -1,4 +1,5 @@
 package br.com.dbc.chronosapi.entity.enums;
 
-public enum TipoAcesso {
+public enum Atividade {
+    INATIVO, ATIVO;
 }

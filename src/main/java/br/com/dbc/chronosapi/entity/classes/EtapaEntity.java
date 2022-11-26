@@ -1,5 +1,6 @@
 package br.com.dbc.chronosapi.entity.classes;
 
+import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;

@@ -1,6 +1,7 @@
-package br.com.dbc.chronosapi.entity.classes;
+package br.com.dbc.chronosapi.entity.classes.processos;
 
-import br.com.dbc.chronosapi.entity.enums.TipoAcesso;
+import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
+import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
@@ -23,17 +24,22 @@ public class ProcessoEntity {
     private Integer idProcesso;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "processo", fetch = FetchType.LAZY)
-    Set<EtapaEntity> etapas;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_ETAPA", referencedColumnName = "ID_ETAPA")
+    private EtapaEntity etapa;
 
-    @Column(name = "AREA_ENVOLVIDA")
-    private TipoAcesso areaEnvolvida;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "ID_AREA_ENVOLVIDA", referencedColumnName = "ID_AREA_ENVOLVIDA")
+    private AreaEnvolvidaEntity areaEnvolvida;
 
-    @Column(name = "RESPONSAVEL")
-    private TipoAcesso responsavel;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "ID_RESPONSAVEL", referencedColumnName = "ID_RESPONSAVEL")
+    private ResponsavelEntity responsavel;
 
     @Column(name = "DURACAO_PROCESSO")
-    private LocalDate duracaoProcesso;
+    private String duracaoProcesso;
 
     @Column(name = "DIAS_UTEIS")
     private Integer diasUteis;
@@ -48,5 +54,6 @@ public class ProcessoEntity {
             inverseJoinColumns = @JoinColumn(name = "ID_EDICAO")
     )
     Set<EdicaoEntity> edicoes;
+
 
 }

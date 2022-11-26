@@ -16,12 +16,10 @@ public class ProcessoCreateDTO {
     private EtapaEntity etapa;
 
     @NotNull
-    @NotBlank
-    private String areaEnvolvida;
+    private AreaEnvolvidaEntity areaEnvolvida;
 
     @NotNull
-    @NotBlank
-    private String responsavel;
+    private ResponsavelEntity responsavel;
 
     @NotNull
     private Integer diasUteis;

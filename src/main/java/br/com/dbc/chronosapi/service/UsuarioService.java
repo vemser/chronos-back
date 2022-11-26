@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -28,9 +29,8 @@ public class UsuarioService {
     private final TokenService tokenService;
     private final EmailService emailService;
 
-    public UsuarioEntity findByEmail(String email) throws RegraDeNegocioException {
-        return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new RegraDeNegocioException("User not found"));
+    public Optional<UsuarioEntity> findByEmail(String email)  {
+        return usuarioRepository.findByEmail(email);
     }
 
     public UsuarioEntity findById(Integer idUsuario) throws RegraDeNegocioException {
