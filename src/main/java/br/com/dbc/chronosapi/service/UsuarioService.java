@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -47,6 +48,16 @@ public class UsuarioService {
 
         return new PageDTO<>(paginaRepository.getTotalElements(), paginaRepository.getTotalPages(), pagina, tamanho, usuariosDaPagina);
     }
+
+    public UsuarioDTO getLoggedUser() throws RegraDeNegocioException {
+
+        return getUsuarioDTO(findById(getIdLoggedUser()));
+    }
+
+    public Integer getIdLoggedUser() {
+        return Integer.parseInt(String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
+    }
+
     @NotNull
     private UsuarioDTO getUsuarioDTO(UsuarioEntity usuarioEntity) {
         UsuarioDTO dto = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
