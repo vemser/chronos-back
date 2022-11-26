@@ -1,6 +1,8 @@
 package br.com.dbc.chronosapi.service;
 
-import br.com.dbc.chronosapi.dto.*;
+import br.com.dbc.chronosapi.dto.CargoDTO;
+import br.com.dbc.chronosapi.dto.PageDTO;
+import br.com.dbc.chronosapi.dto.UsuarioDTO;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.UsuarioRepository;
@@ -10,13 +12,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
