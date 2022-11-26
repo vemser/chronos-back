@@ -1,5 +1,6 @@
-package br.com.dbc.chronosapi.entity;
+package br.com.dbc.chronosapi.entity.classes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +30,17 @@ public class EdicaoEntity {
     @Column(name = "DATA_FINAL")
     private LocalDate dataFinal;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "edicao", fetch = FetchType.LAZY)
     Set<EtapaEntity> etapas;
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "PROCESSO_EDICAO",
+            joinColumns = @JoinColumn(name = "ID_EDICAO"),
+            inverseJoinColumns = @JoinColumn(name = "ID_PROCESSO")
+    )
+    private Set<ProcessoEntity> processos;
 
 }

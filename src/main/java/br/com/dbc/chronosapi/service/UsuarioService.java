@@ -3,7 +3,7 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.CargoDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.UsuarioDTO;
-import br.com.dbc.chronosapi.entity.UsuarioEntity;
+import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.UsuarioRepository;
 import br.com.dbc.chronosapi.security.TokenService;

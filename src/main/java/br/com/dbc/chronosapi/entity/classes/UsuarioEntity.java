@@ -1,6 +1,5 @@
-package br.com.dbc.chronosapi.entity;
+package br.com.dbc.chronosapi.entity.classes;
 
-import br.com.dbc.chronosapi.entity.enums.Atividade;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -79,10 +78,6 @@ public class UsuarioEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        if(getAtivo().equals(Atividade.ATIVO)) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
 }

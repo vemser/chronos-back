@@ -1,4 +1,4 @@
-package br.com.dbc.chronosapi.entity;
+package br.com.dbc.chronosapi.entity.classes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
