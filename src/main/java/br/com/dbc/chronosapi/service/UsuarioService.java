@@ -29,7 +29,7 @@ public class UsuarioService {
     private final TokenService tokenService;
     private final EmailService emailService;
 
-    public Optional<UsuarioEntity> findByEmail(String email)  {
+    public Optional<UsuarioEntity> findByEmail(String email) {
         return usuarioRepository.findByEmail(email);
     }
 

@@ -1,7 +1,9 @@
 package br.com.dbc.chronosapi.dto;
 
-import br.com.dbc.chronosapi.entity.EdicaoEntity;
-import br.com.dbc.chronosapi.entity.EtapaEntity;
+import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
+import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
+import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
+import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
