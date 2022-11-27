@@ -2,7 +2,6 @@ package br.com.dbc.chronosapi.controller.interfaces;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
-import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -53,8 +52,11 @@ public interface IUsuarioController {
     )
     @PutMapping("/{idUsuario}")
     ResponseEntity<UsuarioDTO> update(@Valid @PathVariable("idUsuario") Integer idUsuario,
-                                      @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO,
-                                      @Valid @RequestParam MultipartFile imagem) throws RegraDeNegocioException, IOException;
+                                      @Valid @RequestParam String nome,
+                                      @Valid @RequestParam String senhaAtual,
+                                      @Valid @RequestParam String novaSenha,
+                                      @Valid @RequestParam String confirmacaoNovaSenha,
+                                      @Valid @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException;
 
     @Operation(summary = "Deletar usuário", description = "Deleta um usuário presente no banco de dados através do seu id.")
     @ApiResponses(

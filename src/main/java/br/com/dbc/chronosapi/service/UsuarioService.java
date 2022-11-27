@@ -3,7 +3,6 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.CargoDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
-import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.entity.enums.StatusUsuario;
@@ -68,24 +67,22 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
-    public UsuarioDTO update(Integer id, UsuarioUpdateDTO usuarioUpdate, MultipartFile imagem) throws IOException, RegraDeNegocioException {
+    public UsuarioDTO update(Integer id, String nome, String senhaAtual, String novaSenha, String confirmacaoNovaSenha, MultipartFile imagem) throws IOException, RegraDeNegocioException {
         UsuarioEntity usuarioRecover = findById(id);
-        usuarioRecover.setNome(usuarioUpdate.getNome());
-        Set<CargoEntity> cargos = usuarioUpdate.getCargos().stream()
-                .map(cargo -> cargoService.findByNome(cargo)).collect(Collectors.toSet());
-        usuarioRecover.setCargos(new HashSet<>(cargos));
-        usuarioRecover.setImagem(imagem.getBytes());
-        if (usuarioUpdate.getNovaSenha().equals(usuarioUpdate.getConfirmacaoNovaSenha())) {
-            usuarioRecover.setSenha(passwordEncoder.encode(usuarioUpdate.getNovaSenha()));
-            usuarioRepository.save(usuarioRecover);
+        if (passwordEncoder.matches(senhaAtual, usuarioRecover.getPassword())) {
+            usuarioRecover.setNome(nome);
+            usuarioRecover.setImagem(imagem.getBytes());
+            if (novaSenha.equals(confirmacaoNovaSenha)) {
+                usuarioRecover.setSenha(passwordEncoder.encode(novaSenha));
+                usuarioRepository.save(usuarioRecover);
+            } else {
+                throw new RegraDeNegocioException("Senhas incompatíveis!");
+            }
+            return objectMapper.convertValue(usuarioRecover, UsuarioDTO.class);
         } else {
-            throw new RegraDeNegocioException("Senhas incompatíveis!");
+            throw new RegraDeNegocioException("Senha atual inválida");
         }
-
-        return objectMapper.convertValue(usuarioRecover, UsuarioDTO.class);
-
     }
-
     public void delete(Integer idUsuario) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = this.findById(idUsuario);
         usuarioRepository.delete(usuarioEntity);

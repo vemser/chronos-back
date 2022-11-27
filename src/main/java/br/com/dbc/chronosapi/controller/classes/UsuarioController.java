@@ -3,7 +3,6 @@ package br.com.dbc.chronosapi.controller.classes;
 import br.com.dbc.chronosapi.controller.interfaces.IUsuarioController;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
-import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -45,12 +44,15 @@ public class UsuarioController implements IUsuarioController {
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
-        @PutMapping(value = "/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE } )
+        @PutMapping(value = "/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE } )
     public ResponseEntity<UsuarioDTO> update(@Valid @PathVariable("idUsuario") Integer idUsuario,
-                                             @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO,
-                                             @Valid @RequestParam MultipartFile imagem) throws RegraDeNegocioException, IOException {
+                                             @Valid @RequestParam String nome,
+                                             @Valid @RequestParam String senhaAtual,
+                                             @Valid @RequestParam String novaSenha,
+                                             @Valid @RequestParam String confirmacaoNovaSenha,
+                                             @Valid @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException {
         log.info("Atualizando usuário....");
-        UsuarioDTO usuarioDTO = usuarioService.update(idUsuario, usuarioUpdateDTO, imagem);
+        UsuarioDTO usuarioDTO = usuarioService.update(idUsuario, nome, senhaAtual, novaSenha, confirmacaoNovaSenha, imagem);
         log.info("Usuário atualizado com sucesso!");
 
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
