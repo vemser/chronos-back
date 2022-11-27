@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 public class UsuarioUpdateDTO {
@@ -27,4 +28,8 @@ public class UsuarioUpdateDTO {
     @NotBlank
     @Schema(description = "Confitmação da nova senha do usuário", example = "123456")
     private String confirmacaoNovaSenha;
+
+    @NotNull
+    @Schema(description = "Cargos do usuário")
+    private List<String> cargos;
 }

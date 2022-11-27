@@ -61,20 +61,22 @@ public class UsuarioService {
         return objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
     }
 
-    public UsuarioDTO update(Integer id, UsuarioUpdateDTO usuarioAtualizar) throws RegraDeNegocioException {
-        UsuarioEntity usuarioEncontrado = findById(id);
-        usuarioEncontrado.setNome(usuarioAtualizar.getNome());
-
-        if(usuarioAtualizar.getNovaSenha().equals(usuarioAtualizar.getConfirmacaoNovaSenha())) {
-            usuarioEncontrado.setSenha(passwordEncoder.encode(usuarioAtualizar.getNovaSenha()));
-            usuarioRepository.save(usuarioEncontrado);
+    public UsuarioDTO update(Integer id, UsuarioUpdateDTO usuarioUpdate, MultipartFile imagem) throws IOException, RegraDeNegocioException {
+        UsuarioEntity usuarioRecover = findById(id);
+        usuarioRecover.setNome(usuarioUpdate.getNome());
+        Set<CargoEntity> cargos = usuarioUpdate.getCargos().stream()
+                .map(cargo -> cargoService.findByNome(cargo)).collect(Collectors.toSet());
+        usuarioRecover.setCargos(new HashSet<>(cargos));
+        usuarioRecover.setImagem(imagem.getBytes());
+        if (usuarioUpdate.getNovaSenha().equals(usuarioUpdate.getConfirmacaoNovaSenha())) {
+            usuarioRecover.setSenha(passwordEncoder.encode(usuarioUpdate.getNovaSenha()));
+            usuarioRepository.save(usuarioRecover);
         } else {
-           throw new RegraDeNegocioException("Senhas incompatíveis!");
+            throw new RegraDeNegocioException("Senhas incompatíveis!");
         }
 
-//        UsuarioDto usuarioDto = objectMapper.convertValue(usuarioEncontrado, UsuarioDto.class);
+        return objectMapper.convertValue(usuarioRecover, UsuarioDTO.class);
 
-        return null;
     }
 
     public void delete(Integer idUsuario) throws RegraDeNegocioException {
