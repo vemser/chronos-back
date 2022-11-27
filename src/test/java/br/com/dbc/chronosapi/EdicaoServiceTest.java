@@ -27,11 +27,10 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EdicaoServiceTest {
@@ -81,6 +80,65 @@ public class EdicaoServiceTest {
 
     }
 
+    @Test
+    public void testEdicaoUpdateSuccess() throws RegraDeNegocioException {
+
+        // SETUP
+        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
+
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        EdicaoEntity edicaoEntity1 = getEdicaoEntity();
+        edicaoEntity1.setNome("nomeDiferente");
+
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+        when(edicaoRepository.save(any())).thenReturn(edicaoEntity1);
+
+        // ACT
+        EdicaoDTO edicaoDTO = edicaoService.update(edicaoEntity.getIdEdicao(), edicaoCreateDTO);
+
+        // ASSERT
+        assertNotNull(edicaoDTO);
+        assertNotEquals("nomeDiferente", edicaoDTO.getNome());
+    }
+
+    @Test
+    public void testEdicaoDeleteSuccess() throws RegraDeNegocioException {
+        // SETUP
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+
+        // ACT
+        edicaoService.delete(edicaoEntity.getIdEdicao());
+
+        // ASSERT
+        verify(edicaoRepository, times(1)).delete(any());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void testEdicaoDeleteFail() throws RegraDeNegocioException {
+        // SETUP
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        // ACT
+        edicaoService.delete(5);
+
+        // ASSERT
+        verify(edicaoRepository, times(1)).delete(any());
+    }
+    @Test(expected = RegraDeNegocioException.class)
+    public void testFindByIdFail() throws RegraDeNegocioException {
+        // SETUP
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        // ACT
+        edicaoService.findById(5);
+
+        // ASSERT
+        verify(edicaoRepository, times(1)).findById(any());
+
+    }
+
     private EdicaoCreateDTO getEdicaoCreateDTO() {
         EdicaoCreateDTO edicaoCreateDTO = new EdicaoCreateDTO();
         edicaoCreateDTO.setNome("Edicao1");
@@ -92,7 +150,7 @@ public class EdicaoServiceTest {
     private static EdicaoEntity getEdicaoEntity() {
 
         EdicaoEntity edicaoEntity = new EdicaoEntity();
-        edicaoEntity.setIdEdicao(10);
+        edicaoEntity.setIdEdicao(5);
         edicaoEntity.setNome("Edicao1");
         edicaoEntity.setDataInicial(LocalDate.of(2022, 10, 11));
         edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));
