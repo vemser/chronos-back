@@ -14,6 +14,10 @@ import java.util.List;
 public class ProcessoCreateDTO {
 
     @NotNull
+    @NotBlank
+    private String nome;
+
+    @NotNull
     private EtapaEntity etapa;
 
     @NotNull
