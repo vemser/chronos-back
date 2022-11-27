@@ -2,6 +2,7 @@ package br.com.dbc.chronosapi.controller.interfaces;
 
 import br.com.dbc.chronosapi.dto.EtapaCreateDTO;
 import br.com.dbc.chronosapi.dto.EtapaDTO;
+import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 public interface IEtapaController {
 
@@ -57,6 +57,6 @@ public interface IEtapaController {
             }
     )
     @GetMapping("/listar-etapas")
-    ResponseEntity<List<EtapaDTO>> list();
+    ResponseEntity<PageDTO<EtapaDTO>> list(Integer pagina, Integer tamanho);
 }
 

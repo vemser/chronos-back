@@ -2,11 +2,14 @@ package br.com.dbc.chronosapi.service;
 
 import br.com.dbc.chronosapi.dto.EtapaCreateDTO;
 import br.com.dbc.chronosapi.dto.EtapaDTO;
+import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EtapaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,10 +38,18 @@ public class EtapaService {
         etapaRepository.delete(etapaRecover);
     }
 
-    public List<EtapaDTO> list() {
-        return etapaRepository.findAll().stream()
+    public PageDTO<EtapaDTO> list(Integer pagina, Integer tamanho) {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        Page<EtapaEntity> paginaDoRepositorio = etapaRepository.findAll(pageRequest);
+        List<EtapaDTO> etapasDaPagina = paginaDoRepositorio.getContent().stream()
                 .map(etapaEntity -> objectMapper.convertValue(etapaEntity, EtapaDTO.class))
                 .toList();
+        return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                paginaDoRepositorio.getTotalPages(),
+                pagina,
+                tamanho,
+                etapasDaPagina
+        );
     }
 
     public EtapaEntity findById(Integer id) throws RegraDeNegocioException {

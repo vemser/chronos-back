@@ -1,5 +1,6 @@
 package br.com.dbc.chronosapi.entity.classes;
 
+import br.com.dbc.chronosapi.entity.enums.StatusUsuario;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -36,8 +37,12 @@ public class UsuarioEntity implements UserDetails {
     @Column(name = "SENHA")
     private String senha;
 
-    @Column(name = "ATIVO")
-    private Integer ativo;
+    @Lob
+    @Column(name = "IMAGEM")
+    private byte[] imagem;
+
+    @Column(name = "STATUS")
+    private StatusUsuario status;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
@@ -81,6 +86,7 @@ public class UsuarioEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        // 1 == ATIVO / 0 == INATIVO
+        return status.ordinal() == 1;
     }
 }
