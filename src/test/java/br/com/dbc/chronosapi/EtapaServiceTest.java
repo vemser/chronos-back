@@ -165,7 +165,6 @@ public class EtapaServiceTest {
         edicaoCreateDTO.setNome("Edicao1");
         edicaoCreateDTO.setDataInicial(LocalDate.of(2022,8,1));
         edicaoCreateDTO.setDataFinal(LocalDate.of(2022,8,10));
-
         return edicaoCreateDTO;
     }
 
