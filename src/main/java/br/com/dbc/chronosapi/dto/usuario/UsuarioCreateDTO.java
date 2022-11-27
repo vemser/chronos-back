@@ -23,7 +23,6 @@ public class UsuarioCreateDTO {
     private String email;
 
     @Lob
-    @NotNull
     @Schema(description = "Imagem do usuário")
     private byte[] imagem;
 

@@ -78,7 +78,10 @@ public class UsuarioService {
             } else {
                 throw new RegraDeNegocioException("Senhas incompatíveis!");
             }
-            return objectMapper.convertValue(usuarioRecover, UsuarioDTO.class);
+            UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRecover, UsuarioDTO.class);
+            Set<CargoEntity> cargosEntities = usuarioRecover.getCargos();
+            usuarioDTO.setCargos(getCargosDTO(cargosEntities));
+            return usuarioDTO;
         } else {
             throw new RegraDeNegocioException("Senha atual inválida");
         }
