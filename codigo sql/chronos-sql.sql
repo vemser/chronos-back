@@ -13,8 +13,8 @@ GRANT SELECT ANY TABLE TO CHRONOS;
 CREATE TABLE USUARIO (
                          ID_USUARIO NUMBER NOT NULL,
                          NOME VARCHAR2(225) NOT NULL,
-                         EMAIL VARCHAR2(225) UNIQUE NOT NULL,
-                         SENHA VARCHAR2(225) NOT NULL,
+                         EMAIL VARCHAR2(100) UNIQUE NOT NULL,
+                         SENHA VARCHAR2(50) NOT NULL,
                          IMAGEM BLOB NOT NULL,
                          STATUS NUMBER NOT NULL,
                          PRIMARY KEY (ID_USUARIO)
@@ -22,7 +22,7 @@ CREATE TABLE USUARIO (
 
 CREATE TABLE EDICAO (
                         ID_EDICAO NUMBER NOT NULL,
-                        NOME VARCHAR2(225) NOT NULL,
+                        NOME VARCHAR2(100) NOT NULL,
                         DATA_INICIAL DATE  NOT NULL,
                         DATA_FINAL DATE NOT NULL,
                         PRIMARY KEY (ID_EDICAO)
@@ -30,20 +30,20 @@ CREATE TABLE EDICAO (
 
 CREATE TABLE ETAPA (
                        ID_ETAPA NUMBER NOT NULL,
-                       NOME VARCHAR2(225) NOT NULL,
+                       NOME VARCHAR2(100) NOT NULL,
                        PRIMARY KEY (ID_ETAPA)
 );
 
 CREATE TABLE AREA_ENVOLVIDA (
                                 ID_AREA_ENVOLVIDA NUMBER NOT NULL,
-                                NOME VARCHAR2(225),
+                                NOME VARCHAR2(100),
                                 PRIMARY KEY (ID_AREA_ENVOLVIDA)
 );
 
 
 CREATE TABLE RESPONSAVEL (
                              ID_RESPONSAVEL NUMBER NOT NULL,
-                             NOME VARCHAR2(225),
+                             NOME VARCHAR2(100),
                              PRIMARY KEY (ID_RESPONSAVEL)
 );
 
@@ -52,7 +52,7 @@ CREATE TABLE PROCESSO (
                           ID_ETAPA NUMBER NOT NULL,
                           ID_AREA_ENVOLVIDA NUMBER NOT NULL,
                           ID_RESPONSAVEL NUMBER NOT NULL,
-                          DURACAO_PROCESSO VARCHAR2(225) NOT NULL,
+                          DURACAO_PROCESSO VARCHAR2(100) NOT NULL,
                           DIAS_UTEIS NUMBER NOT NULL,
                           ORDEM_EXECUCAO NUMBER NOT NULL,
                           PRIMARY KEY (ID_PROCESSO),
@@ -73,8 +73,8 @@ CREATE TABLE PROCESSO_EDICAO (
 
 CREATE TABLE CARGO (
                        ID_CARGO NUMBER NOT NULL,
-                       NOME VARCHAR2(225) UNIQUE NOT NULL,
-                       DESCRICAO VARCHAR2(225) UNIQUE NOT NULL,
+                       NOME VARCHAR2(100) UNIQUE NOT NULL,
+                       DESCRICAO VARCHAR2(100) UNIQUE NOT NULL,
                        PRIMARY KEY (ID_CARGO)
 );
 
