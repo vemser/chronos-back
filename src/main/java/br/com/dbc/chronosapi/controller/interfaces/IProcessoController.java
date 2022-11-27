@@ -1,5 +1,6 @@
 package br.com.dbc.chronosapi.controller.interfaces;
 
+import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.ProcessoCreateDTO;
 import br.com.dbc.chronosapi.dto.ProcessoDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -8,8 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 public interface IProcessoController {
 
@@ -22,7 +21,7 @@ public interface IProcessoController {
             }
     )
     @GetMapping()
-    ResponseEntity<List<ProcessoDTO>> list();
+    ResponseEntity<PageDTO<ProcessoDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException;
 
     @Operation(summary = "Criar um novo processo", description = "Cria um novo processo do banco de dados")
     @ApiResponses(

@@ -3,6 +3,7 @@ package br.com.dbc.chronosapi.controller.classes;
 import br.com.dbc.chronosapi.controller.interfaces.IEdicaoController;
 import br.com.dbc.chronosapi.dto.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.EdicaoDTO;
+import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.service.EdicaoService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Validated
@@ -43,8 +43,8 @@ public class EdicaoController implements IEdicaoController {
     }
 
     @GetMapping("/listar-edicoes")
-    public ResponseEntity<List<EdicaoDTO>> list() {
-        return new ResponseEntity<>(edicaoService.list(), HttpStatus.OK);
+    public ResponseEntity<PageDTO<EdicaoDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        return new ResponseEntity<>(edicaoService.list(pagina, tamanho), HttpStatus.OK);
     }
 
 }

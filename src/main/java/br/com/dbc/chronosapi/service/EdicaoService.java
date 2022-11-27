@@ -2,11 +2,14 @@ package br.com.dbc.chronosapi.service;
 
 import br.com.dbc.chronosapi.dto.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.EdicaoDTO;
+import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EdicaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,10 +42,17 @@ public class EdicaoService {
         edicaoRepository.delete(edicaoRecover);
     }
 
-    public List<EdicaoDTO> list() {
-        return edicaoRepository.findAll().stream()
-                .map(edicaoEntity -> objectMapper.convertValue(edicaoEntity, EdicaoDTO.class))
+    public PageDTO<EdicaoDTO> list(Integer pagina, Integer tamanho) {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        Page<EdicaoEntity> paginaDoRepositorio = edicaoRepository.findAll(pageRequest);
+        List<EdicaoDTO> edicaoDTOList = paginaDoRepositorio.getContent().stream()
+                .map(edicao -> objectMapper.convertValue(edicao, EdicaoDTO.class))
                 .toList();
+        return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                paginaDoRepositorio.getTotalPages(),
+                pagina,
+                tamanho,
+                edicaoDTOList);
     }
 
     public EdicaoEntity findById(Integer id) throws RegraDeNegocioException {
