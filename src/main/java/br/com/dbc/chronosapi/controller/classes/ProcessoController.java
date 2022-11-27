@@ -2,8 +2,8 @@ package br.com.dbc.chronosapi.controller.classes;
 
 import br.com.dbc.chronosapi.controller.interfaces.IProcessoController;
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.ProcessoCreateDTO;
-import br.com.dbc.chronosapi.dto.ProcessoDTO;
+import br.com.dbc.chronosapi.dto.processo.ProcessoCreateDTO;
+import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.service.ProcessoService;
 import lombok.RequiredArgsConstructor;

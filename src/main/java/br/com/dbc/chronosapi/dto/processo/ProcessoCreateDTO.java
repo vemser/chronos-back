@@ -1,4 +1,4 @@
-package br.com.dbc.chronosapi.dto;
+package br.com.dbc.chronosapi.dto.processo;
 
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;

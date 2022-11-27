@@ -1,4 +1,4 @@
-package br.com.dbc.chronosapi.dto;
+package br.com.dbc.chronosapi.dto.usuario;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -26,5 +26,5 @@ public class UsuarioUpdateDTO {
     @NotNull
     @NotBlank
     @Schema(description = "Confitmação da nova senha do usuário", example = "123456")
-    private String corfirmacaoNovaSenha;
+    private String confirmacaoNovaSenha;
 }

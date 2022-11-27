@@ -1,9 +1,9 @@
 package br.com.dbc.chronosapi.service;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.UsuarioCreateDTO;
-import br.com.dbc.chronosapi.dto.UsuarioDTO;
-import br.com.dbc.chronosapi.dto.UsuarioUpdateDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.entity.enums.StatusUsuario;
@@ -65,7 +65,7 @@ public class UsuarioService {
         UsuarioEntity usuarioEncontrado = findById(id);
         usuarioEncontrado.setNome(usuarioAtualizar.getNome());
 
-        if(usuarioAtualizar.getNovaSenha().equals(usuarioAtualizar.getCorfirmacaoNovaSenha())) {
+        if(usuarioAtualizar.getNovaSenha().equals(usuarioAtualizar.getConfirmacaoNovaSenha())) {
             usuarioEncontrado.setSenha(passwordEncoder.encode(usuarioAtualizar.getNovaSenha()));
             usuarioRepository.save(usuarioEncontrado);
         } else {

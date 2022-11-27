@@ -1,7 +1,7 @@
 package br.com.dbc.chronosapi.service;
 
-import br.com.dbc.chronosapi.dto.EtapaCreateDTO;
-import br.com.dbc.chronosapi.dto.EtapaDTO;
+import br.com.dbc.chronosapi.dto.etapa.EtapaCreateDTO;
+import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;

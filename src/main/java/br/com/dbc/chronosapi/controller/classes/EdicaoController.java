@@ -1,8 +1,8 @@
 package br.com.dbc.chronosapi.controller.classes;
 
 import br.com.dbc.chronosapi.controller.interfaces.IEdicaoController;
-import br.com.dbc.chronosapi.dto.EdicaoCreateDTO;
-import br.com.dbc.chronosapi.dto.EdicaoDTO;
+import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
+import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.service.EdicaoService;

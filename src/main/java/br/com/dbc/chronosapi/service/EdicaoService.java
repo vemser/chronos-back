@@ -1,7 +1,7 @@
 package br.com.dbc.chronosapi.service;
 
-import br.com.dbc.chronosapi.dto.EdicaoCreateDTO;
-import br.com.dbc.chronosapi.dto.EdicaoDTO;
+import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
+import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;

@@ -2,9 +2,9 @@ package br.com.dbc.chronosapi.controller.classes;
 
 import br.com.dbc.chronosapi.controller.interfaces.IUsuarioController;
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.UsuarioCreateDTO;
-import br.com.dbc.chronosapi.dto.UsuarioDTO;
-import br.com.dbc.chronosapi.dto.UsuarioUpdateDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
