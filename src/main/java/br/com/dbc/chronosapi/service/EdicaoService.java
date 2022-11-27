@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class EdicaoService {
@@ -19,17 +21,28 @@ public class EdicaoService {
 
     public EdicaoDTO create(EdicaoCreateDTO edicaoCreateDTO) {
         EdicaoEntity edicaoEntity = objectMapper.convertValue(edicaoCreateDTO, EdicaoEntity.class);
-        EdicaoEntity edicaoSave = edicaoRepository.save(edicaoEntity);
-        return objectMapper.convertValue(edicaoSave, EdicaoDTO.class);
+        EdicaoEntity edicaoSaved = edicaoRepository.save(edicaoEntity);
+        return objectMapper.convertValue(edicaoSaved, EdicaoDTO.class);
     }
 
     public EdicaoDTO update(Integer idEdicao, EdicaoCreateDTO edicaoUpdate) throws RegraDeNegocioException {
         EdicaoEntity edicaoRecover = findById(idEdicao);
-        edicaoRecover.setNome(edicaoUpdate.getNomeEdicao());
+        edicaoRecover.setNome(edicaoUpdate.getNome());
         edicaoRecover.setDataInicial(edicaoUpdate.getDataInicial());
         edicaoRecover.setDataFinal(edicaoUpdate.getDataFinal());
         edicaoRepository.save(edicaoRecover);
         return objectMapper.convertValue(edicaoRecover, EdicaoDTO.class);
+    }
+
+    public void delete(Integer idEdicao) throws RegraDeNegocioException {
+        EdicaoEntity edicaoRecover = findById(idEdicao);
+        edicaoRepository.delete(edicaoRecover);
+    }
+
+    public List<EdicaoDTO> list() {
+        return edicaoRepository.findAll().stream()
+                .map(edicaoEntity -> objectMapper.convertValue(edicaoEntity, EdicaoDTO.class))
+                .toList();
     }
 
     public EdicaoEntity findById(Integer id) throws RegraDeNegocioException {
@@ -38,9 +51,6 @@ public class EdicaoService {
         return edicaoEntity;
     }
 
-    public void delete(Integer idEdicao) throws RegraDeNegocioException {
-        EdicaoEntity edicaoRecover = findById(idEdicao);
-        edicaoRepository.delete(edicaoRecover);
-    }
+
 
 }

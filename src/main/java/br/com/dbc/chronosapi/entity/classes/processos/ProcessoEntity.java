@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
@@ -40,6 +39,9 @@ public class ProcessoEntity {
 
     @Column(name = "DURACAO_PROCESSO")
     private String duracaoProcesso;
+
+    @Column(name = "ORDEM_EXECUCAO")
+    private Integer OrdemExecucao;
 
     @Column(name = "DIAS_UTEIS")
     private Integer diasUteis;

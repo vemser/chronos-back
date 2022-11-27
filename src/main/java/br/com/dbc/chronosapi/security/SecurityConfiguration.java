@@ -31,6 +31,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((auth) -> auth.antMatchers("/login").permitAll()
 
                                 // permissões
+                        .antMatchers("/edicao/**").hasRole("GESTAO_DE_PESSOAS")
 
                                 .anyRequest().authenticated()
                 );
