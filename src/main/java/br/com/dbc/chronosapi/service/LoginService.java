@@ -49,7 +49,7 @@ public class LoginService {
         UsuarioEntity usuario = usuarioService.findByEmail(email);
 
 //        String token = tokenService.getToken(usuario, true);
-        emailService.sendRecoverPasswordEmail(usuario, "Teste recuperação senha","email-teste-template.ftl");
+        emailService.sendRecoverPasswordEmail(usuario, usuario.getSenha(),"Teste recuperação senha","email-teste-template.ftl");
 
         return "Verifique seu email para trocar a senha.";
     }

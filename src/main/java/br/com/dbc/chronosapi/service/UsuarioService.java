@@ -9,6 +9,7 @@ import br.com.dbc.chronosapi.entity.enums.StatusUsuario;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,7 @@ public class UsuarioService {
     private final ObjectMapper objectMapper;
     private final CargoService cargoService;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public PageDTO<UsuarioDTO> list(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
@@ -49,10 +51,9 @@ public class UsuarioService {
 
     public UsuarioDTO create(String nome, String email, List<String> stringCargos, MultipartFile imagem) throws IOException, RegraDeNegocioException {
         UsuarioEntity usuarioEntity = new UsuarioEntity();
-
-        String senha = "teste";
+        Faker faker = new Faker();
+        String senha = faker.internet().password(10, 11, true, true, true);
         String senhaCriptografada = passwordEncoder.encode(senha);
-
         usuarioEntity.setNome(nome);
         usuarioEntity.setEmail(email);
         usuarioEntity.setSenha(senhaCriptografada);
@@ -64,6 +65,7 @@ public class UsuarioService {
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
         Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
         usuarioDTO.setCargos(new HashSet<>(cargosDTO));
+        emailService.sendRecoverPasswordEmail(usuarioEntity, senha, "Senha para acessar o sistema", "teste.ftl");
         return usuarioDTO;
     }
 

@@ -25,20 +25,17 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String from;
 
-    private static final String TO = "luiz.martins@dbccompany.com.br";
-
     private final JavaMailSender emailSender;
 
-    public void sendRecoverPasswordEmail(UsuarioEntity usuarioEntity, String assunto, String templateTipo) {
+    public void sendRecoverPasswordEmail(UsuarioEntity usuarioEntity, String senha, String assunto, String templateTipo) {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         try {
-
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
             mimeMessageHelper.setFrom(from);
             mimeMessageHelper.setTo(usuarioEntity.getEmail());
             mimeMessageHelper.setSubject(assunto);
-            mimeMessageHelper.setText(getContentFromTemplate(usuarioEntity, templateTipo), true);
+            mimeMessageHelper.setText(getContentFromTemplate(usuarioEntity, senha, templateTipo), true);
 
             emailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (MessagingException | IOException | TemplateException e) {
@@ -46,12 +43,11 @@ public class EmailService {
         }
     }
 
-    public String getContentFromTemplate(UsuarioEntity usuarioEntity, String templateTipo) throws IOException, TemplateException {
+    public String getContentFromTemplate(UsuarioEntity usuarioEntity, String senha, String templateTipo) throws IOException, TemplateException {
         Map<String, Object> dados = new HashMap<>();
         dados.put("nomeUsuario", usuarioEntity.getNome());
-        dados.put("idUsuario", usuarioEntity.getIdUsuario());
+        dados.put("senha", senha);
         dados.put("emailSuporte", from);
-
 
         Template template = fmConfiguration.getTemplate(templateTipo);
         String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
