@@ -2,7 +2,9 @@ package br.com.dbc.chronosapi.entity.classes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -11,6 +13,8 @@ import java.util.Set;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "CARGO")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class CargoEntity implements GrantedAuthority {
