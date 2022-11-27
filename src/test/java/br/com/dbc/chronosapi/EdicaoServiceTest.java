@@ -150,7 +150,7 @@ public class EdicaoServiceTest {
     private static EdicaoEntity getEdicaoEntity() {
 
         EdicaoEntity edicaoEntity = new EdicaoEntity();
-        edicaoEntity.setIdEdicao(5);
+        edicaoEntity.setIdEdicao(10);
         edicaoEntity.setNome("Edicao1");
         edicaoEntity.setDataInicial(LocalDate.of(2022, 10, 11));
         edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));

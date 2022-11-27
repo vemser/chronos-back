@@ -1,9 +1,8 @@
 package br.com.dbc.chronosapi;
 
-import br.com.dbc.chronosapi.dto.EdicaoCreateDTO;
-import br.com.dbc.chronosapi.dto.EdicaoDTO;
-import br.com.dbc.chronosapi.dto.EtapaCreateDTO;
-import br.com.dbc.chronosapi.dto.EtapaDTO;
+import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
+import br.com.dbc.chronosapi.dto.etapa.EtapaCreateDTO;
+import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
@@ -29,7 +28,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
