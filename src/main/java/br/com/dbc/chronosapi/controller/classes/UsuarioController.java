@@ -45,15 +45,15 @@ public class UsuarioController implements IUsuarioController {
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
-        @PutMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer idUsuario,
-                                             @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO) throws RegraDeNegocioException {
-//        log.info("Atualizando usuário....");
-//        UsuarioDTO usuarioDTO = usuarioService.update(idUsuario, usuarioUpdateDTO);
-//        log.info("Usuário atualizado com sucesso!");
-//
-//        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
-            return null;
+        @PutMapping(value = "/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE } )
+    public ResponseEntity<UsuarioDTO> update(@Valid @PathVariable("idUsuario") Integer idUsuario,
+                                             @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO,
+                                             @Valid @RequestParam MultipartFile imagem) throws RegraDeNegocioException, IOException {
+        log.info("Atualizando usuário....");
+        UsuarioDTO usuarioDTO = usuarioService.update(idUsuario, usuarioUpdateDTO, imagem);
+        log.info("Usuário atualizado com sucesso!");
+
+        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/{idUsuario}")

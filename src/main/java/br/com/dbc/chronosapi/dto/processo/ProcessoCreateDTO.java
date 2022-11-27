@@ -30,11 +30,10 @@ public class ProcessoCreateDTO {
     private Integer diasUteis;
 
     @NotNull
-    @NotBlank
-    private String ordemExecucao;
+    private Integer ordemExecucao;
 
     @NotNull
-    private Integer duracaoProcesso;
+    private String duracaoProcesso;
 
     @NotNull
     private List<EdicaoEntity> edicoes;

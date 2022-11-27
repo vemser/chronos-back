@@ -1,5 +1,6 @@
 package br.com.dbc.chronosapi;
 
+import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaCreateDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
@@ -21,18 +22,21 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EtapaServiceTest {
@@ -88,6 +92,72 @@ public class EtapaServiceTest {
         assertEquals("nomeDiferente", etapaDTO.getNome());
     }
 
+    @Test
+    public void testEdicaoDeleteSucess() throws RegraDeNegocioException {
+        // SETUP
+
+        EtapaEntity etapaEntity = getEtapaEntity();
+
+        when(etapaRepository.findById(anyInt())).thenReturn(Optional.of(etapaEntity));
+
+
+        // ACT
+
+        etapaService.delete(etapaEntity.getIdEtapa());
+
+        // ASSERT
+        verify(etapaRepository, times(1)).delete(any());
+
+    }
+
+    @Test
+    public void testFindByIdWithSuccess() throws RegraDeNegocioException {
+        // SETUP
+        EtapaEntity etapaEntity = getEtapaEntity();
+        when(etapaRepository.findById(anyInt())).thenReturn(Optional.of(etapaEntity));
+
+        // ACT
+        EtapaEntity etapa = etapaService.findById(etapaEntity.getIdEtapa());
+
+        // ASSERT
+        assertNotNull(etapa);
+        assertEquals(10, etapaEntity.getIdEtapa());
+
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void testFindByIdWithFail() throws RegraDeNegocioException {
+        // Criar variaveis (SETUP)
+        Integer busca = 10;
+        when(etapaRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+
+        // Ação (ACT)
+        EtapaEntity etapaEntity = etapaService.findById(busca);
+
+        //Assert
+        assertNull(etapaEntity);
+    }
+
+    @Test
+    public void testListSucess(){
+        // SETUP
+        Integer pagina = 10;
+        Integer quantidade = 5;
+
+        //pessoaRepository.findAll(pageable);
+        EtapaEntity etapaEntity = getEtapaEntity();
+        Page<EtapaEntity> paginaMock = new PageImpl<>(List.of(etapaEntity));
+        when(etapaRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
+
+        // ACT
+        PageDTO<EtapaDTO> paginaSolicitada = etapaService.list(pagina, quantidade);
+
+        // ASSERT
+        assertNotNull(paginaSolicitada);
+        assertNotNull(paginaSolicitada.getPagina());
+        assertEquals(1, paginaSolicitada.getTotalElementos());
+    }
 
 
     private EdicaoCreateDTO getEdicaoCreateDTO() {
@@ -95,7 +165,6 @@ public class EtapaServiceTest {
         edicaoCreateDTO.setNome("Edicao1");
         edicaoCreateDTO.setDataInicial(LocalDate.of(2022,8,1));
         edicaoCreateDTO.setDataFinal(LocalDate.of(2022,8,10));
-
         return edicaoCreateDTO;
     }
 
