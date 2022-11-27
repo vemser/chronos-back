@@ -1,27 +1,17 @@
-package br.com.dbc.chronosapi.controller;
+package br.com.dbc.chronosapi.controller.interfaces;
 
 import br.com.dbc.chronosapi.dto.ProcessoCreateDTO;
 import br.com.dbc.chronosapi.dto.ProcessoDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
-import br.com.dbc.chronosapi.service.ProcessoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@Slf4j
-@RequiredArgsConstructor
-@RequestMapping("/processo")
-public class ProcessoController {
-
-    private final ProcessoService processoService;
+public interface IProcessoController {
 
     @Operation(summary = "Listar todos os processos", description = "Lista todos os processos do banco de dados")
     @ApiResponses(
@@ -32,9 +22,7 @@ public class ProcessoController {
             }
     )
     @GetMapping()
-    public ResponseEntity<List<ProcessoDTO>> list() {
-        return new ResponseEntity<>(processoService.list(), HttpStatus.OK);
-    }
+    ResponseEntity<List<ProcessoDTO>> list();
 
     @Operation(summary = "Criar um novo processo", description = "Cria um novo processo do banco de dados")
     @ApiResponses(
@@ -45,9 +33,7 @@ public class ProcessoController {
             }
     )
     @PostMapping()
-    public ResponseEntity<ProcessoDTO> create(@RequestBody ProcessoCreateDTO processoCreateDTO) {
-        return new ResponseEntity<>(processoService.create(processoCreateDTO), HttpStatus.OK);
-    }
+    ResponseEntity<ProcessoDTO> create(@RequestBody ProcessoCreateDTO processoCreateDTO);
 
     @Operation(summary = "Atualizar processo", description = "Atualiza um processo do banco de dados")
     @ApiResponses(
@@ -58,10 +44,8 @@ public class ProcessoController {
             }
     )
     @PutMapping("/{idProcesso}")
-    public ResponseEntity<ProcessoDTO> update(@PathVariable("idProcesso") Integer idProcesso,
-                                              @RequestBody ProcessoCreateDTO processoUpdate) throws RegraDeNegocioException {
-        return new ResponseEntity<>(processoService.update(idProcesso, processoUpdate), HttpStatus.OK);
-    }
+    ResponseEntity<ProcessoDTO> update(@PathVariable("idProcesso") Integer idProcesso,
+                                       @RequestBody ProcessoCreateDTO processoUpdate) throws RegraDeNegocioException;
 
     @Operation(summary = "Deletar processo", description = "Deleta um processo do banco de dados")
     @ApiResponses(
@@ -72,8 +56,6 @@ public class ProcessoController {
             }
     )
     @DeleteMapping("/{idProcesso}")
-    public ResponseEntity<Void> delete(@PathVariable("idProcesso") Integer idProcesso) throws RegraDeNegocioException {
-        processoService.delete(idProcesso);
-        return ResponseEntity.noContent().build();
-    }
+    ResponseEntity<Void> delete(@PathVariable("idProcesso") Integer idProcesso) throws RegraDeNegocioException;
+
 }

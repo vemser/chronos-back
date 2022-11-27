@@ -1,4 +1,4 @@
-package br.com.dbc.chronosapi.controller;
+package br.com.dbc.chronosapi.controller.classes;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.UsuarioDTO;

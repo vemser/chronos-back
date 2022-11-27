@@ -1,5 +1,6 @@
-package br.com.dbc.chronosapi.controller;
+package br.com.dbc.chronosapi.controller.classes;
 
+import br.com.dbc.chronosapi.controller.interfaces.IEdicaoController;
 import br.com.dbc.chronosapi.dto.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.EdicaoDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -20,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/edicao")
 
-public class EdicaoController {
+public class EdicaoController implements IEdicaoController {
 
     private final EdicaoService edicaoService;
 

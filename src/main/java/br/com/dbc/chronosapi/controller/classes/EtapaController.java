@@ -1,5 +1,6 @@
-package br.com.dbc.chronosapi.controller;
+package br.com.dbc.chronosapi.controller.classes;
 
+import br.com.dbc.chronosapi.controller.interfaces.IEtapaController;
 import br.com.dbc.chronosapi.dto.EtapaCreateDTO;
 import br.com.dbc.chronosapi.dto.EtapaDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -19,7 +20,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/etapa")
-public class EtapaController {
+public class EtapaController implements IEtapaController {
 
     private final EtapaService etapaService;
 
