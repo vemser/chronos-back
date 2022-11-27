@@ -28,7 +28,7 @@ public class SecurityConfiguration {
                 .frameOptions().disable()
                 .and().cors()
                 .and().csrf().disable()
-                .authorizeHttpRequests((auth) -> auth.antMatchers("/login").permitAll()
+                .authorizeHttpRequests((auth) -> auth.antMatchers("/login/**").permitAll()
 
                                 // permissões
 

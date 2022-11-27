@@ -2,21 +2,19 @@ package br.com.dbc.chronosapi.controller;
 
 
 import br.com.dbc.chronosapi.dto.LoginDTO;
-import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
-import br.com.dbc.chronosapi.entity.enums.Atividade;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.security.TokenService;
 import br.com.dbc.chronosapi.service.LoginService;
-import br.com.dbc.chronosapi.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -38,10 +36,10 @@ public class LoginController {
 
     }
 
-//    @PostMapping("/forgot-password")
-//    public ResponseEntity<String> sendRecoverPasswordEmail(String email) throws RegraDeNegocioException {
-//        return ResponseEntity.ok(loginService.sendRecoverPasswordEmail(email));
-//    }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> sendRecoverPasswordEmail(String email) throws RegraDeNegocioException {
+        return ResponseEntity.ok(loginService.sendRecoverPasswordEmail(email));
+    }
 
     @PostMapping("/change-password")
     public ResponseEntity<String> updatePassword(String password) throws RegraDeNegocioException {

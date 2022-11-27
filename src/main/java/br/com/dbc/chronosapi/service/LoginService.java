@@ -45,14 +45,14 @@ public class LoginService {
         throw new RegraDeNegocioException("Usuario não encontrado!");
     }
 
-//    public String sendRecoverPasswordEmail(String email) throws RegraDeNegocioException {
-//        UsuarioEntity usuario = usuarioService.findByEmail(email);
-//
+    public String sendRecoverPasswordEmail(String email) throws RegraDeNegocioException {
+        UsuarioEntity usuario = usuarioService.findByEmail(email);
+
 //        String token = tokenService.getToken(usuario, true);
-//        emailService.sendRecoverPasswordEmail(usuario, token);
-//
-//        return "Verifique seu email para trocar a senha.";
-//    }
+        emailService.sendRecoverPasswordEmail(usuario, "Teste recuperação senha","email-teste-template.ftl");
+
+        return "Verifique seu email para trocar a senha.";
+    }
 
     public Optional<UsuarioEntity> findByEmailAndSenha(String login, String senha) {
         return usuarioRepository.findByEmailAndSenha(login, senha);
