@@ -51,14 +51,11 @@ public class EdicaoServiceTest {
     }
 
     @Test
-    public void testCreateEdicaoSuccess() throws RegraDeNegocioException {
+    public void testCreateEdicaoSuccess() {
         //SETUP
         EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
         EdicaoEntity edicaoEntity = getEdicaoEntity();
 
-        edicaoEntity.setIdEdicao(8);
-
-        when(edicaoService.findById(anyInt())).thenReturn(edicaoEntity);
         when(edicaoRepository.save(any(EdicaoEntity.class))).thenReturn(edicaoEntity);
 
         //ACT
@@ -66,24 +63,21 @@ public class EdicaoServiceTest {
 
         //ASSERT
         assertNotNull(edicaoDTO);
-        assertEquals(8, edicaoDTO.getIdEdicao());
+        assertEquals(10, edicaoDTO.getIdEdicao());
     }
 
-    //Nao funcional
     @Test
     public void testFindByIdSuccess() throws RegraDeNegocioException {
         // SETUP
-        Integer id = 8;
         EdicaoEntity edicaoEntity = getEdicaoEntity();
-        edicaoEntity.setIdEdicao(id);
         when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
 
         // ACT
-        EdicaoEntity edicao = edicaoService.findById(id);
+        EdicaoEntity edicao = edicaoService.findById(edicaoEntity.getIdEdicao());
 
         // ASSERT
         assertNotNull(edicao);
-        assertEquals(8, edicaoEntity.getIdEdicao());
+        assertEquals(10, edicaoEntity.getIdEdicao());
 
     }
 
@@ -102,10 +96,7 @@ public class EdicaoServiceTest {
         edicaoEntity.setNome("Edicao1");
         edicaoEntity.setDataInicial(LocalDate.of(2022, 10, 11));
         edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));
-
-        Set<EtapaEntity> etapaEntities = new HashSet<>();
-        etapaEntities.add(getEtapaEntity());
-        edicaoEntity.setEtapas(etapaEntities);
+        edicaoEntity.setEtapas(new HashSet<>());
 
         return edicaoEntity;
     }
