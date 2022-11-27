@@ -1,6 +1,7 @@
 package br.com.dbc.chronosapi.controller.classes;
 
 import br.com.dbc.chronosapi.controller.interfaces.IProcessoController;
+import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.ProcessoCreateDTO;
 import br.com.dbc.chronosapi.dto.ProcessoDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -11,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -20,9 +19,9 @@ import java.util.List;
 public class ProcessoController implements IProcessoController {
 
     private final ProcessoService processoService;
-    @GetMapping()
-    public ResponseEntity<List<ProcessoDTO>> list() {
-        return new ResponseEntity<>(processoService.list(), HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<PageDTO<ProcessoDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        return ResponseEntity.ok(processoService.list(pagina, tamanho));
     }
     @PostMapping()
     public ResponseEntity<ProcessoDTO> create(@RequestBody ProcessoCreateDTO processoCreateDTO) {

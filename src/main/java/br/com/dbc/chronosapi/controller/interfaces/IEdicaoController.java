@@ -2,6 +2,7 @@ package br.com.dbc.chronosapi.controller.interfaces;
 
 import br.com.dbc.chronosapi.dto.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.EdicaoDTO;
+import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 public interface IEdicaoController {
 
@@ -57,6 +57,6 @@ public interface IEdicaoController {
             }
     )
     @GetMapping("/listar-edicoes")
-     ResponseEntity<List<EdicaoDTO>> list();
+    ResponseEntity<PageDTO<EdicaoDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException;
 
 }

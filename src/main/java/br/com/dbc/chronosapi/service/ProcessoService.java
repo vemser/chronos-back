@@ -1,5 +1,6 @@
 package br.com.dbc.chronosapi.service;
 
+import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.ProcessoCreateDTO;
 import br.com.dbc.chronosapi.dto.ProcessoDTO;
 import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
@@ -7,6 +8,8 @@ import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.ProcessoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +20,17 @@ public class ProcessoService {
     private final ProcessoRepository processoRepository;
     private final ObjectMapper objectMapper;
 
-    public List<ProcessoDTO> list() {
-        return processoRepository.findAll().stream()
-                .map(processoEntity -> objectMapper.convertValue(processoEntity, ProcessoDTO.class))
+    public PageDTO<ProcessoDTO> list(Integer pagina, Integer tamanho) {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        Page<ProcessoEntity> paginaDoRepositorio = processoRepository.findAll(pageRequest);
+        List<ProcessoDTO> processoDTOList = paginaDoRepositorio.getContent().stream()
+                .map(processo -> objectMapper.convertValue(processo, ProcessoDTO.class))
                 .toList();
+        return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                paginaDoRepositorio.getTotalPages(),
+                pagina,
+                tamanho,
+                processoDTOList);
     }
 
     public ProcessoDTO create(ProcessoCreateDTO processoCreateDTO) {
