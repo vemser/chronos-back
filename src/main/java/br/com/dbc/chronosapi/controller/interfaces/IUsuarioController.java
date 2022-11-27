@@ -50,8 +50,9 @@ public interface IUsuarioController {
             }
     )
     @PutMapping("/{idUsuario}")
-    ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer idUsuario,
-                                             @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO) throws RegraDeNegocioException;
+    ResponseEntity<UsuarioDTO> update(@Valid @PathVariable("idUsuario") Integer idUsuario,
+                                      @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO,
+                                      @Valid @RequestParam MultipartFile imagem) throws RegraDeNegocioException, IOException;
 
     @Operation(summary = "Deletar usuário", description = "Deleta um usuário presente no banco de dados através do seu id.")
     @ApiResponses(
