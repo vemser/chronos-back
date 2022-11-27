@@ -1,15 +1,17 @@
 package br.com.dbc.chronosapi;
 
-import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
-import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
+import br.com.dbc.chronosapi.dto.EdicaoCreateDTO;
+import br.com.dbc.chronosapi.dto.EdicaoDTO;
+import br.com.dbc.chronosapi.dto.EtapaCreateDTO;
+import br.com.dbc.chronosapi.dto.EtapaDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
-import br.com.dbc.chronosapi.repository.EdicaoRepository;
-import br.com.dbc.chronosapi.service.EdicaoService;
+import br.com.dbc.chronosapi.repository.EtapaRepository;
+import br.com.dbc.chronosapi.service.EtapaService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -30,15 +32,15 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EdicaoServiceTest {
+public class EtapaServiceTest {
 
     @InjectMocks
-    private EdicaoService edicaoService;
+    private EtapaService etapaService;
     @Mock
-    private EdicaoRepository edicaoRepository;
+    private EtapaRepository etapaRepository;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
@@ -46,98 +48,47 @@ public class EdicaoServiceTest {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        ReflectionTestUtils.setField(edicaoService, "objectMapper", objectMapper);
+        ReflectionTestUtils.setField(etapaService, "objectMapper", objectMapper);
     }
 
     @Test
-    public void testCreateEdicaoSuccess() {
+    public void testCreateEtapaSuccess() {
         //SETUP
-        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        EtapaCreateDTO etapaCreateDTO = getEtapaCreateDTO();
+        EtapaEntity etapaEntity = getEtapaEntity();
 
-        when(edicaoRepository.save(any(EdicaoEntity.class))).thenReturn(edicaoEntity);
+        when(etapaRepository.save(any(EtapaEntity.class))).thenReturn(etapaEntity);
 
         //ACT
-        EdicaoDTO edicaoDTO = edicaoService.create(edicaoCreateDTO);
+        EtapaDTO etapaDTO = etapaService.create(etapaCreateDTO);
 
         //ASSERT
-        assertNotNull(edicaoDTO);
-        assertEquals(10, edicaoDTO.getIdEdicao());
-    }
-
-    @Test
-    public void testFindByIdSuccess() throws RegraDeNegocioException {
-        // SETUP
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-
-        // ACT
-        EdicaoEntity edicao = edicaoService.findById(edicaoEntity.getIdEdicao());
-
-        // ASSERT
-        assertNotNull(edicao);
-        assertEquals(10, edicaoEntity.getIdEdicao());
-
+        assertNotNull(etapaDTO);
+        assertEquals(10, etapaDTO.getIdEtapa());
     }
 
     @Test
     public void testEdicaoUpdateSuccess() throws RegraDeNegocioException {
 
         // SETUP
-        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
+        EtapaCreateDTO etapaCreateDTO = getEtapaCreateDTO();
 
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-        EdicaoEntity edicaoEntity1 = getEdicaoEntity();
-        edicaoEntity1.setNome("nomeDiferente");
+        EtapaEntity etapaEntity = getEtapaEntity();
+        EtapaEntity etapaEntity1 = getEtapaEntity();
+        etapaEntity1.setNome("nomeDiferente");
 
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-        when(edicaoRepository.save(any())).thenReturn(edicaoEntity1);
-
-        // ACT
-        EdicaoDTO edicaoDTO = edicaoService.update(edicaoEntity.getIdEdicao(), edicaoCreateDTO);
-
-        // ASSERT
-        assertNotNull(edicaoDTO);
-        assertNotEquals("nomeDiferente", edicaoDTO.getNome());
-    }
-
-    @Test
-    public void testEdicaoDeleteSuccess() throws RegraDeNegocioException {
-        // SETUP
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+        when(etapaRepository.findById(anyInt())).thenReturn(Optional.of(etapaEntity));
+        when(etapaRepository.save(any())).thenReturn(etapaEntity1);
 
         // ACT
-        edicaoService.delete(edicaoEntity.getIdEdicao());
+        EtapaDTO etapaDTO = etapaService.update(etapaEntity.getIdEtapa(), etapaCreateDTO);
 
         // ASSERT
-        verify(edicaoRepository, times(1)).delete(any());
+        assertNotNull(etapaDTO);
+        assertEquals("nomeDiferente", etapaDTO.getNome());
     }
 
-    @Test(expected = RegraDeNegocioException.class)
-    public void testEdicaoDeleteFail() throws RegraDeNegocioException {
-        // SETUP
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-        // ACT
-        edicaoService.delete(5);
-
-        // ASSERT
-        verify(edicaoRepository, times(1)).delete(any());
-    }
-    @Test(expected = RegraDeNegocioException.class)
-    public void testFindByIdFail() throws RegraDeNegocioException {
-        // SETUP
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.empty());
-
-        // ACT
-        edicaoService.findById(5);
-
-        // ASSERT
-        verify(edicaoRepository, times(1)).findById(any());
-
-    }
 
     private EdicaoCreateDTO getEdicaoCreateDTO() {
         EdicaoCreateDTO edicaoCreateDTO = new EdicaoCreateDTO();
@@ -146,6 +97,13 @@ public class EdicaoServiceTest {
         edicaoCreateDTO.setDataFinal(LocalDate.of(2022,8,10));
 
         return edicaoCreateDTO;
+    }
+
+    private EtapaCreateDTO getEtapaCreateDTO() {
+        EtapaCreateDTO etapaCreateDTO = new EtapaCreateDTO();
+        etapaCreateDTO.setNome("Etapa1");
+
+        return etapaCreateDTO;
     }
     private static EdicaoEntity getEdicaoEntity() {
 
@@ -161,13 +119,11 @@ public class EdicaoServiceTest {
 
     private static EtapaEntity getEtapaEntity() {
         EtapaEntity etapaEntity = new EtapaEntity();
-        etapaEntity.setIdEtapa(2);
+        etapaEntity.setIdEtapa(10);
         etapaEntity.setEdicao(getEdicaoEntity());
         etapaEntity.setNome("Etapa1");
 
-        Set<ProcessoEntity> processoEntities = new HashSet<>();
-        processoEntities.add(getProcessoEntity());
-        etapaEntity.setProcessos(processoEntities);
+        etapaEntity.setProcessos(new HashSet<>());
 
         return etapaEntity;
     }
