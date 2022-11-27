@@ -28,10 +28,10 @@ public class SecurityConfiguration {
                 .frameOptions().disable()
                 .and().cors()
                 .and().csrf().disable()
-                .authorizeHttpRequests((auth) -> auth.antMatchers("/login/**").permitAll()
+                .authorizeHttpRequests((auth) -> auth.antMatchers("/**").permitAll()
 
                                 // permissões
-                        .antMatchers("/edicao/**").hasRole("GESTAO_DE_PESSOAS")
+//                        .antMatchers("/edicao/**").hasRole("GESTAO_DE_PESSOAS")
 
                                 .anyRequest().authenticated()
                 );

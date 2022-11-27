@@ -2,7 +2,6 @@ package br.com.dbc.chronosapi.controller.classes;
 
 import br.com.dbc.chronosapi.controller.interfaces.IUsuarioController;
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -18,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Validated
@@ -33,11 +33,13 @@ public class UsuarioController implements IUsuarioController {
         return new ResponseEntity<>(usuarioService.list(pagina, tamanho), HttpStatus.OK);
     }
 
-    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<UsuarioDTO> create(@Valid @RequestBody UsuarioCreateDTO usuario,
-                                             @RequestParam MultipartFile imagem) throws RegraDeNegocioException, IOException {
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<UsuarioDTO> create(@RequestParam String nome,
+                                             @RequestParam String email,
+                                             @RequestParam List<String> stringCargos,
+                                             @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException {
         log.info("Cadastrando usuário...");
-        UsuarioDTO usuarioDTO = usuarioService.create(usuario, imagem);
+        UsuarioDTO usuarioDTO = usuarioService.create(nome, email, stringCargos, imagem);
         log.info("Usuário cadastrado com sucesso!");
 
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
@@ -46,11 +48,12 @@ public class UsuarioController implements IUsuarioController {
         @PutMapping("/{idUsuario}")
     public ResponseEntity<UsuarioDTO> update(@PathVariable("idUsuario") Integer idUsuario,
                                              @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO) throws RegraDeNegocioException {
-        log.info("Atualizando usuário....");
-        UsuarioDTO usuarioDTO = usuarioService.update(idUsuario, usuarioUpdateDTO);
-        log.info("Usuário atualizado com sucesso!");
-
-        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+//        log.info("Atualizando usuário....");
+//        UsuarioDTO usuarioDTO = usuarioService.update(idUsuario, usuarioUpdateDTO);
+//        log.info("Usuário atualizado com sucesso!");
+//
+//        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+            return null;
     }
 
     @DeleteMapping("/{idUsuario}")

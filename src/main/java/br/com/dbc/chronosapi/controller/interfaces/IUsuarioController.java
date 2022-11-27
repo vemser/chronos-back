@@ -1,7 +1,6 @@
 package br.com.dbc.chronosapi.controller.interfaces;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -15,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 public interface IUsuarioController {
 
@@ -37,9 +37,11 @@ public interface IUsuarioController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    ResponseEntity<UsuarioDTO> create(@Valid @RequestBody UsuarioCreateDTO usuario,
-                                             @RequestParam MultipartFile imagem) throws RegraDeNegocioException, IOException;
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<UsuarioDTO> create(@RequestParam String nome,
+                                             @RequestParam String email,
+                                             @RequestParam List<String> stringCargos,
+                                             @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException ;
 
     @Operation(summary = "Atualizar usuário", description = "Atualiza um usuário presente no banco de dados através do seu id.")
     @ApiResponses(

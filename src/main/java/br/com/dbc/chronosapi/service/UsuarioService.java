@@ -1,7 +1,7 @@
 package br.com.dbc.chronosapi.service;
 
+import br.com.dbc.chronosapi.dto.CargoDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
@@ -48,17 +48,24 @@ public class UsuarioService {
         );
     }
 
-    public UsuarioDTO create(UsuarioCreateDTO usuario, MultipartFile imagem) throws IOException, RegraDeNegocioException {
-        UsuarioEntity usuarioEntity = objectMapper.convertValue(usuario, UsuarioEntity.class);
+    public UsuarioDTO create(String nome, String email, List<String> stringCargos, MultipartFile imagem) throws IOException, RegraDeNegocioException {
+        UsuarioEntity usuarioEntity = new UsuarioEntity();
+
         String senha = "teste";
         String senhaCriptografada = passwordEncoder.encode(senha);
+
+        usuarioEntity.setNome(nome);
+        usuarioEntity.setEmail(email);
         usuarioEntity.setSenha(senhaCriptografada);
         usuarioEntity.setImagem(imagem.getBytes());
-        Set<CargoEntity> cargos = usuario.getCargos().stream()
-                .map(cargo -> cargoService.findByNome(cargo)).collect(Collectors.toSet());
+        Set<CargoEntity> cargos = stringCargos.stream()
+                .map(cargo -> (cargoService.findByNome(cargo))).collect(Collectors.toSet());
         usuarioEntity.setCargos(new HashSet<>(cargos));
         usuarioEntity.setStatus(StatusUsuario.ATIVO);
-        return objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
+        Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
+        usuarioDTO.setCargos(new HashSet<>(cargosDTO));
+        return usuarioDTO;
     }
 
     public UsuarioDTO update(Integer id, UsuarioUpdateDTO usuarioUpdate, MultipartFile imagem) throws IOException, RegraDeNegocioException {
@@ -82,6 +89,12 @@ public class UsuarioService {
     public void delete(Integer idUsuario) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = this.findById(idUsuario);
         usuarioRepository.delete(usuarioEntity);
+    }
+
+    private Set<CargoDTO> getCargosDTO(Set<CargoEntity> cargos) {
+        return cargos.stream()
+                .map(cargoEntity -> objectMapper.convertValue(cargoEntity, CargoDTO.class))
+                .collect(Collectors.toSet());
     }
 
     public UsuarioEntity findByEmail(String email) {
