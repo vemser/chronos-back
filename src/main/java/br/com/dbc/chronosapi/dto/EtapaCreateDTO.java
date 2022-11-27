@@ -10,5 +10,5 @@ public class EtapaCreateDTO {
 
     @NotNull
     @NotBlank
-    private String nomeEtapa;
+    private String nome;
 }
