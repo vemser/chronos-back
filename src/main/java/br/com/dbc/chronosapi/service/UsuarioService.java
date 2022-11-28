@@ -3,6 +3,7 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.CargoDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
+import br.com.dbc.chronosapi.dto.usuario.UAdminUpdateDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
@@ -107,13 +108,13 @@ public class UsuarioService {
         }
     }
 
-    public UsuarioDTO updateAdmin(Integer id, String nome, List<String> stringCargos, MultipartFile imagem) throws IOException, RegraDeNegocioException {
+    public UsuarioDTO updateAdmin(Integer id, UAdminUpdateDTO usuarioUpdate, MultipartFile imagem) throws IOException, RegraDeNegocioException {
         UsuarioEntity usuarioRecover = findById(id);
-        usuarioRecover.setNome(nome);
+        usuarioRecover.setNome(usuarioUpdate.getNome());
         if(imagem != null) {
             usuarioRecover.setImagem(imagem.getBytes());
         }
-        Set<CargoEntity> cargos = stringCargos.stream()
+        Set<CargoEntity> cargos = usuarioUpdate.getCargos().stream()
                 .map(cargo -> (cargoService.findByNome(cargo))).collect(Collectors.toSet());
         usuarioRecover.setCargos(new HashSet<>(cargos));
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioRecover), UsuarioDTO.class);

@@ -2,6 +2,7 @@ package br.com.dbc.chronosapi.controller.interfaces;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
+import br.com.dbc.chronosapi.dto.usuario.UAdminUpdateDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -62,9 +63,8 @@ public interface IUsuarioController {
     )
     @PutMapping(value = "/update-cadastro/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
     ResponseEntity<UsuarioDTO> updateAdmin(@PathVariable("idUsuario") Integer idUsuario,
-                                      @RequestParam String nome,
-                                      @RequestParam List<String> stringCargos,
-                                      @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException;
+                                           @RequestBody UAdminUpdateDTO uAdminUpdateDTO,
+                                           @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException;
 
     @Operation(summary = "Deletar usuário", description = "Deleta um usuário presente no banco de dados através do seu id.")
     @ApiResponses(
