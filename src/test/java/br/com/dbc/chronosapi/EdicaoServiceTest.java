@@ -1,5 +1,6 @@
 package br.com.dbc.chronosapi;
 
+import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
@@ -20,10 +21,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -137,6 +142,25 @@ public class EdicaoServiceTest {
         // ASSERT
         verify(edicaoRepository, times(1)).findById(any());
 
+    }
+
+    @Test
+    public void testListSucess(){
+        // SETUP
+        Integer pagina = 10;
+        Integer quantidade = 5;
+
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        Page<EdicaoEntity> paginaMock = new PageImpl<>(List.of(edicaoEntity));
+        when(edicaoRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
+
+        // ACT
+        PageDTO<EdicaoDTO> paginaSolicitada = edicaoService.list(pagina, quantidade);
+
+        // ASSERT
+        assertNotNull(paginaSolicitada);
+        assertNotNull(paginaSolicitada.getPagina());
+        assertEquals(1, paginaSolicitada.getTotalElementos());
     }
 
     private EdicaoCreateDTO getEdicaoCreateDTO() {

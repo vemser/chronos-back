@@ -1,5 +1,7 @@
 package br.com.dbc.chronosapi;
 
+import br.com.dbc.chronosapi.dto.PageDTO;
+import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
@@ -14,23 +16,28 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.tomcat.jni.Proc;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProcessoServiceTest {
@@ -51,6 +58,24 @@ public class ProcessoServiceTest {
         ReflectionTestUtils.setField(processoService, "objectMapper", objectMapper);
     }
 
+    @Test
+    public void testListSucess(){
+        // SETUP
+        Integer pagina = 10;
+        Integer quantidade = 5;
+
+        ProcessoEntity processoEntity = getProcessoEntity();
+        Page<ProcessoEntity> paginaMock = new PageImpl<>(List.of(processoEntity));
+        when(processoRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
+
+        // ACT
+        PageDTO<ProcessoDTO> paginaSolicitada = processoService.list(pagina, quantidade);
+
+        // ASSERT
+        assertNotNull(paginaSolicitada);
+        assertNotNull(paginaSolicitada.getPagina());
+        assertEquals(1, paginaSolicitada.getTotalElementos());
+    }
     @Test
     public void testProcessoCreateSuccess() {
         //SETUP
@@ -85,6 +110,34 @@ public class ProcessoServiceTest {
         // ASSERT
         assertNotNull(processoDTO);
         assertEquals(3, processoDTO.getOrdemExecucao());
+    }
+
+    @Test
+    public void testEdicaoDeleteSuccess() throws RegraDeNegocioException {
+        // SETUP
+        ProcessoEntity processoEntity = getProcessoEntity();
+
+        when(processoRepository.findById(anyInt())).thenReturn(Optional.of(processoEntity));
+
+        // ACT
+        processoService.delete(processoEntity.getIdProcesso());
+
+        // ASSERT
+        verify(processoRepository, times(1)).delete(any());
+    }
+    @Test
+    public void testFindByIdSuccess() throws RegraDeNegocioException {
+        // SETUP
+        ProcessoEntity processoEntity = getProcessoEntity();
+        when(processoRepository.findById(anyInt())).thenReturn(Optional.of(processoEntity));
+
+        // ACT
+        ProcessoEntity edicao = processoService.findById(processoEntity.getIdProcesso());
+
+        // ASSERT
+        assertNotNull(edicao);
+        assertEquals(10, processoEntity.getIdProcesso());
+
     }
 
     private static EdicaoEntity getEdicaoEntity() {
