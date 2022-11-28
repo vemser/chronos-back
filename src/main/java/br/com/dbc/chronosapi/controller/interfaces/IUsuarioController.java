@@ -41,7 +41,7 @@ public interface IUsuarioController {
                                       @RequestParam List<String> stringCargos,
                                       @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException ;
 
-    @Operation(summary = "Atualizar perfil do usuário", description = "Atualiza o perfil do usuário presente no banco de dados.")
+    @Operation(summary = "Atualizar perfil do usuário", description = "Endpoint para o usuário poder atualizar o próprio perfil presente no banco de dados.")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso!"),
@@ -56,7 +56,7 @@ public interface IUsuarioController {
                                             @RequestParam String confirmacaoNovaSenha,
                                             @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException;
 
-    @Operation(summary = "Atualizar cadastro e cargo do usuário", description = "Atualiza o cadastro do usuário possibilitando atualizar o cargo do mesmo.")
+    @Operation(summary = "Atualizar cadastro e cargo do usuário", description = "Endpoint para o admin poder atualizar informações do usuário possibilitando atualizar o cargo do mesmo.")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso!"),
