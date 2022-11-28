@@ -25,13 +25,17 @@ CREATE TABLE EDICAO (
                         NOME VARCHAR2(100) NOT NULL,
                         DATA_INICIAL DATE  NOT NULL,
                         DATA_FINAL DATE NOT NULL,
+                        STATUS NUMBER NOT NULL,
                         PRIMARY KEY (ID_EDICAO)
 );
 
 CREATE TABLE ETAPA (
                        ID_ETAPA NUMBER NOT NULL,
+                       ID_EDICAO NUMBER NOT NULL, -- FK
                        NOME VARCHAR2(100) NOT NULL,
-                       PRIMARY KEY (ID_ETAPA)
+                       ORDEM_EXECUCAO NUMBER NOT NULL,
+                       PRIMARY KEY (ID_ETAPA),
+                       CONSTRAINT FK_EDICAO FOREIGN KEY (ID_EDICAO) REFERENCES EDICAO (ID_EDICAO)
 );
 
 CREATE TABLE AREA_ENVOLVIDA (
@@ -49,27 +53,17 @@ CREATE TABLE RESPONSAVEL (
 
 CREATE TABLE PROCESSO (
                           ID_PROCESSO NUMBER NOT NULL,
-                          ID_ETAPA NUMBER NOT NULL,
-                          ID_AREA_ENVOLVIDA NUMBER NOT NULL,
-                          ID_RESPONSAVEL NUMBER NOT NULL,
+                          ID_ETAPA NUMBER NOT NULL, -- FK
+                          ID_AREA_ENVOLVIDA NUMBER NOT NULL, -- FK
+                          ID_RESPONSAVEL NUMBER NOT NULL, -- FK
                           DURACAO_PROCESSO VARCHAR2(100) NOT NULL,
                           DIAS_UTEIS NUMBER NOT NULL,
                           ORDEM_EXECUCAO NUMBER NOT NULL,
                           PRIMARY KEY (ID_PROCESSO),
                           CONSTRAINT FK_AREA_ENVOLVIDA FOREIGN KEY (ID_AREA_ENVOLVIDA) REFERENCES AREA_ENVOLVIDA (ID_AREA_ENVOLVIDA),
                           CONSTRAINT FK_RESPONSAVEL FOREIGN KEY (ID_RESPONSAVEL) REFERENCES RESPONSAVEL (ID_RESPONSAVEL),
-                          CONSTRAINT FK_PROCESSO_ETAPA FOREIGN KEY (ID_ETAPA) REFERENCES ETAPA (ID_ETAPA)
+                          CONSTRAINT FK_ETAPA FOREIGN KEY (ID_ETAPA) REFERENCES ETAPA (ID_ETAPA)
 );
-
-
-CREATE TABLE PROCESSO_EDICAO (
-                                 ID_PROCESSO NUMBER NOT NULL,
-                                 ID_EDICAO NUMBER NOT NULL,
-                                 PRIMARY KEY (ID_PROCESSO, ID_EDICAO),
-                                 CONSTRAINT FK_PROCESSO_EDICAO_EDICAO FOREIGN KEY (ID_EDICAO) REFERENCES EDICAO (ID_EDICAO),
-                                 CONSTRAINT FK_PROCESSO_EDICAO_PROCESSO FOREIGN KEY (ID_PROCESSO) REFERENCES PROCESSO (ID_PROCESSO)
-);
-
 
 CREATE TABLE CARGO (
                        ID_CARGO NUMBER NOT NULL,
