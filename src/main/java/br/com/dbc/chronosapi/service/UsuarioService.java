@@ -84,17 +84,17 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
-    public UsuarioDTO updatePerfil(UsuarioUpdateDTO usuarioUpdateDTO,  MultipartFile imagem) throws IOException, RegraDeNegocioException {
+    public UsuarioDTO updatePerfil(UsuarioUpdateDTO usuarioUpdate,  MultipartFile imagem) throws IOException, RegraDeNegocioException {
         Integer idLoggedUser = loginService.getIdLoggedUser();
 
         UsuarioEntity usuarioRecover = findById(idLoggedUser);
-        if (passwordEncoder.matches(usuarioUpdateDTO., usuarioRecover.getPassword())) {
-            usuarioRecover.setNome(nome);
+        if (passwordEncoder.matches(usuarioUpdate.getSenhaAtual(), usuarioRecover.getPassword())) {
+            usuarioRecover.setNome(usuarioUpdate.getNome());
             if(imagem != null) {
                 usuarioRecover.setImagem(imagem.getBytes());
             }
-            if (novaSenha.equals(confirmacaoNovaSenha)) {
-                usuarioRecover.setSenha(passwordEncoder.encode(novaSenha));
+            if (usuarioUpdate.equals(usuarioUpdate.getConfirmacaoNovaSenha())) {
+                usuarioRecover.setSenha(passwordEncoder.encode(usuarioUpdate.getNovaSenha()));
                 usuarioRepository.save(usuarioRecover);
             } else {
                 throw new RegraDeNegocioException("Senhas incompatíveis!");

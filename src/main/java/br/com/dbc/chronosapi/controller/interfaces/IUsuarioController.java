@@ -2,6 +2,7 @@ package br.com.dbc.chronosapi.controller.interfaces;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -50,11 +51,8 @@ public interface IUsuarioController {
             }
     )
     @PutMapping(value = "/update-perfil", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    ResponseEntity<UsuarioDTO> updatePerfil(@RequestParam String nome,
-                                            @RequestParam String senhaAtual,
-                                            @RequestParam String novaSenha,
-                                            @RequestParam String confirmacaoNovaSenha,
-                                            @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException;
+    ResponseEntity<UsuarioDTO> updatePerfil(@RequestBody UsuarioUpdateDTO usuarioUpdateDTO,
+                                            @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException;
 
     @Operation(summary = "Atualizar cadastro e cargo do usuário", description = "Endpoint para o admin poder atualizar informações do usuário possibilitando atualizar o cargo do mesmo.")
     @ApiResponses(

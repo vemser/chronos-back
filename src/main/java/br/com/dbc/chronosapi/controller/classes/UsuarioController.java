@@ -3,6 +3,7 @@ package br.com.dbc.chronosapi.controller.classes;
 import br.com.dbc.chronosapi.controller.interfaces.IUsuarioController;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -44,13 +45,10 @@ public class UsuarioController implements IUsuarioController {
     }
 
     @PutMapping(value = "/update-perfil", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<UsuarioDTO> updatePerfil(@RequestParam String nome,
-                                                   @RequestParam String senhaAtual,
-                                                   @RequestParam String novaSenha,
-                                                   @RequestParam String confirmacaoNovaSenha,
+    public ResponseEntity<UsuarioDTO> updatePerfil(@RequestBody UsuarioUpdateDTO usuarioUpdateDTO,
                                                    @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException {
         log.info("Atualizando usuário....");
-        UsuarioDTO usuarioDTO = usuarioService.updatePerfil(nome, senhaAtual, novaSenha, confirmacaoNovaSenha, imagem);
+        UsuarioDTO usuarioDTO = usuarioService.updatePerfil(usuarioUpdateDTO, imagem);
         log.info("Usuário atualizado com sucesso!");
 
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
