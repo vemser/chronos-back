@@ -4,7 +4,7 @@ import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
-import br.com.dbc.chronosapi.entity.enums.StatusUsuario;
+import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EdicaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,7 +25,7 @@ public class EdicaoService {
 
     public EdicaoDTO create(EdicaoCreateDTO edicaoCreateDTO) {
         EdicaoEntity edicaoEntity = objectMapper.convertValue(edicaoCreateDTO, EdicaoEntity.class);
-        edicaoEntity.setStatus(StatusUsuario.ATIVO);
+        edicaoEntity.setStatus(Status.ATIVO);
         EdicaoEntity edicaoSaved = edicaoRepository.save(edicaoEntity);
         return objectMapper.convertValue(edicaoSaved, EdicaoDTO.class);
     }
@@ -46,11 +46,11 @@ public class EdicaoService {
 
     public void enableOrDisable(Integer idEdicao) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = this.findById(idEdicao);
-        if(edicaoEntity.getStatus() == StatusUsuario.ATIVO) {
-            edicaoEntity.setStatus(StatusUsuario.INATIVO);
+        if(edicaoEntity.getStatus() == Status.ATIVO) {
+            edicaoEntity.setStatus(Status.INATIVO);
             edicaoRepository.save(edicaoEntity);
         }else {
-            edicaoEntity.setStatus(StatusUsuario.ATIVO);
+            edicaoEntity.setStatus(Status.ATIVO);
             edicaoRepository.save(edicaoEntity);
         }
     }

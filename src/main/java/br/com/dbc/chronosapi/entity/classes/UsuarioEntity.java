@@ -1,6 +1,6 @@
 package br.com.dbc.chronosapi.entity.classes;
 
-import br.com.dbc.chronosapi.entity.enums.StatusUsuario;
+import br.com.dbc.chronosapi.entity.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -42,7 +42,7 @@ public class UsuarioEntity implements UserDetails {
     private byte[] imagem;
 
     @Column(name = "STATUS")
-    private StatusUsuario status;
+    private Status status;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)

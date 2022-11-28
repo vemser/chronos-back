@@ -1,7 +1,6 @@
 package br.com.dbc.chronosapi.entity.classes;
 
 import br.com.dbc.chronosapi.entity.enums.Status;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,24 +9,23 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity(name = "DIA_NAO_UTIL")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Entity(name = "EDICAO")
-public class EdicaoEntity {
+public class DiaNaoUtilEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EDICAO_SEQ")
-    @SequenceGenerator(name = "EDICAO_SEQ", sequenceName = "SEQ_EDICAO", allocationSize = 1)
-    @Column(name = "ID_EDICAO")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DIA_NAO_UTIL_SEQUENCE")
+    @SequenceGenerator(name = "DIA_NAO_UTIL_SEQUENCE", sequenceName = "DIA_NAO_UTIL_SEQUENCE", allocationSize = 1)
+    @Column(name = "ID_DIA_NAO_UTIL")
     private Integer idEdicao;
 
-    @Column(name = "NOME")
-    private String nome;
+    @Column(name = "DESCRICAO")
+    private String descricao;
 
     @Column(name = "DATA_INICIAL")
     private LocalDate dataInicial;
@@ -35,11 +33,7 @@ public class EdicaoEntity {
     @Column(name = "DATA_FINAL")
     private LocalDate dataFinal;
 
-    @Column(name = "STATUS")
-    private Status status;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "edicao", fetch = FetchType.LAZY)
-    Set<EtapaEntity> etapas;
+    @Column(name = "REPETICAO_ANUAL")
+    private Status repeticaoAnual;
 
 }

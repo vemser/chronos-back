@@ -8,7 +8,7 @@ import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
-import br.com.dbc.chronosapi.entity.enums.StatusUsuario;
+import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,7 +77,7 @@ public class UsuarioService {
         Set<CargoEntity> cargos = usuarioCreateDTO.getCargos().stream()
                 .map(cargo -> (cargoService.findByNome(cargo))).collect(Collectors.toSet());
         usuarioEntity.setCargos(new HashSet<>(cargos));
-        usuarioEntity.setStatus(StatusUsuario.ATIVO);
+        usuarioEntity.setStatus(Status.ATIVO);
         usuarioEntity.setImagem(null);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
         Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
@@ -122,11 +122,11 @@ public class UsuarioService {
 
     public void enableOrDisable(Integer idUsuario) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = this.findById(idUsuario);
-        if(usuarioEntity.getStatus() == StatusUsuario.ATIVO) {
-            usuarioEntity.setStatus(StatusUsuario.INATIVO);
+        if(usuarioEntity.getStatus() == Status.ATIVO) {
+            usuarioEntity.setStatus(Status.INATIVO);
             usuarioRepository.save(usuarioEntity);
         }else {
-            usuarioEntity.setStatus(StatusUsuario.ATIVO);
+            usuarioEntity.setStatus(Status.ATIVO);
             usuarioRepository.save(usuarioEntity);
         }
     }
