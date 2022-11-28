@@ -6,7 +6,8 @@ import lombok.Data;
 import java.util.Set;
 
 @Data
-public class UsuarioDTO {
+public class UsuarioDTO extends UsuarioCreateDTO {
     private Integer IdUsuario;
     private Set<CargoDTO> cargos;
+    private byte[] imagem;
 }
