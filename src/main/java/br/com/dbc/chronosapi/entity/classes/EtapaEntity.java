@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Getter
@@ -28,6 +27,9 @@ public class EtapaEntity {
 
     @Column(name = "NOME")
     private String nome;
+
+    @Column(name = "ORDEM_EXECUCAO")
+    private Integer ordemExecucao;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

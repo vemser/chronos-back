@@ -4,6 +4,7 @@ import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
+import br.com.dbc.chronosapi.entity.enums.StatusUsuario;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EdicaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +25,7 @@ public class EdicaoService {
 
     public EdicaoDTO create(EdicaoCreateDTO edicaoCreateDTO) {
         EdicaoEntity edicaoEntity = objectMapper.convertValue(edicaoCreateDTO, EdicaoEntity.class);
+        edicaoEntity.setStatus(StatusUsuario.ATIVO);
         EdicaoEntity edicaoSaved = edicaoRepository.save(edicaoEntity);
         return objectMapper.convertValue(edicaoSaved, EdicaoDTO.class);
     }
