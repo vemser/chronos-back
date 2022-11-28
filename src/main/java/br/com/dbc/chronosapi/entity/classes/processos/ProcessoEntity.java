@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,14 +27,22 @@ public class ProcessoEntity {
     private EtapaEntity etapa;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "ID_AREA_ENVOLVIDA", referencedColumnName = "ID_AREA_ENVOLVIDA")
-    private AreaEnvolvidaEntity areaEnvolvida;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "PROCESSO_AREA_ENVOLVIDA",
+            joinColumns = @JoinColumn(name = "ID_PROCESSO"),
+            inverseJoinColumns = @JoinColumn(name = "ID_AREA_ENVOLVIDA")
+    )
+    private Set<AreaEnvolvidaEntity> AreasEnvolvidas;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "ID_RESPONSAVEL", referencedColumnName = "ID_RESPONSAVEL")
-    private ResponsavelEntity responsavel;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "PROCESSO_RESPONSAVEL",
+            joinColumns = @JoinColumn(name = "ID_PROCESSO"),
+            inverseJoinColumns = @JoinColumn(name = "ID_RESPONSAVEL")
+    )
+    private Set<ResponsavelEntity> responsaveis;
 
     @Column(name = "DURACAO_PROCESSO")
     private String duracaoProcesso;

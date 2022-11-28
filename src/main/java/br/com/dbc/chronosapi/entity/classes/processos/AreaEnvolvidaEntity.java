@@ -24,7 +24,12 @@ public class AreaEnvolvidaEntity {
     private String areaEnvolvida;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "areaEnvolvida", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "PROCESSO_ARE_ENVOLVIDA",
+            joinColumns = @JoinColumn(name = "ID_AREA_ENVOLVIDA"),
+            inverseJoinColumns = @JoinColumn(name = "ID_PROCESSO")
+    )
     private Set<ProcessoEntity> processos;
 
 }

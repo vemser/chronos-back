@@ -24,7 +24,12 @@ public class ResponsavelEntity {
     private String responsavel;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "responsavel", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "PROCESSO_RESPONSAVEL",
+            joinColumns = @JoinColumn(name = "ID_RESPONSAVEL"),
+            inverseJoinColumns = @JoinColumn(name = "ID_PROCESSO")
+    )
     private Set<ProcessoEntity> processos;
 
 }
