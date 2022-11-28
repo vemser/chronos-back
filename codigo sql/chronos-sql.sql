@@ -14,7 +14,7 @@ CREATE TABLE USUARIO (
                          ID_USUARIO NUMBER NOT NULL,
                          NOME VARCHAR2(225) NOT NULL,
                          EMAIL VARCHAR2(100) UNIQUE NOT NULL,
-                         SENHA VARCHAR2(50) NOT NULL,
+                         SENHA VARCHAR2(225) NOT NULL,
                          IMAGEM BLOB,
                          STATUS NUMBER NOT NULL,
                          PRIMARY KEY (ID_USUARIO)
