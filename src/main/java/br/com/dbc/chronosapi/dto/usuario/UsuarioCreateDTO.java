@@ -19,7 +19,6 @@ public class UsuarioCreateDTO {
     @Schema(description = "Email do usuário")
     private String email;
     @NotNull
-    @NotBlank
     @Schema(description = "Lista de cargos do usuário")
     private List<String> cargos;
 }
