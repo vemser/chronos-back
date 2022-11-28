@@ -29,7 +29,7 @@ public class SecurityConfiguration {
                 .frameOptions().disable()
                 .and().cors()
                 .and().csrf().disable()
-                .authorizeHttpRequests((auth) -> auth.antMatchers("/").permitAll()
+                .authorizeHttpRequests((auth) -> auth.antMatchers("/", "/login", "/login-forgot-password").permitAll()
 
                                 // permissões
                         .antMatchers(HttpMethod.GET, "/usuario").hasAnyRole("ADMIN", "INSTRUTOR")
