@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @Validated
@@ -44,11 +43,16 @@ public class UsuarioController implements IUsuarioController {
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
+    @PutMapping("/uploadImage/{idUsuario}")
+    public ResponseEntity<UsuarioDTO> uploadImage(@Valid @PathVariable("idUsuario") Integer idUsuario,
+                                                  @Valid @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException {
+        return new ResponseEntity<>(usuarioService.uploadImage(idUsuario, imagem), HttpStatus.OK);
+    }
+
     @PutMapping(value = "/update-perfil", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<UsuarioDTO> updatePerfil(@Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO,
-                                                   @Valid @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException {
+    public ResponseEntity<UsuarioDTO> updatePerfil(@Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO) throws RegraDeNegocioException, IOException {
         log.info("Atualizando usuário....");
-        UsuarioDTO usuarioDTO = usuarioService.updatePerfil(usuarioUpdateDTO, imagem);
+        UsuarioDTO usuarioDTO = usuarioService.updatePerfil(usuarioUpdateDTO);
         log.info("Usuário atualizado com sucesso!");
 
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
@@ -56,10 +60,9 @@ public class UsuarioController implements IUsuarioController {
 
     @PutMapping(value = "/update-cadastro/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<UsuarioDTO> updateAdmin(@Valid @PathVariable("idUsuario") Integer idUsuario,
-                                                  @Valid @RequestBody UAdminUpdateDTO uAdminUpdateDTO,
-                                                  @Valid @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException {
+                                                  @Valid @RequestBody UAdminUpdateDTO uAdminUpdateDTO) throws RegraDeNegocioException, IOException {
         log.info("Atualizando usuário....");
-        UsuarioDTO usuarioDTO = usuarioService.updateAdmin(idUsuario, uAdminUpdateDTO, imagem);
+        UsuarioDTO usuarioDTO = usuarioService.updateAdmin(idUsuario, uAdminUpdateDTO);
         log.info("Usuário atualizado com sucesso!");
 
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);

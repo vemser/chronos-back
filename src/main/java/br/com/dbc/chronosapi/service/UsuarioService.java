@@ -83,15 +83,12 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
-    public UsuarioDTO updatePerfil(UsuarioUpdateDTO usuarioUpdate,  MultipartFile imagem) throws IOException, RegraDeNegocioException {
+    public UsuarioDTO updatePerfil(UsuarioUpdateDTO usuarioUpdate) throws IOException, RegraDeNegocioException {
         Integer idLoggedUser = loginService.getIdLoggedUser();
 
         UsuarioEntity usuarioRecover = findById(idLoggedUser);
         if (passwordEncoder.matches(usuarioUpdate.getSenhaAtual(), usuarioRecover.getPassword())) {
             usuarioRecover.setNome(usuarioUpdate.getNome());
-            if(imagem != null) {
-                usuarioRecover.setImagem(imagem.getBytes());
-            }
             if (usuarioUpdate.equals(usuarioUpdate.getConfirmacaoNovaSenha())) {
                 usuarioRecover.setSenha(passwordEncoder.encode(usuarioUpdate.getNovaSenha()));
                 usuarioRepository.save(usuarioRecover);
@@ -108,12 +105,9 @@ public class UsuarioService {
         }
     }
 
-    public UsuarioDTO updateAdmin(Integer id, UAdminUpdateDTO usuarioUpdate, MultipartFile imagem) throws IOException, RegraDeNegocioException {
+    public UsuarioDTO updateAdmin(Integer id, UAdminUpdateDTO usuarioUpdate) throws IOException, RegraDeNegocioException {
         UsuarioEntity usuarioRecover = findById(id);
         usuarioRecover.setNome(usuarioUpdate.getNome());
-        if(imagem != null) {
-            usuarioRecover.setImagem(imagem.getBytes());
-        }
         Set<CargoEntity> cargos = usuarioUpdate.getCargos().stream()
                 .map(cargo -> (cargoService.findByNome(cargo))).collect(Collectors.toSet());
         usuarioRecover.setCargos(new HashSet<>(cargos));
