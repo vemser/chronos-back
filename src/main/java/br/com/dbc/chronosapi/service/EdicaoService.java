@@ -1,8 +1,8 @@
 package br.com.dbc.chronosapi.service;
 
+import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
-import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.enums.StatusUsuario;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -42,6 +42,17 @@ public class EdicaoService {
     public void delete(Integer idEdicao) throws RegraDeNegocioException {
         EdicaoEntity edicaoRecover = findById(idEdicao);
         edicaoRepository.delete(edicaoRecover);
+    }
+
+    public void enableOrDisable(Integer idEdicao) throws RegraDeNegocioException {
+        EdicaoEntity edicaoEntity = this.findById(idEdicao);
+        if(edicaoEntity.getStatus() == StatusUsuario.ATIVO) {
+            edicaoEntity.setStatus(StatusUsuario.INATIVO);
+            edicaoRepository.save(edicaoEntity);
+        }else {
+            edicaoEntity.setStatus(StatusUsuario.ATIVO);
+            edicaoRepository.save(edicaoEntity);
+        }
     }
 
     public PageDTO<EdicaoDTO> list(Integer pagina, Integer tamanho) {

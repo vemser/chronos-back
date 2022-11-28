@@ -36,6 +36,12 @@ public class EdicaoController implements IEdicaoController {
         return new ResponseEntity<>(edicaoService.update(idEdicao, edicaoCreateDTO), HttpStatus.OK);
     }
 
+    @PutMapping("/enable-disable/{idEdicao}")
+    public ResponseEntity<Void> enableOrDisable(@Valid @PathVariable("idEdicao") Integer idEdicao) throws RegraDeNegocioException {
+        edicaoService.enableOrDisable(idEdicao);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{id-edicao}")
     public ResponseEntity<Void> delete(@Valid @PathVariable ("id-edicao") Integer idEdicao) throws RegraDeNegocioException {
         edicaoService.delete(idEdicao);
