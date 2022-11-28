@@ -179,7 +179,6 @@ public class ProcessoServiceTest {
         processoEntity.setIdProcesso(10);
         processoEntity.setDuracaoProcesso("1 dia");
         processoEntity.setEtapa(getEtapaEntity());
-        processoEntity.setEdicoes(new HashSet<>());
         processoEntity.setOrdemExecucao(1);
         processoEntity.setDiasUteis(1);
         processoEntity.setAreaEnvolvida(getAreaEnvolvida());
