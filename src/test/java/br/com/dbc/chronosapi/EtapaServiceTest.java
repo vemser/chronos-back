@@ -145,7 +145,6 @@ public class EtapaServiceTest {
         Integer pagina = 10;
         Integer quantidade = 5;
 
-        //pessoaRepository.findAll(pageable);
         EtapaEntity etapaEntity = getEtapaEntity();
         Page<EtapaEntity> paginaMock = new PageImpl<>(List.of(etapaEntity));
         when(etapaRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
