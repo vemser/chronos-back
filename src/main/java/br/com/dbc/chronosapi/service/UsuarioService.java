@@ -76,6 +76,7 @@ public class UsuarioService {
                 .map(cargo -> (cargoService.findByNome(cargo))).collect(Collectors.toSet());
         usuarioEntity.setCargos(new HashSet<>(cargos));
         usuarioEntity.setStatus(StatusUsuario.ATIVO);
+        usuarioEntity.setImagem(null);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
         Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
         usuarioDTO.setCargos(new HashSet<>(cargosDTO));

@@ -9,7 +9,6 @@ import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +37,7 @@ public interface IUsuarioController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    @PostMapping
     ResponseEntity<UsuarioDTO> create(@RequestBody UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException, IOException ;
 
     @Operation(summary = "Inserir foto ao usuario", description = "Insere uma foto ao usuario presente no banco de dados")
@@ -61,7 +60,7 @@ public interface IUsuarioController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PutMapping(value = "/update-perfil", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    @PutMapping(value = "/update-perfil")
     ResponseEntity<UsuarioDTO> updatePerfil(@RequestBody UsuarioUpdateDTO usuarioUpdateDTO) throws RegraDeNegocioException, IOException;
 
     @Operation(summary = "Atualizar cadastro e cargo do usuário", description = "Endpoint para o admin poder atualizar informações do usuário possibilitando atualizar o cargo do mesmo.")
@@ -72,7 +71,7 @@ public interface IUsuarioController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PutMapping(value = "/update-cadastro/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    @PutMapping(value = "/update-cadastro/{idUsuario}")
     ResponseEntity<UsuarioDTO> updateAdmin(@PathVariable("idUsuario") Integer idUsuario,
                                            @RequestBody UAdminUpdateDTO uAdminUpdateDTO) throws RegraDeNegocioException, IOException;
 

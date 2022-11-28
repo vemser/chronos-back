@@ -11,7 +11,6 @@ import br.com.dbc.chronosapi.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +33,7 @@ public class UsuarioController implements IUsuarioController {
         return new ResponseEntity<>(usuarioService.list(pagina, tamanho), HttpStatus.OK);
     }
 
-    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    @PostMapping
     public ResponseEntity<UsuarioDTO> create(@RequestBody UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException, IOException {
         log.info("Cadastrando usuário...");
         UsuarioDTO usuarioDTO = usuarioService.create(usuarioCreateDTO);
@@ -49,7 +48,7 @@ public class UsuarioController implements IUsuarioController {
         return new ResponseEntity<>(usuarioService.uploadImage(idUsuario, imagem), HttpStatus.OK);
     }
 
-    @PutMapping(value = "/update-perfil", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    @PutMapping(value = "/update-perfil")
     public ResponseEntity<UsuarioDTO> updatePerfil(@Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO) throws RegraDeNegocioException, IOException {
         log.info("Atualizando usuário....");
         UsuarioDTO usuarioDTO = usuarioService.updatePerfil(usuarioUpdateDTO);
@@ -58,7 +57,7 @@ public class UsuarioController implements IUsuarioController {
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/update-cadastro/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    @PutMapping(value = "/update-cadastro/{idUsuario}")
     public ResponseEntity<UsuarioDTO> updateAdmin(@Valid @PathVariable("idUsuario") Integer idUsuario,
                                                   @Valid @RequestBody UAdminUpdateDTO uAdminUpdateDTO) throws RegraDeNegocioException, IOException {
         log.info("Atualizando usuário....");
