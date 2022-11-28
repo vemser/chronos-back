@@ -63,7 +63,9 @@ public class UsuarioService {
         usuarioEntity.setNome(nome);
         usuarioEntity.setEmail(email);
         usuarioEntity.setSenha(senhaCriptografada);
+        if(imagem != null) {
         usuarioEntity.setImagem(imagem.getBytes());
+        }
         Set<CargoEntity> cargos = stringCargos.stream()
                 .map(cargo -> (cargoService.findByNome(cargo))).collect(Collectors.toSet());
         usuarioEntity.setCargos(new HashSet<>(cargos));
@@ -80,7 +82,9 @@ public class UsuarioService {
         UsuarioEntity usuarioRecover = findById(idLoggedUser);
         if (passwordEncoder.matches(senhaAtual, usuarioRecover.getPassword())) {
             usuarioRecover.setNome(nome);
-            usuarioRecover.setImagem(imagem.getBytes());
+            if(imagem != null) {
+                usuarioRecover.setImagem(imagem.getBytes());
+            }
             if (novaSenha.equals(confirmacaoNovaSenha)) {
                 usuarioRecover.setSenha(passwordEncoder.encode(novaSenha));
                 usuarioRepository.save(usuarioRecover);
@@ -100,7 +104,9 @@ public class UsuarioService {
     public UsuarioDTO updateAdmin(Integer id, String nome, List<String> stringCargos, MultipartFile imagem) throws IOException, RegraDeNegocioException {
         UsuarioEntity usuarioRecover = findById(id);
         usuarioRecover.setNome(nome);
-        usuarioRecover.setImagem(imagem.getBytes());
+        if(imagem != null) {
+            usuarioRecover.setImagem(imagem.getBytes());
+        }
         Set<CargoEntity> cargos = stringCargos.stream()
                 .map(cargo -> (cargoService.findByNome(cargo))).collect(Collectors.toSet());
         usuarioRecover.setCargos(new HashSet<>(cargos));

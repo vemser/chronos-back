@@ -35,7 +35,7 @@ public class UsuarioController implements IUsuarioController {
     public ResponseEntity<UsuarioDTO> create(@RequestParam String nome,
                                              @RequestParam String email,
                                              @RequestParam List<String> stringCargos,
-                                             @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException {
+                                             @RequestPart(name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException {
         log.info("Cadastrando usuário...");
         UsuarioDTO usuarioDTO = usuarioService.create(nome, email, stringCargos, imagem);
         log.info("Usuário cadastrado com sucesso!");
@@ -48,7 +48,7 @@ public class UsuarioController implements IUsuarioController {
                                                    @RequestParam String senhaAtual,
                                                    @RequestParam String novaSenha,
                                                    @RequestParam String confirmacaoNovaSenha,
-                                                   @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException {
+                                                   @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException {
         log.info("Atualizando usuário....");
         UsuarioDTO usuarioDTO = usuarioService.updatePerfil(nome, senhaAtual, novaSenha, confirmacaoNovaSenha, imagem);
         log.info("Usuário atualizado com sucesso!");
@@ -60,7 +60,7 @@ public class UsuarioController implements IUsuarioController {
     public ResponseEntity<UsuarioDTO> updateAdmin(@PathVariable("idUsuario") Integer idUsuario,
                                                      @RequestParam String nome,
                                                      @RequestParam List<String> stringCargos,
-                                                     @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException {
+                                                     @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException {
         log.info("Atualizando usuário....");
         UsuarioDTO usuarioDTO = usuarioService.updateAdmin(idUsuario, nome, stringCargos, imagem);
         log.info("Usuário atualizado com sucesso!");
