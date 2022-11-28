@@ -8,8 +8,5 @@ import java.util.Set;
 @Data
 public class UsuarioDTO {
     private Integer IdUsuario;
-    private String nome;
-    private String email;
-    private byte[] imagem;
     private Set<CargoDTO> cargos;
 }
