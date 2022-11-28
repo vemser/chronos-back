@@ -37,7 +37,6 @@ public class UsuarioService {
     private final CargoService cargoService;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
-
     private final LoginService loginService;
 
     public PageDTO<UsuarioDTO> list(Integer pagina, Integer tamanho) {
