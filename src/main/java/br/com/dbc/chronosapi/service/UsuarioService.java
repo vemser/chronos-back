@@ -3,6 +3,7 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.CargoDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.entity.enums.StatusUsuario;
@@ -83,10 +84,11 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
-    public UsuarioDTO updatePerfil(String nome, String senhaAtual, String novaSenha, String confirmacaoNovaSenha, MultipartFile imagem) throws IOException, RegraDeNegocioException {
+    public UsuarioDTO updatePerfil(UsuarioUpdateDTO usuarioUpdateDTO,  MultipartFile imagem) throws IOException, RegraDeNegocioException {
         Integer idLoggedUser = loginService.getIdLoggedUser();
+
         UsuarioEntity usuarioRecover = findById(idLoggedUser);
-        if (passwordEncoder.matches(senhaAtual, usuarioRecover.getPassword())) {
+        if (passwordEncoder.matches(usuarioUpdateDTO., usuarioRecover.getPassword())) {
             usuarioRecover.setNome(nome);
             if(imagem != null) {
                 usuarioRecover.setImagem(imagem.getBytes());
