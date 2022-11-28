@@ -1,12 +1,13 @@
 package br.com.dbc.chronosapi.dto.usuario;
 
-import br.com.dbc.chronosapi.entity.enums.StatusUsuario;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+
 @Data
 public class UsuarioCreateDTO {
     @NotNull
@@ -18,6 +19,7 @@ public class UsuarioCreateDTO {
     @Schema(description = "Email do usuário")
     private String email;
     @NotNull
-    @Schema(description = "Status do usuário")
-    private StatusUsuario status;
+    @NotBlank
+    @Schema(description = "Lista de cargos do usuário")
+    private List<String> cargos;
 }
