@@ -2,6 +2,7 @@ package br.com.dbc.chronosapi.controller.classes;
 
 import br.com.dbc.chronosapi.controller.interfaces.IUsuarioController;
 import br.com.dbc.chronosapi.dto.PageDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -33,12 +34,9 @@ public class UsuarioController implements IUsuarioController {
     }
 
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<UsuarioDTO> create(@RequestParam String nome,
-                                             @RequestParam String email,
-                                             @RequestParam List<String> stringCargos,
-                                             @RequestPart(name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException {
+    public ResponseEntity<UsuarioDTO> create(@RequestBody UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException, IOException {
         log.info("Cadastrando usuário...");
-        UsuarioDTO usuarioDTO = usuarioService.create(nome, email, stringCargos, imagem);
+        UsuarioDTO usuarioDTO = usuarioService.create(usuarioCreateDTO);
         log.info("Usuário cadastrado com sucesso!");
 
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);

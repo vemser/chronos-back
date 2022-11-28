@@ -1,6 +1,7 @@
 package br.com.dbc.chronosapi.controller.interfaces;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -37,10 +38,7 @@ public interface IUsuarioController {
             }
     )
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    ResponseEntity<UsuarioDTO> create(@RequestParam String nome,
-                                      @RequestParam String email,
-                                      @RequestParam List<String> stringCargos,
-                                      @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException ;
+    ResponseEntity<UsuarioDTO> create(@RequestBody UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException, IOException ;
 
     @Operation(summary = "Atualizar perfil do usuário", description = "Endpoint para o usuário poder atualizar o próprio perfil presente no banco de dados.")
     @ApiResponses(

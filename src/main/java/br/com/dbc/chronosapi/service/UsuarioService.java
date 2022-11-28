@@ -2,6 +2,7 @@ package br.com.dbc.chronosapi.service;
 
 import br.com.dbc.chronosapi.dto.CargoDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
@@ -62,18 +63,15 @@ public class UsuarioService {
         return objectMapper.convertValue(usuario, UsuarioDTO.class);
     }
 
-    public UsuarioDTO create(String nome, String email, List<String> stringCargos, MultipartFile imagem) throws IOException, RegraDeNegocioException {
+    public UsuarioDTO create(UsuarioCreateDTO usuarioCreateDTO) throws IOException, RegraDeNegocioException {
         UsuarioEntity usuarioEntity = new UsuarioEntity();
         Faker faker = new Faker();
         String senha = faker.internet().password(10, 11, true, true, true);
         String senhaCriptografada = passwordEncoder.encode(senha);
-        usuarioEntity.setNome(nome);
-        usuarioEntity.setEmail(email);
+        usuarioEntity.setNome(usuarioCreateDTO.getNome());
+        usuarioEntity.setEmail(usuarioCreateDTO.getEmail());
         usuarioEntity.setSenha(senhaCriptografada);
-        if(imagem != null) {
-        usuarioEntity.setImagem(imagem.getBytes());
-        }
-        Set<CargoEntity> cargos = stringCargos.stream()
+        Set<CargoEntity> cargos = usuarioCreateDTO.getCargos().stream()
                 .map(cargo -> (cargoService.findByNome(cargo))).collect(Collectors.toSet());
         usuarioEntity.setCargos(new HashSet<>(cargos));
         usuarioEntity.setStatus(StatusUsuario.ATIVO);
