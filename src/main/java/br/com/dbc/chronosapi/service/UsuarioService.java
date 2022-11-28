@@ -55,6 +55,12 @@ public class UsuarioService {
         );
     }
 
+    public UsuarioDTO uploadImage(Integer idUsuario, MultipartFile imagem) throws RegraDeNegocioException, IOException {
+        UsuarioEntity usuario = findById(idUsuario);
+        usuario.setImagem(imagem.getBytes());
+        return objectMapper.convertValue(usuario, UsuarioDTO.class);
+    }
+
     public UsuarioDTO create(String nome, String email, List<String> stringCargos, MultipartFile imagem) throws IOException, RegraDeNegocioException {
         UsuarioEntity usuarioEntity = new UsuarioEntity();
         Faker faker = new Faker();
