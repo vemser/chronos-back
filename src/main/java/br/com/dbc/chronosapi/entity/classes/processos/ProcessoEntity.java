@@ -1,6 +1,5 @@
 package br.com.dbc.chronosapi.entity.classes.processos;
 
-import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -8,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -45,17 +43,6 @@ public class ProcessoEntity {
 
     @Column(name = "DIAS_UTEIS")
     private Integer diasUteis;
-
-    // FALTA ORDEM DE PROCESSO
-
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "PROCESSO_EDICAO",
-            joinColumns = @JoinColumn(name = "ID_PROCESSO"),
-            inverseJoinColumns = @JoinColumn(name = "ID_EDICAO")
-    )
-    Set<EdicaoEntity> edicoes;
 
 
 }

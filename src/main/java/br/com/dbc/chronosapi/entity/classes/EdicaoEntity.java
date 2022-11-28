@@ -1,6 +1,5 @@
 package br.com.dbc.chronosapi.entity.classes;
 
-import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import br.com.dbc.chronosapi.entity.enums.StatusUsuario;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -42,14 +41,5 @@ public class EdicaoEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "edicao", fetch = FetchType.LAZY)
     Set<EtapaEntity> etapas;
-
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "PROCESSO_EDICAO",
-            joinColumns = @JoinColumn(name = "ID_EDICAO"),
-            inverseJoinColumns = @JoinColumn(name = "ID_PROCESSO")
-    )
-    private Set<ProcessoEntity> processos;
 
 }
