@@ -7,6 +7,7 @@ import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
+import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.ProcessoRepository;
 import br.com.dbc.chronosapi.service.ProcessoService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -23,10 +24,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,7 +41,7 @@ public class ProcessoServiceTest {
     @Mock
     private ProcessoRepository processoRepository;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
     public void init() {
@@ -49,7 +52,7 @@ public class ProcessoServiceTest {
     }
 
     @Test
-    public void testCreateProcessoSuccess() {
+    public void testProcessoCreateSuccess() {
         //SETUP
         ProcessoCreateDTO processoCreateDTO = getProcessoCreateDTO();
         ProcessoEntity processoEntity = getProcessoEntity();
@@ -62,6 +65,26 @@ public class ProcessoServiceTest {
         //ASSERT
         assertNotNull(processoDTO);
         assertEquals(10, processoDTO.getIdProcesso());
+    }
+
+    @Test
+    public void testProcessoUpdateSucess() throws RegraDeNegocioException {
+        // SETUP
+        ProcessoCreateDTO processoCreateDTO = getProcessoCreateDTO();
+
+        ProcessoEntity processoEntity = getProcessoEntity();
+        ProcessoEntity processoEntity1 = getProcessoEntity();
+        processoEntity1.setOrdemExecucao(3);
+
+        when(processoRepository.findById(anyInt())).thenReturn(Optional.of(processoEntity));
+        when(processoRepository.save(any())).thenReturn(processoEntity1);
+
+        // ACT
+        ProcessoDTO processoDTO = processoService.update(processoEntity.getIdProcesso(), processoCreateDTO);
+
+        // ASSERT
+        assertNotNull(processoDTO);
+        assertEquals(3, processoDTO.getOrdemExecucao());
     }
 
     private static EdicaoEntity getEdicaoEntity() {
