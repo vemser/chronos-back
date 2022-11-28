@@ -87,7 +87,7 @@ public interface IUsuarioController {
     @DeleteMapping("/{idUsuario}")
     ResponseEntity<Void> delete(@Valid @PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException;
 
-    @Operation(summary = "Alterar status do usuário", description = "Habilita o usuário se ele estiver desabilitado e desabilita se ele estiver habilitado.")
+    @Operation(summary = "Alterar status do usuário", description = "Desabilita um usuário se ele estiver habilitado e caso ele esteja desabilitado ocorre o inverso.")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Status do usuário alterado com sucesso!"),
