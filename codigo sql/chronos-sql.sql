@@ -40,14 +40,14 @@ CREATE TABLE ETAPA (
 
 CREATE TABLE AREA_ENVOLVIDA (
                                 ID_AREA_ENVOLVIDA NUMBER NOT NULL,
-                                NOME VARCHAR2(100),
+                                NOME VARCHAR2(100) UNIQUE NOT NULL,
                                 PRIMARY KEY (ID_AREA_ENVOLVIDA)
 );
 
 
 CREATE TABLE RESPONSAVEL (
                              ID_RESPONSAVEL NUMBER NOT NULL,
-                             NOME VARCHAR2(100),
+                             NOME VARCHAR2(100) UNIQUE NOT NULL,
                              PRIMARY KEY (ID_RESPONSAVEL)
 );
 
