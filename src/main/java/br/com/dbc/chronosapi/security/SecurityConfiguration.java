@@ -3,6 +3,7 @@ package br.com.dbc.chronosapi.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,12 +29,38 @@ public class SecurityConfiguration {
                 .frameOptions().disable()
                 .and().cors()
                 .and().csrf().disable()
-                .authorizeHttpRequests((auth) -> auth.antMatchers("/**").permitAll()
+                .authorizeHttpRequests((auth) -> auth.antMatchers("/login", "/login/forgot-password").permitAll()
 
                                 // permissões
-//                        .antMatchers("/edicao/**").hasRole("GESTAO_DE_PESSOAS")
+                        .antMatchers(HttpMethod.GET, "/usuario").hasAnyRole("ADMIN")
+                        .antMatchers(HttpMethod.POST, "/usuario").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.DELETE, "/usuario/**").hasRole("ADMIN")
+                        .antMatchers("/usuario/enable-disable/**").hasRole("ADMIN")
+                        .antMatchers("/usuario/update-cadastro/**").hasRole("ADMIN")
 
-                                .anyRequest().authenticated()
+                        .antMatchers(HttpMethod.GET, "/edicao").hasRole("GESTAO_DE_PESSOAS")
+                        .antMatchers(HttpMethod.POST, "/edicao").hasRole("GESTAO_DE_PESSOAS")
+                        .antMatchers(HttpMethod.DELETE, "/edicao/**").hasRole("GESTAO_DE_PESSOAS")
+                        .antMatchers("/edicao/**").hasRole("GESTAO_DE_PESSOAS")
+
+                        .antMatchers(HttpMethod.GET, "/etapa").hasRole("GESTAO_DE_PESSOAS")
+                        .antMatchers(HttpMethod.POST, "/etapa").hasRole("GESTAO_DE_PESSOAS")
+                        .antMatchers(HttpMethod.DELETE, "/etapa/**").hasRole("GESTAO_DE_PESSOAS")
+                        .antMatchers("/etapa/**").hasRole("GESTAO_DE_PESSOAS")
+
+                        .antMatchers(HttpMethod.GET, "/processo").hasRole("GESTAO_DE_PESSOAS")
+                        .antMatchers(HttpMethod.POST, "/processo").hasRole("GESTAO_DE_PESSOAS")
+                        .antMatchers(HttpMethod.DELETE, "/processo/**").hasRole("GESTAO_DE_PESSOAS")
+                        .antMatchers("/processo/**").hasRole("GESTAO_DE_PESSOAS")
+                        .antMatchers(HttpMethod.GET, "/**").hasRole("INSTRUTOR")
+
+
+
+
+
+
+
+                        .anyRequest().authenticated()
                 );
         http.addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
