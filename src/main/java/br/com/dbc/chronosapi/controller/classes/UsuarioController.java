@@ -11,6 +11,7 @@ import br.com.dbc.chronosapi.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ public class UsuarioController implements IUsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> create(@RequestBody UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException, IOException {
+    public ResponseEntity<UsuarioDTO> create(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException, IOException {
         log.info("Cadastrando usuário...");
         UsuarioDTO usuarioDTO = usuarioService.create(usuarioCreateDTO);
         log.info("Usuário cadastrado com sucesso!");
@@ -42,7 +43,7 @@ public class UsuarioController implements IUsuarioController {
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
-    @PutMapping("/uploadImage/{idUsuario}")
+    @PutMapping(value = "/uploadImage/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<UsuarioDTO> uploadImage(@Valid @PathVariable("idUsuario") Integer idUsuario,
                                                   @Valid @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException {
         return new ResponseEntity<>(usuarioService.uploadImage(idUsuario, imagem), HttpStatus.OK);
@@ -68,13 +69,13 @@ public class UsuarioController implements IUsuarioController {
     }
 
     @PutMapping("/enable-disable/{idUsuario}")
-    public ResponseEntity<Void> enableOrDisable(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
+    public ResponseEntity<Void> enableOrDisable(@Valid @PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
         usuarioService.enableOrDisable(idUsuario);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{idUsuario}")
-    public ResponseEntity<Void> delete(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
+    public ResponseEntity<Void> delete(@Valid @PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
         log.info("Deletando usuário...");
         usuarioService.delete(idUsuario);
         log.info("Usuário deletado com sucesso!");

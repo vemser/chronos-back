@@ -9,6 +9,7 @@ import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +39,7 @@ public interface IUsuarioController {
             }
     )
     @PostMapping
-    ResponseEntity<UsuarioDTO> create(@RequestBody UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException, IOException ;
+    ResponseEntity<UsuarioDTO> create(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException, IOException ;
 
     @Operation(summary = "Inserir foto ao usuario", description = "Insere uma foto ao usuario presente no banco de dados")
     @ApiResponses(
@@ -48,9 +49,9 @@ public interface IUsuarioController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PutMapping("/uploadImage/{idUsuario}")
+    @PutMapping(value = "/uploadImage/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
     ResponseEntity<UsuarioDTO> uploadImage(@Valid @PathVariable("idUsuario") Integer idUsuario,
-                                                  @Valid @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException;
+                                           @Valid @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException;
 
     @Operation(summary = "Atualizar perfil do usuário", description = "Endpoint para o usuário poder atualizar o próprio perfil presente no banco de dados.")
     @ApiResponses(
@@ -61,7 +62,7 @@ public interface IUsuarioController {
             }
     )
     @PutMapping(value = "/update-perfil")
-    ResponseEntity<UsuarioDTO> updatePerfil(@RequestBody UsuarioUpdateDTO usuarioUpdateDTO) throws RegraDeNegocioException, IOException;
+    ResponseEntity<UsuarioDTO> updatePerfil(@Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO) throws RegraDeNegocioException, IOException;
 
     @Operation(summary = "Atualizar cadastro e cargo do usuário", description = "Endpoint para o admin poder atualizar informações do usuário possibilitando atualizar o cargo do mesmo.")
     @ApiResponses(
@@ -72,8 +73,8 @@ public interface IUsuarioController {
             }
     )
     @PutMapping(value = "/update-cadastro/{idUsuario}")
-    ResponseEntity<UsuarioDTO> updateAdmin(@PathVariable("idUsuario") Integer idUsuario,
-                                           @RequestBody UAdminUpdateDTO uAdminUpdateDTO) throws RegraDeNegocioException, IOException;
+    ResponseEntity<UsuarioDTO> updateAdmin(@Valid @PathVariable("idUsuario") Integer idUsuario,
+                                           @Valid @RequestBody UAdminUpdateDTO uAdminUpdateDTO) throws RegraDeNegocioException, IOException;
 
     @Operation(summary = "Deletar usuário", description = "Deleta um usuário presente no banco de dados através do seu id.")
     @ApiResponses(
@@ -84,7 +85,7 @@ public interface IUsuarioController {
             }
     )
     @DeleteMapping("/{idUsuario}")
-    ResponseEntity<Void> delete(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException;
+    ResponseEntity<Void> delete(@Valid @PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException;
 
     @Operation(summary = "Alterar status do usuário", description = "Habilita o usuário se ele estiver desabilitado e desabilita se ele estiver habilitado.")
     @ApiResponses(
@@ -95,5 +96,5 @@ public interface IUsuarioController {
             }
     )
     @PutMapping("/enable-disable/{idUsuario}")
-    ResponseEntity<Void> enableOrDisable(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException;
+    ResponseEntity<Void> enableOrDisable(@Valid @PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException;
 }

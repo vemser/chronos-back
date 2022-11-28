@@ -61,7 +61,10 @@ public class UsuarioService {
     public UsuarioDTO uploadImage(Integer idUsuario, MultipartFile imagem) throws RegraDeNegocioException, IOException {
         UsuarioEntity usuario = findById(idUsuario);
         usuario.setImagem(imagem.getBytes());
-        return objectMapper.convertValue(usuario, UsuarioDTO.class);
+        Set<CargoEntity> cargosEntities = usuario.getCargos();
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuario), UsuarioDTO.class);
+        usuarioDTO.setCargos(getCargosDTO(cargosEntities));
+        return usuarioDTO;
     }
 
     public UsuarioDTO create(UsuarioCreateDTO usuarioCreateDTO) throws IOException, RegraDeNegocioException {
@@ -84,13 +87,13 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
-    public UsuarioDTO updatePerfil(UsuarioUpdateDTO usuarioUpdate) throws IOException, RegraDeNegocioException {
+    public UsuarioDTO updatePerfil(UsuarioUpdateDTO usuarioUpdate) throws RegraDeNegocioException {
         Integer idLoggedUser = loginService.getIdLoggedUser();
 
         UsuarioEntity usuarioRecover = findById(idLoggedUser);
         if (passwordEncoder.matches(usuarioUpdate.getSenhaAtual(), usuarioRecover.getPassword())) {
             usuarioRecover.setNome(usuarioUpdate.getNome());
-            if (usuarioUpdate.equals(usuarioUpdate.getConfirmacaoNovaSenha())) {
+            if (usuarioUpdate.getNovaSenha().equals(usuarioUpdate.getConfirmacaoNovaSenha())) {
                 usuarioRecover.setSenha(passwordEncoder.encode(usuarioUpdate.getNovaSenha()));
                 usuarioRepository.save(usuarioRecover);
             } else {
@@ -106,7 +109,7 @@ public class UsuarioService {
         }
     }
 
-    public UsuarioDTO updateAdmin(Integer id, UAdminUpdateDTO usuarioUpdate) throws IOException, RegraDeNegocioException {
+    public UsuarioDTO updateAdmin(Integer id, UAdminUpdateDTO usuarioUpdate) throws RegraDeNegocioException {
         UsuarioEntity usuarioRecover = findById(id);
         usuarioRecover.setNome(usuarioUpdate.getNome());
         Set<CargoEntity> cargos = usuarioUpdate.getCargos().stream()
