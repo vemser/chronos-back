@@ -17,7 +17,7 @@ public interface IEdicaoController {
     @Operation(summary = "Criar uma nova edição", description = "Cria uma nova edição do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Edição criada com sucesso"),
+                    @ApiResponse(responseCode = "200", description = "Edição criada com sucesso!"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -28,7 +28,7 @@ public interface IEdicaoController {
     @Operation(summary = "Atualizar edição", description = "Atualiza uma edição do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Edição atualizada com sucesso"),
+                    @ApiResponse(responseCode = "200", description = "Edição atualizada com sucesso!"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -40,7 +40,7 @@ public interface IEdicaoController {
     @Operation(summary = "Deletar uma edição", description = "Deleta uma edição do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Edição deletada com sucesso"),
+                    @ApiResponse(responseCode = "200", description = "Edição deletada com sucesso!"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -51,7 +51,7 @@ public interface IEdicaoController {
     @Operation(summary = "Listar todas as edições", description = "Lista todos as edições presentes no banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista de edições"),
+                    @ApiResponse(responseCode = "200", description = "Listagem realizada com sucesso!"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -59,4 +59,14 @@ public interface IEdicaoController {
     @GetMapping("/listar-edicoes")
     ResponseEntity<PageDTO<EdicaoDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException;
 
+    @Operation(summary = "Alterar status de uma edição", description = "Desabilita uma edição se ela estiver habilitada e caso ela esteja desabilitada ocorre o inverso.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Status de edição alterada com sucesso!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PutMapping("/enable-disable/{idEdicao}")
+    ResponseEntity<Void> enableOrDisable(@Valid @PathVariable("idEdicao") Integer idEdicao) throws RegraDeNegocioException;
 }
