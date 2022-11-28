@@ -35,11 +35,17 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
+    private final LoginService loginService;
+
     public PageDTO<UsuarioDTO> list(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         Page<UsuarioEntity> paginaDoRepositorio = usuarioRepository.findAll(pageRequest);
         List<UsuarioDTO> usuarios = paginaDoRepositorio.getContent().stream()
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .map(usuario -> {
+                    UsuarioDTO usuarioDTO = objectMapper.convertValue(usuario, UsuarioDTO.class);
+                    usuarioDTO.setCargos(getCargosDTO(usuario.getCargos()));
+                    return usuarioDTO;
+                })
                 .toList();
         return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
                 paginaDoRepositorio.getTotalPages(),
@@ -65,12 +71,13 @@ public class UsuarioService {
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
         Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
         usuarioDTO.setCargos(new HashSet<>(cargosDTO));
-        emailService.sendRecoverPasswordEmail(usuarioEntity, senha, "Senha para acessar o sistema", "teste.ftl");
+        emailService.sendRecoverPasswordEmail(usuarioEntity, senha, "Senha para acessar o CHRONOS", "teste.ftl");
         return usuarioDTO;
     }
 
-    public UsuarioDTO update(Integer id, String nome, String senhaAtual, String novaSenha, String confirmacaoNovaSenha, MultipartFile imagem) throws IOException, RegraDeNegocioException {
-        UsuarioEntity usuarioRecover = findById(id);
+    public UsuarioDTO updatePerfil(String nome, String senhaAtual, String novaSenha, String confirmacaoNovaSenha, MultipartFile imagem) throws IOException, RegraDeNegocioException {
+        Integer idLoggedUser = loginService.getIdLoggedUser();
+        UsuarioEntity usuarioRecover = findById(idLoggedUser);
         if (passwordEncoder.matches(senhaAtual, usuarioRecover.getPassword())) {
             usuarioRecover.setNome(nome);
             usuarioRecover.setImagem(imagem.getBytes());
@@ -82,12 +89,38 @@ public class UsuarioService {
             }
             UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRecover, UsuarioDTO.class);
             Set<CargoEntity> cargosEntities = usuarioRecover.getCargos();
-            usuarioDTO.setCargos(getCargosDTO(cargosEntities));
+            Set<CargoDTO> cargosDTO = getCargosDTO(cargosEntities);
+            usuarioDTO.setCargos(cargosDTO);
             return usuarioDTO;
         } else {
-            throw new RegraDeNegocioException("Senha atual inválida");
+            throw new RegraDeNegocioException("Senha atual inválida!");
         }
     }
+
+    public UsuarioDTO updateAdmin(Integer id, String nome, List<String> stringCargos, MultipartFile imagem) throws IOException, RegraDeNegocioException {
+        UsuarioEntity usuarioRecover = findById(id);
+        usuarioRecover.setNome(nome);
+        usuarioRecover.setImagem(imagem.getBytes());
+        Set<CargoEntity> cargos = stringCargos.stream()
+                .map(cargo -> (cargoService.findByNome(cargo))).collect(Collectors.toSet());
+        usuarioRecover.setCargos(new HashSet<>(cargos));
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioRecover), UsuarioDTO.class);
+        Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
+        usuarioDTO.setCargos(new HashSet<>(cargosDTO));
+        return usuarioDTO;
+    }
+
+    public void enableOrDisable(Integer idUsuario) throws RegraDeNegocioException {
+        UsuarioEntity usuarioEntity = this.findById(idUsuario);
+        if(usuarioEntity.getStatus() == StatusUsuario.ATIVO) {
+            usuarioEntity.setStatus(StatusUsuario.INATIVO);
+            usuarioRepository.save(usuarioEntity);
+        }else {
+            usuarioEntity.setStatus(StatusUsuario.ATIVO);
+            usuarioRepository.save(usuarioEntity);
+        }
+    }
+
     public void delete(Integer idUsuario) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = this.findById(idUsuario);
         usuarioRepository.delete(usuarioEntity);

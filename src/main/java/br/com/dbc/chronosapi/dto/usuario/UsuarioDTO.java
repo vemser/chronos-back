@@ -1,11 +1,15 @@
 package br.com.dbc.chronosapi.dto.usuario;
 
+import br.com.dbc.chronosapi.dto.CargoDTO;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Data
-public class UsuarioDTO extends UsuarioCreateDTO {
-    @NotNull
+public class UsuarioDTO {
     private Integer IdUsuario;
+    private String nome;
+    private String email;
+    private byte[] imagem;
+    private Set<CargoDTO> cargos;
 }

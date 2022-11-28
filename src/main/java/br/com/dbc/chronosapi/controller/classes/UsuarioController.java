@@ -14,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -44,22 +43,39 @@ public class UsuarioController implements IUsuarioController {
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
-        @PutMapping(value = "/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE } )
-    public ResponseEntity<UsuarioDTO> update(@Valid @PathVariable("idUsuario") Integer idUsuario,
-                                             @Valid @RequestParam String nome,
-                                             @Valid @RequestParam String senhaAtual,
-                                             @Valid @RequestParam String novaSenha,
-                                             @Valid @RequestParam String confirmacaoNovaSenha,
-                                             @Valid @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException {
+    @PutMapping(value = "/update-perfil", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<UsuarioDTO> updatePerfil(@RequestParam String nome,
+                                                   @RequestParam String senhaAtual,
+                                                   @RequestParam String novaSenha,
+                                                   @RequestParam String confirmacaoNovaSenha,
+                                                   @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException {
         log.info("Atualizando usuário....");
-        UsuarioDTO usuarioDTO = usuarioService.update(idUsuario, nome, senhaAtual, novaSenha, confirmacaoNovaSenha, imagem);
+        UsuarioDTO usuarioDTO = usuarioService.updatePerfil(nome, senhaAtual, novaSenha, confirmacaoNovaSenha, imagem);
         log.info("Usuário atualizado com sucesso!");
 
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
     }
 
+    @PutMapping(value = "/update-cadastro/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<UsuarioDTO> updateAdmin(@PathVariable("idUsuario") Integer idUsuario,
+                                                     @RequestParam String nome,
+                                                     @RequestParam List<String> stringCargos,
+                                                     @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException {
+        log.info("Atualizando usuário....");
+        UsuarioDTO usuarioDTO = usuarioService.updateAdmin(idUsuario, nome, stringCargos, imagem);
+        log.info("Usuário atualizado com sucesso!");
+
+        return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+    }
+
+    @PutMapping("/enable-disable/{idUsuario}")
+    public ResponseEntity<Void> enableOrDisable(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
+        usuarioService.enableOrDisable(idUsuario);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioDTO> delete(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
+    public ResponseEntity<Void> delete(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
         log.info("Deletando usuário...");
         usuarioService.delete(idUsuario);
         log.info("Usuário deletado com sucesso!");

@@ -4,7 +4,6 @@ import br.com.dbc.chronosapi.dto.LoginDTO;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.UsuarioRepository;
-import br.com.dbc.chronosapi.security.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,17 +18,14 @@ public class LoginService {
 
     private final ObjectMapper objectMapper;
     private final UsuarioRepository usuarioRepository;
-    private final UsuarioService usuarioService;
-    private final TokenService tokenService;
     private final EmailService emailService;
-
     private final PasswordEncoder passwordEncoder;
 
     public Integer getIdLoggedUser() {
         return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
     }
 
-    public LoginDTO getLoggedUser() throws RegraDeNegocioException {
+    public LoginDTO getLoggedUser() {
         Optional<UsuarioEntity> userLogged = findById(getIdLoggedUser());
         return objectMapper.convertValue(userLogged, LoginDTO.class);
     }
@@ -45,8 +41,8 @@ public class LoginService {
         throw new RegraDeNegocioException("Usuario não encontrado!");
     }
 
-    public String sendRecoverPasswordEmail(String email) throws RegraDeNegocioException {
-        UsuarioEntity usuario = usuarioService.findByEmail(email);
+    public String sendRecoverPasswordEmail(String email) {
+        UsuarioEntity usuario = usuarioRepository.findByEmail(email);
 
 //        String token = tokenService.getToken(usuario, true);
         emailService.sendRecoverPasswordEmail(usuario, usuario.getSenha(),"Teste recuperação senha","email-teste-template.ftl");

@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -37,12 +36,12 @@ public interface IUsuarioController {
             }
     )
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<UsuarioDTO> create(@RequestParam String nome,
-                                             @RequestParam String email,
-                                             @RequestParam List<String> stringCargos,
-                                             @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException ;
+    ResponseEntity<UsuarioDTO> create(@RequestParam String nome,
+                                      @RequestParam String email,
+                                      @RequestParam List<String> stringCargos,
+                                      @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException ;
 
-    @Operation(summary = "Atualizar usuário", description = "Atualiza um usuário presente no banco de dados através do seu id.")
+    @Operation(summary = "Atualizar perfil do usuário", description = "Atualiza o perfil do usuário presente no banco de dados.")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso!"),
@@ -50,13 +49,26 @@ public interface IUsuarioController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PutMapping("/{idUsuario}")
-    ResponseEntity<UsuarioDTO> update(@Valid @PathVariable("idUsuario") Integer idUsuario,
-                                      @Valid @RequestParam String nome,
-                                      @Valid @RequestParam String senhaAtual,
-                                      @Valid @RequestParam String novaSenha,
-                                      @Valid @RequestParam String confirmacaoNovaSenha,
-                                      @Valid @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException;
+    @PutMapping(value = "/update-perfil", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    ResponseEntity<UsuarioDTO> updatePerfil(@RequestParam String nome,
+                                            @RequestParam String senhaAtual,
+                                            @RequestParam String novaSenha,
+                                            @RequestParam String confirmacaoNovaSenha,
+                                            @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException;
+
+    @Operation(summary = "Atualizar cadastro e cargo do usuário", description = "Atualiza o cadastro do usuário possibilitando atualizar o cargo do mesmo.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PutMapping(value = "/update-cadastro/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    ResponseEntity<UsuarioDTO> updateAdmin(@PathVariable("idUsuario") Integer idUsuario,
+                                      @RequestParam String nome,
+                                      @RequestParam List<String> stringCargos,
+                                      @RequestPart MultipartFile imagem) throws RegraDeNegocioException, IOException;
 
     @Operation(summary = "Deletar usuário", description = "Deleta um usuário presente no banco de dados através do seu id.")
     @ApiResponses(
@@ -67,5 +79,16 @@ public interface IUsuarioController {
             }
     )
     @DeleteMapping("/{idUsuario}")
-    ResponseEntity<UsuarioDTO> delete(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException;
+    ResponseEntity<Void> delete(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException;
+
+    @Operation(summary = "Alterar status do usuário", description = "Habilita o usuário se ele estiver desabilitado e desabilita se ele estiver habilitado.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Status do usuário alterado com sucesso!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PutMapping("/enable-disable/{idUsuario}")
+    ResponseEntity<Void> enableOrDisable(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException;
 }
