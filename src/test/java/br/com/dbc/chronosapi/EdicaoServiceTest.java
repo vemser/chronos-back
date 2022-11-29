@@ -8,6 +8,7 @@ import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
+import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EdicaoRepository;
 import br.com.dbc.chronosapi.service.EdicaoService;
@@ -105,21 +106,6 @@ public class EdicaoServiceTest {
         verify(edicaoRepository, times(1)).delete(any());
     }
 
-    @Test
-    public void testFindByIdSuccess() throws RegraDeNegocioException {
-        // SETUP
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-
-        // ACT
-        EdicaoEntity edicao = edicaoService.findById(edicaoEntity.getIdEdicao());
-
-        // ASSERT
-        assertNotNull(edicao);
-        assertEquals(10, edicaoEntity.getIdEdicao());
-
-    }
-
     @Test(expected = RegraDeNegocioException.class)
     public void testEdicaoDeleteFail() throws RegraDeNegocioException {
         // SETUP
@@ -132,14 +118,30 @@ public class EdicaoServiceTest {
         verify(edicaoRepository, times(1)).delete(any());
     }
     @Test
-    public void testEnableOrDisable(){
+    public void testEnableOrDisableWhenInativo() throws RegraDeNegocioException {
 
         //SET
         Integer idEdicao = 10;
         EdicaoEntity edicaoEntity = getEdicaoEntity();
 
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
         // ACT
-        edicaoService.save(edicaoEntity);
+        edicaoService.enableOrDisable(edicaoEntity.getIdEdicao());
+
+        //ASSERT
+        verify(edicaoRepository, times(1)).save(any());
+    }
+
+    @Test
+    public void testEnableOrDisableWhenAtivo() throws RegraDeNegocioException {
+
+        //SET
+        Integer idEdicao = 10;
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        edicaoEntity.setStatus(Status.ATIVO);
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+        // ACT
+        edicaoService.enableOrDisable(edicaoEntity.getIdEdicao());
 
         //ASSERT
         verify(edicaoRepository, times(1)).save(any());
@@ -203,8 +205,9 @@ public class EdicaoServiceTest {
 
         //ASSERT
         assertEquals(10, edicaoDTO.getIdEdicao());
-
     }
+
+
 
     private EdicaoCreateDTO getEdicaoCreateDTO() {
         EdicaoCreateDTO edicaoCreateDTO = new EdicaoCreateDTO();
