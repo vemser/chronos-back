@@ -82,7 +82,7 @@ public class UsuarioService {
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
         Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
         usuarioDTO.setCargos(new HashSet<>(cargosDTO));
-        emailService.sendRecoverPasswordEmail(usuarioEntity, senha, "Senha para acessar o CHRONOS", "teste.ftl");
+        emailService.sendRecoverPasswordEmail(usuarioEntity, senha, "Senha para acessar o CHRONOS", "email-envio-senha-template.ftl");
         return usuarioDTO;
     }
 
