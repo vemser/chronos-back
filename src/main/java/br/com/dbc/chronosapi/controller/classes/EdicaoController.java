@@ -48,9 +48,8 @@ public class EdicaoController implements IEdicaoController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/listar-edicoes")
+    @GetMapping
     public ResponseEntity<PageDTO<EdicaoDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         return new ResponseEntity<>(edicaoService.list(pagina, tamanho), HttpStatus.OK);
     }
-
 }
