@@ -3,9 +3,8 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.DiaNaoUtilCreateDTO;
 import br.com.dbc.chronosapi.dto.DiaNaoUtilDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.entity.classes.DiaNaoUtilEntity;
-import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
+import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.DiaNaoUtilRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,8 +24,10 @@ public class DiaNaoUtilService {
 
 
     public DiaNaoUtilDTO create(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) {
-
         DiaNaoUtilEntity diaNaoUtilEntity = objectMapper.convertValue(diaNaoUtilCreateDTO, DiaNaoUtilEntity.class);
+        if(diaNaoUtilEntity.getRepeticaoAnual() == null) {
+            diaNaoUtilEntity.setRepeticaoAnual(Status.INATIVO);
+        }
         DiaNaoUtilEntity diaSaved = diaNaoUtilRepository.save(diaNaoUtilEntity);
         return objectMapper.convertValue(diaSaved, DiaNaoUtilDTO.class);
 
@@ -37,7 +38,11 @@ public class DiaNaoUtilService {
         diaNaoUtilRecover.setDescricao(diaNaoUtilUpdate.getDescricao());
         diaNaoUtilRecover.setDataInicial(diaNaoUtilUpdate.getDataInicial());
         diaNaoUtilRecover.setDataFinal(diaNaoUtilUpdate.getDataFinal());
-        diaNaoUtilRecover.setRepeticaoAnual(diaNaoUtilUpdate.getRepeticaoAnual());
+        if(diaNaoUtilRecover.getRepeticaoAnual() == null) {
+            diaNaoUtilRecover.setRepeticaoAnual(Status.INATIVO);
+        } else {
+            diaNaoUtilRecover.setRepeticaoAnual(diaNaoUtilUpdate.getRepeticaoAnual());
+        }
         DiaNaoUtilDTO diaNaoUtilDTO = objectMapper.convertValue(diaNaoUtilRepository.save(diaNaoUtilRecover), DiaNaoUtilDTO.class);
         return diaNaoUtilDTO;
     }
