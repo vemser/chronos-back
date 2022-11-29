@@ -89,7 +89,7 @@ public class EdicaoService {
         return objectMapper.convertValue(edicaoEntity, EdicaoDTO.class);
     }
 
-    private Set<EtapaDTO> getEtapasDTO(Set<EtapaEntity> etapas) {
+    public Set<EtapaDTO> getEtapasDTO(Set<EtapaEntity> etapas) {
         return etapas.stream()
                 .map(etapaEntity -> objectMapper.convertValue(etapaEntity, EtapaDTO.class))
                 .collect(Collectors.toSet());
