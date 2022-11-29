@@ -30,10 +30,14 @@ public class DiaNaoUtilService {
 
     }
 
-    public DiaNaoUtilDTO update(Integer idDiaNaoUtil, DiaNaoUtilCreateDTO diaNaoUtilUpdate) {
-
-        // code
-
+    public DiaNaoUtilDTO update(Integer idDiaNaoUtil, DiaNaoUtilCreateDTO diaNaoUtilUpdate) throws RegraDeNegocioException {
+        DiaNaoUtilEntity diaNaoUtilRecover = findById(idDiaNaoUtil);
+        diaNaoUtilRecover.setDescricao(diaNaoUtilUpdate.getDescricao());
+        diaNaoUtilRecover.setDataInicial(diaNaoUtilUpdate.getDataInicial());
+        diaNaoUtilRecover.setDataFinal(diaNaoUtilUpdate.getDataFinal());
+        diaNaoUtilRecover.setRepeticaoAnual(diaNaoUtilUpdate.getRepeticaoAnual());
+        DiaNaoUtilDTO diaNaoUtilDTO = objectMapper.convertValue(diaNaoUtilRepository.save(diaNaoUtilRecover), DiaNaoUtilDTO.class);
+        return diaNaoUtilDTO;
     }
 
     public void delete(Integer idDiaNaoUtil) {
