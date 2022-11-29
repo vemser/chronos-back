@@ -1,6 +1,5 @@
 package br.com.dbc.chronosapi.dto;
 
-import br.com.dbc.chronosapi.entity.enums.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -23,7 +22,7 @@ public class DiaNaoUtilCreateDTO {
     @Schema(description = "data final do dia não util")
     private LocalDate dataFinal;
 
-    @Schema(description = "status da repetição anual do dia não util")
-    private Status repeticaoAnual;
+//    @Schema(description = "status da repetição anual do dia não util")
+//    private Status repeticaoAnual;
 
 }

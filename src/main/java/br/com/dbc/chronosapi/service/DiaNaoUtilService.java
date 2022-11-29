@@ -23,13 +23,14 @@ public class DiaNaoUtilService {
     private final DiaNaoUtilRepository diaNaoUtilRepository;
 
 
-    public DiaNaoUtilDTO create(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) {
+    public DiaNaoUtilDTO create(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO, Status repeticaoAnual) {
         DiaNaoUtilEntity diaNaoUtilEntity = objectMapper.convertValue(diaNaoUtilCreateDTO, DiaNaoUtilEntity.class);
         diaNaoUtilEntity.setDescricao(diaNaoUtilCreateDTO.getDescricao());
-        if(diaNaoUtilEntity.getRepeticaoAnual() == null) {
+        if(Status.INATIVO == repeticaoAnual) {
             diaNaoUtilEntity.setRepeticaoAnual(Status.INATIVO);
             diaNaoUtilEntity.setDataFinal(diaNaoUtilCreateDTO.getDataFinal());
         } else {
+            diaNaoUtilEntity.setRepeticaoAnual(Status.ATIVO);
             diaNaoUtilEntity.setDataFinal(null);
         }
         DiaNaoUtilEntity diaSaved = diaNaoUtilRepository.save(diaNaoUtilEntity);
@@ -37,22 +38,18 @@ public class DiaNaoUtilService {
 
     }
 
-    public DiaNaoUtilDTO update(Integer idDiaNaoUtil, DiaNaoUtilCreateDTO diaNaoUtilUpdate) throws RegraDeNegocioException {
+    public DiaNaoUtilDTO update(Integer idDiaNaoUtil, DiaNaoUtilCreateDTO diaNaoUtilUpdate, Status repeticaoAnual) throws RegraDeNegocioException {
         DiaNaoUtilEntity diaNaoUtilRecover = findById(idDiaNaoUtil);
         diaNaoUtilRecover.setDescricao(diaNaoUtilUpdate.getDescricao());
         diaNaoUtilRecover.setDataInicial(diaNaoUtilUpdate.getDataInicial());
         diaNaoUtilRecover.setDataFinal(diaNaoUtilUpdate.getDataFinal());
-        diaNaoUtilRecover.setRepeticaoAnual(diaNaoUtilUpdate.getRepeticaoAnual());
-        if(diaNaoUtilRecover.getRepeticaoAnual() == null) {
+
+        if(Status.INATIVO == repeticaoAnual) {
             diaNaoUtilRecover.setRepeticaoAnual(Status.INATIVO);
         } else {
-            diaNaoUtilRecover.setRepeticaoAnual(diaNaoUtilUpdate.getRepeticaoAnual());
-        }
-
-        if(diaNaoUtilRecover.getRepeticaoAnual() != Status.INATIVO) {
+            diaNaoUtilRecover.setRepeticaoAnual(Status.ATIVO);
             diaNaoUtilRecover.setDataFinal(null);
         }
-
         DiaNaoUtilDTO diaNaoUtilDTO = objectMapper.convertValue(diaNaoUtilRepository.save(diaNaoUtilRecover), DiaNaoUtilDTO.class);
         return diaNaoUtilDTO;
     }

@@ -3,6 +3,7 @@ package br.com.dbc.chronosapi.controller.interfaces;
 import br.com.dbc.chronosapi.dto.DiaNaoUtilCreateDTO;
 import br.com.dbc.chronosapi.dto.DiaNaoUtilDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
+import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,6 +17,16 @@ import javax.validation.Valid;
 
 public interface IDiaNaoUtilController {
 
+    @Operation(summary = "Listar todos os dias-nao-uteis", description = "Lista todos os dias-nao-uteis presentes no banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Listagem realizada com sucesso!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    ResponseEntity<PageDTO<DiaNaoUtilDTO>> list(Integer pagina, Integer tamanho);
+
     @Operation(summary = "Criar um novo dia-não-util", description = "Cria um novo dia não util no banco de dados")
     @ApiResponses(
             value = {
@@ -24,7 +35,8 @@ public interface IDiaNaoUtilController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<DiaNaoUtilDTO> create(@Valid @RequestParam DiaNaoUtilCreateDTO diaNaoUtilCreateDTO);
+    ResponseEntity<DiaNaoUtilDTO> create(@Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO,
+                                         @Valid @RequestParam Status repeticaoAnual);
 
     @Operation(summary = "Atualizar dia-não-util", description = "Atualiza um dia-não-util no banco de dados")
     @ApiResponses(
@@ -35,7 +47,8 @@ public interface IDiaNaoUtilController {
             }
     )
     ResponseEntity<DiaNaoUtilDTO> update(@Valid @PathVariable ("idDiaNaoUtil") Integer idDiaNaoUtil,
-                                         @Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) throws RegraDeNegocioException;
+                                         @Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO,
+                                         @Valid @RequestParam Status repeticaoAnual) throws RegraDeNegocioException;
 
     @Operation(summary = "Deletar um dia-não-util", description = "Deleta um dia-não-util do banco de dados")
     @ApiResponses(
@@ -46,14 +59,4 @@ public interface IDiaNaoUtilController {
             }
     )
     ResponseEntity<Void> delete(@Valid @PathVariable("id-dia-nao-util") Integer idDiaNaoUtil) throws RegraDeNegocioException;
-
-    @Operation(summary = "Listar todos os dias-nao-uteis", description = "Lista todos os dias-nao-uteis presentes no banco de dados")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Listagem realizada com sucesso!"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    ResponseEntity<PageDTO<DiaNaoUtilDTO>> list(Integer pagina, Integer tamanho);
 }

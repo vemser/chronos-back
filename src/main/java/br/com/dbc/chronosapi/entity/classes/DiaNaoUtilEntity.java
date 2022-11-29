@@ -19,10 +19,10 @@ import java.time.LocalDate;
 public class DiaNaoUtilEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DIA_NAO_UTIL_SEQUENCE")
-    @SequenceGenerator(name = "DIA_NAO_UTIL_SEQUENCE", sequenceName = "DIA_NAO_UTIL_SEQUENCE", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DIA_NAO_UTIL_SEQ")
+    @SequenceGenerator(name = "DIA_NAO_UTIL_SEQ", sequenceName = "SEQ_DIA_NAO_UTIL", allocationSize = 1)
     @Column(name = "ID_DIA_NAO_UTIL")
-    private Integer idEdicao;
+    private Integer idDiaNaoUtil;
 
     @Column(name = "DESCRICAO")
     private String descricao;
