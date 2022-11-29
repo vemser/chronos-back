@@ -56,7 +56,7 @@ public interface IEtapaController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-etapas")
+    @GetMapping
     ResponseEntity<PageDTO<EtapaDTO>> list(Integer pagina, Integer tamanho);
 }
 

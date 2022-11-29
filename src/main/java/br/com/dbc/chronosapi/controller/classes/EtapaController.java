@@ -41,7 +41,7 @@ public class EtapaController implements IEtapaController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/listar-etapas")
+    @GetMapping
     public ResponseEntity<PageDTO<EtapaDTO>> list(Integer pagina, Integer tamanho) {
         return new ResponseEntity<>(etapaService.list(pagina, tamanho), HttpStatus.OK);
     }
