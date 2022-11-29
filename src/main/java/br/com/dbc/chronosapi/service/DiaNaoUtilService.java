@@ -25,8 +25,12 @@ public class DiaNaoUtilService {
 
     public DiaNaoUtilDTO create(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) {
         DiaNaoUtilEntity diaNaoUtilEntity = objectMapper.convertValue(diaNaoUtilCreateDTO, DiaNaoUtilEntity.class);
+        diaNaoUtilEntity.setDescricao(diaNaoUtilCreateDTO.getDescricao());
         if(diaNaoUtilEntity.getRepeticaoAnual() == null) {
             diaNaoUtilEntity.setRepeticaoAnual(Status.INATIVO);
+            diaNaoUtilEntity.setDataFinal(diaNaoUtilCreateDTO.getDataFinal());
+        } else {
+            diaNaoUtilEntity.setDataFinal(null);
         }
         DiaNaoUtilEntity diaSaved = diaNaoUtilRepository.save(diaNaoUtilEntity);
         return objectMapper.convertValue(diaSaved, DiaNaoUtilDTO.class);
@@ -38,11 +42,17 @@ public class DiaNaoUtilService {
         diaNaoUtilRecover.setDescricao(diaNaoUtilUpdate.getDescricao());
         diaNaoUtilRecover.setDataInicial(diaNaoUtilUpdate.getDataInicial());
         diaNaoUtilRecover.setDataFinal(diaNaoUtilUpdate.getDataFinal());
+        diaNaoUtilRecover.setRepeticaoAnual(diaNaoUtilUpdate.getRepeticaoAnual());
         if(diaNaoUtilRecover.getRepeticaoAnual() == null) {
             diaNaoUtilRecover.setRepeticaoAnual(Status.INATIVO);
         } else {
             diaNaoUtilRecover.setRepeticaoAnual(diaNaoUtilUpdate.getRepeticaoAnual());
         }
+
+        if(diaNaoUtilRecover.getRepeticaoAnual() != Status.INATIVO) {
+            diaNaoUtilRecover.setDataFinal(null);
+        }
+
         DiaNaoUtilDTO diaNaoUtilDTO = objectMapper.convertValue(diaNaoUtilRepository.save(diaNaoUtilRecover), DiaNaoUtilDTO.class);
         return diaNaoUtilDTO;
     }
