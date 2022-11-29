@@ -3,6 +3,7 @@ package br.com.dbc.chronosapi;
 import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaDTO;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
+import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.AreaEnvolvidaRepository;
 import br.com.dbc.chronosapi.service.AreaEnvolvidaService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -17,10 +18,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AreaEnvolvidaServiceTest {
@@ -41,7 +45,7 @@ public class AreaEnvolvidaServiceTest {
     }
 
     @Test
-    private  void testCreateAreaEnvolvidaSucess() {
+    public  void testCreateAreaEnvolvidaSucess() {
         // SETUP
         AreaEnvolvidaCreateDTO areaEnvolvidaCreateDTO = getAreaEnvolvidaCreateDTO();
         AreaEnvolvidaEntity areaEnvolvidaEntity = getAreaEnvolvidaEntity();
@@ -53,17 +57,73 @@ public class AreaEnvolvidaServiceTest {
         assertEquals(10, areaEnvolvidaDTO.getIdAreaEnvolvida());
     }
 
+    @Test
+    public void testAreaEnvolvidaDeleteSuccess() throws RegraDeNegocioException {
+        // SETUP
+        AreaEnvolvidaEntity areaEnvolvida = getAreaEnvolvidaEntity();
+
+        when(areaEnvolvidaRepository.findById(anyInt())).thenReturn(Optional.of(areaEnvolvida));
+
+        // ACT
+        areaEnvolvidaService.delete(areaEnvolvida.getIdAreaEnvolvida());
+
+        // ASSERT
+        verify(areaEnvolvidaRepository, times(1)).delete(any());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void testAreaEnvolvidaDeleteFail() throws RegraDeNegocioException {
+        // SETUP
+        when(areaEnvolvidaRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        // ACT
+        areaEnvolvidaService.delete(5);
+
+        // ASSERT
+        verify(areaEnvolvidaRepository, times(1)).delete(any());
+    }
+
+    @Test
+    public void testFindByIdSuccess() throws RegraDeNegocioException {
+        // SETUP
+        AreaEnvolvidaEntity areaEnvolvidaEntity = getAreaEnvolvidaEntity();
+        when(areaEnvolvidaRepository.findById(anyInt())).thenReturn(Optional.of(areaEnvolvidaEntity));
+
+        // ACT
+        AreaEnvolvidaEntity areaEnvolvidaEntity1 = areaEnvolvidaService.findById(areaEnvolvidaEntity.getIdAreaEnvolvida());
+
+        // ASSERT
+        assertNotNull(areaEnvolvidaEntity1);
+        assertEquals(10, areaEnvolvidaEntity1.getIdAreaEnvolvida());
+
+    }
+
+    @Test
+    public void testFindByNome() throws RegraDeNegocioException {
+        // SETUP
+        AreaEnvolvidaEntity areaEnvolvidaEntity = getAreaEnvolvidaEntity();
+        when(areaEnvolvidaRepository.findByNome(anyString())).thenReturn(areaEnvolvidaEntity);
+
+        // ACT
+        AreaEnvolvidaEntity areaEnvolvidaEntity1 = areaEnvolvidaService.findByNome(areaEnvolvidaEntity.getNome());
+
+        // ASSERT
+        assertNotNull(areaEnvolvidaEntity1);
+        assertEquals("area1", areaEnvolvidaEntity1.getNome());
+
+    }
+
     private static AreaEnvolvidaEntity getAreaEnvolvidaEntity() {
         AreaEnvolvidaEntity areaEnvolvidaEntity = new AreaEnvolvidaEntity();
         areaEnvolvidaEntity.setIdAreaEnvolvida(10);
-        areaEnvolvidaEntity.setNome("Area1");
+        areaEnvolvidaEntity.setNome("area1");
         areaEnvolvidaEntity.setIdAreaEnvolvida(10);
         return areaEnvolvidaEntity;
     }
 
     private static AreaEnvolvidaCreateDTO getAreaEnvolvidaCreateDTO() {
         AreaEnvolvidaCreateDTO areaEnvolvidaCreateDTO = new AreaEnvolvidaCreateDTO();
-        areaEnvolvidaCreateDTO.setNome("Area1");
+        areaEnvolvidaCreateDTO.setNome("area1");
         return areaEnvolvidaCreateDTO;
     }
 }
