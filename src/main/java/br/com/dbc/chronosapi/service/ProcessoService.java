@@ -35,21 +35,23 @@ public class ProcessoService {
 
     public ProcessoDTO create(ProcessoCreateDTO processoCreateDTO) {
         ProcessoEntity processoEntity = objectMapper.convertValue(processoCreateDTO, ProcessoEntity.class);
+
         return objectMapper.convertValue(processoRepository.save(processoEntity), ProcessoDTO.class);
     }
 
     public ProcessoDTO update(Integer idProcesso, ProcessoCreateDTO processoUpdate) throws RegraDeNegocioException {
-        ProcessoDTO processoRecoverDTO = objectMapper.convertValue(this.findById(idProcesso), ProcessoDTO.class);
-        processoRecoverDTO.setNome(processoUpdate.getNome());
-        processoRecoverDTO.setEtapa(processoUpdate.getEtapa());
-        processoRecoverDTO.setAreaEnvolvida(processoUpdate.getAreaEnvolvida());
-        processoRecoverDTO.setResponsavel(processoRecoverDTO.getResponsavel());
-        processoRecoverDTO.setDiasUteis(processoUpdate.getDiasUteis());
-        processoRecoverDTO.setOrdemExecucao(processoUpdate.getOrdemExecucao());
-        processoRecoverDTO.setDuracaoProcesso(processoUpdate.getDuracaoProcesso());
-        processoRecoverDTO.setEdicoes(processoUpdate.getEdicoes());
-        ProcessoEntity processoEntity = objectMapper.convertValue(processoRecoverDTO, ProcessoEntity.class);
-        return objectMapper.convertValue(processoRepository.save(processoEntity), ProcessoDTO.class);
+//        ProcessoDTO processoRecoverDTO = objectMapper.convertValue(this.findById(idProcesso), ProcessoDTO.class);
+//        processoRecoverDTO.setNome(processoUpdate.getNome());
+//        processoRecoverDTO.setEtapa(processoUpdate.getEtapa());
+//        processoRecoverDTO.setAreaEnvolvida(processoUpdate.getAreaEnvolvida());
+//        processoRecoverDTO.setResponsavel(processoRecoverDTO.getResponsavel());
+//        processoRecoverDTO.setDiasUteis(processoUpdate.getDiasUteis());
+//        processoRecoverDTO.setOrdemExecucao(processoUpdate.getOrdemExecucao());
+//        processoRecoverDTO.setDuracaoProcesso(processoUpdate.getDuracaoProcesso());
+//        processoRecoverDTO.setEdicoes(processoUpdate.getEdicoes());
+//        ProcessoEntity processoEntity = objectMapper.convertValue(processoRecoverDTO, ProcessoEntity.class);
+//        return objectMapper.convertValue(processoRepository.save(processoEntity), ProcessoDTO.class);
+        return null;
     }
 
     public void delete(Integer isProcesso) throws RegraDeNegocioException {

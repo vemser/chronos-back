@@ -21,6 +21,9 @@ public class ProcessoEntity {
     @Column(name = "ID_PROCESSO")
     private Integer idProcesso;
 
+    @Column(name = "IS_ETAPA", insertable = false, updatable = false)
+    private Integer idEtapa;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_ETAPA", referencedColumnName = "ID_ETAPA")
@@ -52,6 +55,4 @@ public class ProcessoEntity {
 
     @Column(name = "DIAS_UTEIS")
     private Integer diasUteis;
-
-
 }

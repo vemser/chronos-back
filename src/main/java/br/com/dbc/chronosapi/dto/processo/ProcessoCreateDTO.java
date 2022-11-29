@@ -1,14 +1,10 @@
 package br.com.dbc.chronosapi.dto.processo;
 
-import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
-import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
-import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
-import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class ProcessoCreateDTO {
@@ -18,23 +14,18 @@ public class ProcessoCreateDTO {
     private String nome;
 
     @NotNull
-    private EtapaEntity etapa;
+    private Set<String> areaEnvolvida;
 
     @NotNull
-    private AreaEnvolvidaEntity areaEnvolvida;
+    private Set<String> responsavel;
 
     @NotNull
-    private ResponsavelEntity responsavel;
+    @NotBlank
+    private String duracaoProcesso;
 
     @NotNull
     private Integer diasUteis;
 
     @NotNull
     private Integer ordemExecucao;
-
-    @NotNull
-    private String duracaoProcesso;
-
-    @NotNull
-    private List<EdicaoEntity> edicoes;
 }
