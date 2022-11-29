@@ -27,7 +27,7 @@ public class EtapaService {
     private final EtapaRepository etapaRepository;
     private final EdicaoService edicaoService;
 
-    public EtapaDTO create(EtapaCreateDTO etapaCreateDTO, Integer idEdicao) throws RegraDeNegocioException {
+    public EtapaDTO create(Integer idEdicao, EtapaCreateDTO etapaCreateDTO) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = edicaoService.findById(idEdicao);
         EtapaEntity etapaEntity = objectMapper.convertValue(etapaCreateDTO, EtapaEntity.class);
         etapaEntity.setEdicao(edicaoEntity);
@@ -51,7 +51,7 @@ public class EtapaService {
 
     public PageDTO<EtapaDTO> list(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<EtapaEntity> paginaDoRepositorio = etapaRepository.findAll(pageRequest);
+        Page<EtapaEntity> paginaDoRepositorio = etapaRepository.findAllByOrOrderByOrdemExecucao(pageRequest);
         List<EtapaDTO> etapasDaPagina = paginaDoRepositorio.getContent().stream()
                 .map(etapaEntity -> {
                     EtapaDTO etapaDTO = objectMapper.convertValue(etapaEntity, EtapaDTO.class);
