@@ -3,7 +3,9 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
+import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
+import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EdicaoRepository;
@@ -13,7 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -26,6 +29,7 @@ public class EdicaoService {
     public EdicaoDTO create(EdicaoCreateDTO edicaoCreateDTO) {
         EdicaoEntity edicaoEntity = objectMapper.convertValue(edicaoCreateDTO, EdicaoEntity.class);
         edicaoEntity.setStatus(Status.ATIVO);
+        edicaoEntity.setEtapas(new HashSet<>());
         EdicaoEntity edicaoSaved = edicaoRepository.save(edicaoEntity);
         return objectMapper.convertValue(edicaoSaved, EdicaoDTO.class);
     }
@@ -59,8 +63,12 @@ public class EdicaoService {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         Page<EdicaoEntity> paginaDoRepositorio = edicaoRepository.findAll(pageRequest);
         List<EdicaoDTO> edicaoDTOList = paginaDoRepositorio.getContent().stream()
-                .map(edicao -> objectMapper.convertValue(edicao, EdicaoDTO.class))
-                .toList();
+                .map(edicao -> {
+                    EdicaoDTO edicaoDTO = objectMapper.convertValue(edicao, EdicaoDTO.class);
+                    edicaoDTO.setEtapas(getEtapasDTO(edicao.getEtapas()));
+                    return edicaoDTO;
+                }).toList();
+
         return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
                 paginaDoRepositorio.getTotalPages(),
                 pagina,
@@ -70,10 +78,17 @@ public class EdicaoService {
 
     public EdicaoEntity findById(Integer id) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = edicaoRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Edição não encontrada"));
+                .orElseThrow(() -> new RegraDeNegocioException("Edição não encontrada!"));
         return edicaoEntity;
     }
 
+    public EdicaoDTO save(EdicaoEntity edicaoEntity) {
+        return objectMapper.convertValue(edicaoRepository.save(edicaoEntity), EdicaoDTO.class);
+    }
 
-
+    private Set<EtapaDTO> getEtapasDTO(Set<EtapaEntity> etapas) {
+        return etapas.stream()
+                .map(etapaEntity -> objectMapper.convertValue(etapaEntity, EtapaDTO.class))
+                .collect(Collectors.toSet());
+    }
 }
