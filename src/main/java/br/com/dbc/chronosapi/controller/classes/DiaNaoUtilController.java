@@ -44,8 +44,8 @@ public class DiaNaoUtilController implements IDiaNaoUtilController {
         return new ResponseEntity<>(diaNaoUtilService.update(idDiaNaoUtil, diaNaoUtilCreateDTO, repeticaoAnual), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id-dia-nao-util}")
-    public ResponseEntity<Void> delete(@Valid @PathVariable("id-dia-nao-util") Integer idDiaNaoUtil) throws RegraDeNegocioException {
+    @DeleteMapping("/{idDiaNaoUtil}")
+    public ResponseEntity<Void> delete(@Valid @PathVariable("idDiaNaoUtil") Integer idDiaNaoUtil) throws RegraDeNegocioException {
         diaNaoUtilService.delete(idDiaNaoUtil);
         return ResponseEntity.noContent().build();
     }
