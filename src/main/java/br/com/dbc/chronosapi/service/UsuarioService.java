@@ -136,7 +136,7 @@ public class UsuarioService {
         usuarioRepository.delete(usuarioEntity);
     }
 
-    private Set<CargoDTO> getCargosDTO(Set<CargoEntity> cargos) {
+    public Set<CargoDTO> getCargosDTO(Set<CargoEntity> cargos) {
         return cargos.stream()
                 .map(cargoEntity -> objectMapper.convertValue(cargoEntity, CargoDTO.class))
                 .collect(Collectors.toSet());
