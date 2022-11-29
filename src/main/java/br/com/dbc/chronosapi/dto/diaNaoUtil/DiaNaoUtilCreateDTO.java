@@ -1,4 +1,4 @@
-package br.com.dbc.chronosapi.dto;
+package br.com.dbc.chronosapi.dto.diaNaoUtil;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

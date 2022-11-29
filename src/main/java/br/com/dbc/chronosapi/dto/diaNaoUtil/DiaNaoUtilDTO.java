@@ -1,4 +1,4 @@
-package br.com.dbc.chronosapi.dto;
+package br.com.dbc.chronosapi.dto.diaNaoUtil;
 
 import lombok.Data;
 

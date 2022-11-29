@@ -1,6 +1,5 @@
 package br.com.dbc.chronosapi.dto.usuario;
 
-import br.com.dbc.chronosapi.dto.CargoDTO;
 import lombok.Data;
 
 import java.util.Set;
