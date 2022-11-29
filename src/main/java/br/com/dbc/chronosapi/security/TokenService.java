@@ -1,6 +1,6 @@
 package br.com.dbc.chronosapi.security;
 
-import br.com.dbc.chronosapi.dto.LoginDTO;
+import br.com.dbc.chronosapi.dto.usuario.LoginDTO;
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import io.jsonwebtoken.Claims;

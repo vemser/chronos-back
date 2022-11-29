@@ -1,7 +1,7 @@
 package br.com.dbc.chronosapi.controller.interfaces;
 
-import br.com.dbc.chronosapi.dto.DiaNaoUtilCreateDTO;
-import br.com.dbc.chronosapi.dto.DiaNaoUtilDTO;
+import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilCreateDTO;
+import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;

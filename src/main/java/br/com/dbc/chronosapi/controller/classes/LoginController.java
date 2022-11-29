@@ -2,7 +2,7 @@ package br.com.dbc.chronosapi.controller.classes;
 
 
 import br.com.dbc.chronosapi.controller.interfaces.ILoginController;
-import br.com.dbc.chronosapi.dto.LoginDTO;
+import br.com.dbc.chronosapi.dto.usuario.LoginDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.security.TokenService;
 import br.com.dbc.chronosapi.service.LoginService;

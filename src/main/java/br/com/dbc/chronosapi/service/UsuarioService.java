@@ -1,6 +1,6 @@
 package br.com.dbc.chronosapi.service;
 
-import br.com.dbc.chronosapi.dto.CargoDTO;
+import br.com.dbc.chronosapi.dto.usuario.CargoDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.chronosapi.dto.usuario.UAdminUpdateDTO;

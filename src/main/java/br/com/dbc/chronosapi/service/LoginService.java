@@ -1,6 +1,6 @@
 package br.com.dbc.chronosapi.service;
 
-import br.com.dbc.chronosapi.dto.LoginDTO;
+import br.com.dbc.chronosapi.dto.usuario.LoginDTO;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.UsuarioRepository;
