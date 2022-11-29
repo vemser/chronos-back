@@ -81,7 +81,7 @@ public class UsuarioService {
         usuarioEntity.setImagem(null);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
         Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
-        usuarioDTO.setCargos(new HashSet<>(cargosDTO));
+        usuarioDTO.setCargos(cargosDTO);
         emailService.sendRecoverPasswordEmail(usuarioEntity, senha, "Senha para acessar o CHRONOS", "email-envio-senha-template.ftl");
         return usuarioDTO;
     }
@@ -120,7 +120,7 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
-    public void enableOrDisable(Integer idUsuario) throws RegraDeNegocioException {
+    public UsuarioDTO enableOrDisable(Integer idUsuario) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = this.findById(idUsuario);
         if(usuarioEntity.getStatus() == Status.ATIVO) {
             usuarioEntity.setStatus(Status.INATIVO);
@@ -129,6 +129,7 @@ public class UsuarioService {
             usuarioEntity.setStatus(Status.ATIVO);
             usuarioRepository.save(usuarioEntity);
         }
+        return objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
     }
 
     public void delete(Integer idUsuario) throws RegraDeNegocioException {

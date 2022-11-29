@@ -125,7 +125,10 @@
 //
 //    }
 //
-//    @Test(expected = RegraDeNegocioException.class)
+
+//import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
+//
+//@Test(expected = RegraDeNegocioException.class)
 //    public void testFindByIdWithFail() throws RegraDeNegocioException {
 //        // Criar variaveis (SETUP)
 //        Integer busca = 10;
