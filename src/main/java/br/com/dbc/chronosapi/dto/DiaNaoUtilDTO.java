@@ -1,6 +1,9 @@
 package br.com.dbc.chronosapi.dto;
 
-public class DiaNaoUtilDTO {
+import lombok.Data;
+
+@Data
+public class DiaNaoUtilDTO extends DiaNaoUtilCreateDTO {
 
     private Integer idDiaNaoUtil;
 }
