@@ -85,7 +85,8 @@ public class EdicaoService {
     }
 
     public EdicaoDTO save(EdicaoEntity edicaoEntity) {
-        return objectMapper.convertValue(edicaoRepository.save(edicaoEntity), EdicaoDTO.class);
+        edicaoRepository.save(edicaoEntity);
+        return objectMapper.convertValue(edicaoEntity, EdicaoDTO.class);
     }
 
     private Set<EtapaDTO> getEtapasDTO(Set<EtapaEntity> etapas) {
