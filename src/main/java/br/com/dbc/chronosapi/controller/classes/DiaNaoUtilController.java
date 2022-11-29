@@ -29,7 +29,11 @@ public class DiaNaoUtilController {
         return new ResponseEntity<>(diaNaoUtilService.create(diaNaoUtilCreateDTO), HttpStatus.OK);
     }
 
-    @PutMapping("/{id-etapa}")
+    @PutMapping("/{idDiaNaoUtil}")
+    public ResponseEntity<DiaNaoUtilDTO> update(@Valid @PathVariable ("idDiaNaoUtil") Integer idDiaNaoUtil,
+                                                @Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) throws RegraDeNegocioException {
+        return new ResponseEntity<>(diaNaoUtilService.update(idDiaNaoUtil, diaNaoUtilCreateDTO), HttpStatus.OK);
+    }
 
 
     @DeleteMapping("/{id-dia-nao-util}")
