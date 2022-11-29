@@ -27,7 +27,7 @@ public class EtapaController implements IEtapaController {
     @PostMapping("/{idEdicao}")
     public ResponseEntity<EtapaDTO> create(@PathVariable("idEdicao") Integer idEdicao,
                                            @Valid @RequestBody EtapaCreateDTO etapaCreateDTO) throws RegraDeNegocioException {
-        return new ResponseEntity<>(etapaService.create(etapaCreateDTO, idEdicao), HttpStatus.OK);
+        return new ResponseEntity<>(etapaService.create(idEdicao, etapaCreateDTO), HttpStatus.OK);
     }
 
     @PutMapping("/{idEtapa}")

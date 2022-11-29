@@ -51,7 +51,7 @@ public class EtapaService {
 
     public PageDTO<EtapaDTO> list(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<EtapaEntity> paginaDoRepositorio = etapaRepository.findAllByOrOrderByOrdemExecucao(pageRequest);
+        Page<EtapaEntity> paginaDoRepositorio = etapaRepository.findAll(pageRequest);
         List<EtapaDTO> etapasDaPagina = paginaDoRepositorio.getContent().stream()
                 .map(etapaEntity -> {
                     EtapaDTO etapaDTO = objectMapper.convertValue(etapaEntity, EtapaDTO.class);

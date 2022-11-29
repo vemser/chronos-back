@@ -24,7 +24,7 @@ public interface IEtapaController {
     )
     @PostMapping("/{idEdicao}")
     ResponseEntity<EtapaDTO> create(@PathVariable("idEdicao") Integer idEdicao,
-                                           @Valid @RequestBody EtapaCreateDTO etapaCreateDTO) throws RegraDeNegocioException;
+                                    @Valid @RequestBody EtapaCreateDTO etapaCreateDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualizar etapa", description = "Atualiza uma etapa do banco de dados")
     @ApiResponses(

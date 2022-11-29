@@ -56,7 +56,7 @@ public interface IEdicaoController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-edicoes")
+    @GetMapping
     ResponseEntity<PageDTO<EdicaoDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException;
 
     @Operation(summary = "Alterar status de uma edição", description = "Desabilita uma edição se ela estiver habilitada e caso ela esteja desabilitada ocorre o inverso.")
