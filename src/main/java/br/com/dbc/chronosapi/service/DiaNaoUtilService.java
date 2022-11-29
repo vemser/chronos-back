@@ -26,7 +26,9 @@ public class DiaNaoUtilService {
 
     public DiaNaoUtilDTO create(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) {
 
-        // code
+        DiaNaoUtilEntity diaNaoUtilEntity = objectMapper.convertValue(diaNaoUtilCreateDTO, DiaNaoUtilEntity.class);
+        DiaNaoUtilEntity diaSaved = diaNaoUtilRepository.save(diaNaoUtilEntity);
+        return objectMapper.convertValue(diaSaved, DiaNaoUtilDTO.class);
 
     }
 
@@ -36,8 +38,9 @@ public class DiaNaoUtilService {
 
     }
 
-    public void delete(Integer idDiaNaoUtil) {
-
+    public void delete(Integer idDiaNaoUtil) throws RegraDeNegocioException {
+        DiaNaoUtilEntity diaNaoUtil = findById(idDiaNaoUtil);
+        diaNaoUtilRepository.delete(diaNaoUtil);
     }
 
     public PageDTO<DiaNaoUtilDTO> list(Integer pagina, Integer tamanho) {
