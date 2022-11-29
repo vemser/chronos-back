@@ -20,8 +20,8 @@ public class ResponsavelEntity {
     @Column(name = "ID_RESPONSAVEL")
     private Integer idResponsavel;
 
-    @Column(name = "RESPONSAVEL")
-    private String responsavel;
+    @Column(name = "NOME")
+    private String nome;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)

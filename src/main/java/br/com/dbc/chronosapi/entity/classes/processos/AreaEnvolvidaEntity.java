@@ -20,8 +20,8 @@ public class AreaEnvolvidaEntity {
     @Column(name = "ID_AREA_ENVOLVIDA")
     private Integer idAreaEnvolvida;
 
-    @Column(name = "AREA_ENVOLVIDA")
-    private String areaEnvolvida;
+    @Column(name = "NOME")
+    private String nome;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
@@ -31,5 +31,4 @@ public class AreaEnvolvidaEntity {
             inverseJoinColumns = @JoinColumn(name = "ID_PROCESSO")
     )
     private Set<ProcessoEntity> processos;
-
 }
