@@ -57,7 +57,7 @@ public class ProcessoService {
 
     public ProcessoDTO update(Integer idProcesso, ProcessoCreateDTO processoUpdate) throws RegraDeNegocioException {
         ProcessoEntity processoRecover = findById(idProcesso);
-        processoRecover.setDescricao(processoUpdate.getDescricao());
+        processoRecover.setNome(processoUpdate.getNome());
         processoRecover.setOrdemExecucao(processoUpdate.getOrdemExecucao());
         processoRecover.setDuracaoProcesso(processoUpdate.getDuracaoProcesso());
         processoRecover.setDiasUteis(processoUpdate.getDiasUteis());

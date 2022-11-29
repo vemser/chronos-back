@@ -11,7 +11,7 @@ public class ProcessoCreateDTO {
 
     @NotNull
     @NotBlank
-    private String descricao;
+    private String nome;
 
     @NotNull
     private Set<String> areasEnvolvidas;

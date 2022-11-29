@@ -31,9 +31,9 @@ public interface IProcessoController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PostMapping()
+    @PostMapping("/{idEtapa}")
     ResponseEntity<ProcessoDTO> create(@PathVariable("idEtapa") Integer idEtapa,
-                                       @RequestBody ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException;
+                                       @RequestBody ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException ;
 
     @Operation(summary = "Atualizar processo", description = "Atualiza um processo do banco de dados")
     @ApiResponses(

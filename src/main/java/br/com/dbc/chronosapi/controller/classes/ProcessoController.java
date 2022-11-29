@@ -23,7 +23,7 @@ public class ProcessoController implements IProcessoController {
     public ResponseEntity<PageDTO<ProcessoDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         return ResponseEntity.ok(processoService.list(pagina, tamanho));
     }
-    @PostMapping()
+    @PostMapping("/{idEtapa}")
     public ResponseEntity<ProcessoDTO> create(@PathVariable("idEtapa") Integer idEtapa,
                                               @RequestBody ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException {
         return new ResponseEntity<>(processoService.create(idEtapa, processoCreateDTO), HttpStatus.OK);

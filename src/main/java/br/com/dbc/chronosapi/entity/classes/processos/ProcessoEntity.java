@@ -21,8 +21,8 @@ public class ProcessoEntity {
     @Column(name = "ID_PROCESSO")
     private Integer idProcesso;
 
-    @Column(name = "DESCRICAO")
-    private String descricao;
+    @Column(name = "NOME")
+    private String nome;
 
     @Column(name = "ID_ETAPA", insertable = false, updatable = false)
     private Integer idEtapa;
