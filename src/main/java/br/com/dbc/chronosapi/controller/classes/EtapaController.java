@@ -24,19 +24,20 @@ public class EtapaController implements IEtapaController {
 
     private final EtapaService etapaService;
 
-    @PostMapping
-    public ResponseEntity<EtapaDTO> create(@Valid @RequestParam EtapaCreateDTO etapaCreateDTO) {
-        return new ResponseEntity<>(etapaService.create(etapaCreateDTO), HttpStatus.OK);
+    @PostMapping("/{idEdicao}")
+    public ResponseEntity<EtapaDTO> create(@PathVariable("idEdicao") Integer idEdicao,
+                                           @Valid @RequestBody EtapaCreateDTO etapaCreateDTO) throws RegraDeNegocioException {
+        return new ResponseEntity<>(etapaService.create(etapaCreateDTO, idEdicao), HttpStatus.OK);
     }
 
-    @PutMapping("/{id-etapa}")
-    public ResponseEntity<EtapaDTO> update(@Valid @PathVariable ("id-etapa") Integer idEtapa,
+    @PutMapping("/{idEtapa}")
+    public ResponseEntity<EtapaDTO> update(@PathVariable ("idEtapa") Integer idEtapa,
                                            @Valid @RequestBody EtapaCreateDTO etapaCreateDTO) throws RegraDeNegocioException {
         return new ResponseEntity<>(etapaService.update(idEtapa, etapaCreateDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id-etapa}")
-    public ResponseEntity<Void> delete(@Valid @PathVariable("id-etapa") Integer idEtapa) throws RegraDeNegocioException {
+    @DeleteMapping("/{idEtapa}")
+    public ResponseEntity<Void> delete(@PathVariable("idEtapa") Integer idEtapa) throws RegraDeNegocioException {
         etapaService.delete(idEtapa);
         return ResponseEntity.noContent().build();
     }

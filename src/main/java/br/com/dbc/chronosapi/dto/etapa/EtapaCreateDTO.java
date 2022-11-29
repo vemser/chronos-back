@@ -11,4 +11,7 @@ public class EtapaCreateDTO {
     @NotNull
     @NotBlank
     private String nome;
+
+    @NotNull
+    private Integer ordemExecucao;
 }

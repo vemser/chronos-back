@@ -25,6 +25,9 @@ public class EtapaEntity {
     @Column(name = "ID_ETAPA")
     private Integer idEtapa;
 
+    @Column(name = "ID_EDICAO", insertable = false, updatable = false)
+    private Integer idEdicao;
+
     @Column(name = "NOME")
     private String nome;
 
