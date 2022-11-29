@@ -3,6 +3,7 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
+import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.ProcessoRepository;
@@ -20,6 +21,8 @@ public class ProcessoService {
     private final ProcessoRepository processoRepository;
     private final ObjectMapper objectMapper;
 
+    private final EtapaService etapaService;
+
     public PageDTO<ProcessoDTO> list(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         Page<ProcessoEntity> paginaDoRepositorio = processoRepository.findAll(pageRequest);
@@ -33,9 +36,10 @@ public class ProcessoService {
                 processoDTOList);
     }
 
-    public ProcessoDTO create(ProcessoCreateDTO processoCreateDTO) {
+    public ProcessoDTO create(Integer idEtapa, ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException {
+        EtapaEntity etapaEntity = etapaService.findById(idEtapa);
         ProcessoEntity processoEntity = objectMapper.convertValue(processoCreateDTO, ProcessoEntity.class);
-
+        processoEntity.setEtapa(etapaEntity);
         return objectMapper.convertValue(processoRepository.save(processoEntity), ProcessoDTO.class);
     }
 
