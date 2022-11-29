@@ -164,8 +164,8 @@ public class ProcessoServiceTest {
     private ProcessoCreateDTO getProcessoCreateDTO() {
         ProcessoCreateDTO processoCreateDTO = new ProcessoCreateDTO();
         processoCreateDTO.setNome("processo1");
-        processoCreateDTO.setResponsavel(getResponsavelEntity());
-        processoCreateDTO.setAreaEnvolvida(getAreaEnvolvida());
+        processoCreateDTO.setResponsavel(new HashSet<>());
+        processoCreateDTO.setAreaEnvolvida(new HashSet<>());
         processoCreateDTO.setOrdemExecucao(10);
         processoCreateDTO.setDuracaoProcesso("1 dia");
         processoCreateDTO.setDiasUteis(1);
@@ -188,7 +188,7 @@ public class ProcessoServiceTest {
     private static ResponsavelEntity getResponsavelEntity() {
         ResponsavelEntity responsavelEntity = new ResponsavelEntity();
         responsavelEntity.setIdResponsavel(10);
-        responsavelEntity.setResponsavel("Fulano");
+        responsavelEntity.setNome("Fulano");
         responsavelEntity.setProcessos(new HashSet<>());
 
         return responsavelEntity;
@@ -196,7 +196,7 @@ public class ProcessoServiceTest {
 
     private static AreaEnvolvidaEntity getAreaEnvolvida() {
         AreaEnvolvidaEntity areaEnvolvidaEntity = new AreaEnvolvidaEntity();
-        areaEnvolvidaEntity.setAreaEnvolvida("Area1");
+        areaEnvolvidaEntity.setNome("Area1");
         areaEnvolvidaEntity.setIdAreaEnvolvida(10);
 
         areaEnvolvidaEntity.setProcessos(new HashSet<>());

@@ -212,7 +212,7 @@ public class EdicaoServiceTest {
     private static ResponsavelEntity getResponsavelEntity() {
         ResponsavelEntity responsavelEntity = new ResponsavelEntity();
         responsavelEntity.setIdResponsavel(10);
-        responsavelEntity.setResponsavel("Fulano");
+        responsavelEntity.setNome("Fulano");
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();
         processoEntities.add(getProcessoEntity());
@@ -223,7 +223,7 @@ public class EdicaoServiceTest {
 
     private static AreaEnvolvidaEntity getAreaEnvolvida() {
         AreaEnvolvidaEntity areaEnvolvidaEntity = new AreaEnvolvidaEntity();
-        areaEnvolvidaEntity.setAreaEnvolvida("Area1");
+        areaEnvolvidaEntity.setNome("Area1");
         areaEnvolvidaEntity.setIdAreaEnvolvida(10);
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();

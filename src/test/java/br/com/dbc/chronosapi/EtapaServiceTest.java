@@ -56,15 +56,17 @@ public class EtapaServiceTest {
     }
 
     @Test
-    public void testCreateEtapaSuccess() {
+    public void testCreateEtapaSuccess() throws RegraDeNegocioException {
         //SETUP
         EtapaCreateDTO etapaCreateDTO = getEtapaCreateDTO();
         EtapaEntity etapaEntity = getEtapaEntity();
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+
 
         when(etapaRepository.save(any(EtapaEntity.class))).thenReturn(etapaEntity);
 
         //ACT
-        EtapaDTO etapaDTO = etapaService.create(etapaCreateDTO);
+        EtapaDTO etapaDTO = etapaService.create(edicaoEntity.getIdEdicao(), etapaCreateDTO);
 
         //ASSERT
         assertNotNull(etapaDTO);
@@ -72,7 +74,7 @@ public class EtapaServiceTest {
     }
 
     @Test
-    public void testEdicaoUpdateSuccess() throws RegraDeNegocioException {
+    public void testEtapaUpdateSuccess() throws RegraDeNegocioException {
 
         // SETUP
         EtapaCreateDTO etapaCreateDTO = getEtapaCreateDTO();
@@ -93,7 +95,7 @@ public class EtapaServiceTest {
     }
 
     @Test
-    public void testEdicaoDeleteSucess() throws RegraDeNegocioException {
+    public void testEtapaDeleteSucess() throws RegraDeNegocioException {
         // SETUP
 
         EtapaEntity etapaEntity = getEtapaEntity();
@@ -212,7 +214,7 @@ public class EtapaServiceTest {
     private static ResponsavelEntity getResponsavelEntity() {
         ResponsavelEntity responsavelEntity = new ResponsavelEntity();
         responsavelEntity.setIdResponsavel(10);
-        responsavelEntity.setResponsavel("Fulano");
+        responsavelEntity.setNome("Fulano");
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();
         processoEntities.add(getProcessoEntity());
@@ -223,7 +225,7 @@ public class EtapaServiceTest {
 
     private static AreaEnvolvidaEntity getAreaEnvolvida() {
         AreaEnvolvidaEntity areaEnvolvidaEntity = new AreaEnvolvidaEntity();
-        areaEnvolvidaEntity.setAreaEnvolvida("Area1");
+        areaEnvolvidaEntity.setNome("Area1");
         areaEnvolvidaEntity.setIdAreaEnvolvida(10);
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();
