@@ -57,18 +57,19 @@ public class ProcessoService {
 
     public ProcessoDTO update(Integer idProcesso, ProcessoCreateDTO processoUpdate) throws RegraDeNegocioException {
         ProcessoEntity processoRecover = findById(idProcesso);
+        processoRecover.setDescricao(processoUpdate.getDescricao());
         processoRecover.setOrdemExecucao(processoUpdate.getOrdemExecucao());
         processoRecover.setDuracaoProcesso(processoUpdate.getDuracaoProcesso());
         processoRecover.setDiasUteis(processoUpdate.getDiasUteis());
-        Set<ResponsavelEntity> responsaveisEntities = processoUpdate.getResponsavel().stream()
+        Set<ResponsavelEntity> responsaveisEntities = processoUpdate.getResponsaveis().stream()
                         .map(responsavel -> (responsavelService.findByNome(responsavel))).collect(Collectors.toSet());
         processoRecover.setResponsaveis(new HashSet<>(responsaveisEntities));
-        Set<AreaEnvolvidaEntity> areaEnvolvidasEntities = processoUpdate.getAreaEnvolvida().stream()
+        Set<AreaEnvolvidaEntity> areaEnvolvidasEntities = processoUpdate.getAreasEnvolvidas().stream()
                 .map(areasEnvolvidas -> (areaEnvolvidaService.findByNome(areasEnvolvidas))).collect(Collectors.toSet());
         processoRecover.setAreasEnvolvidas(new HashSet<>(areaEnvolvidasEntities));
         ProcessoDTO processoDTO = objectMapper.convertValue(processoRepository.save(processoRecover), ProcessoDTO.class);
-        processoDTO.setResponsavel(getResponsavelDTO(responsaveisEntities));
-        processoDTO.setAreaEnvolvida(getAreaEnvolvidaDTO(areaEnvolvidasEntities));
+        processoDTO.setResponsaveis(getResponsavelDTO(responsaveisEntities));
+        processoDTO.setAreasEnvolvidas(getAreaEnvolvidaDTO(areaEnvolvidasEntities));
         return processoDTO;
     }
 

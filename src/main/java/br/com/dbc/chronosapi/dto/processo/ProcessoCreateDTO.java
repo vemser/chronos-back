@@ -11,13 +11,13 @@ public class ProcessoCreateDTO {
 
     @NotNull
     @NotBlank
-    private String nome;
+    private String descricao;
 
     @NotNull
-    private Set<String> areaEnvolvida;
+    private Set<String> areasEnvolvidas;
 
     @NotNull
-    private Set<String> responsavel;
+    private Set<String> responsaveis;
 
     @NotNull
     @NotBlank
