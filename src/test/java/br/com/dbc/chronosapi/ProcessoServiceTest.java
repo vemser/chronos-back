@@ -10,7 +10,10 @@ import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.ProcessoRepository;
+import br.com.dbc.chronosapi.service.AreaEnvolvidaService;
+import br.com.dbc.chronosapi.service.EtapaService;
 import br.com.dbc.chronosapi.service.ProcessoService;
+import br.com.dbc.chronosapi.service.ResponsavelService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -30,6 +33,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -44,7 +48,16 @@ public class ProcessoServiceTest {
     private ProcessoService processoService;
 
     @Mock
+    private ResponsavelService responsavelService;
+
+    @Mock
+    private AreaEnvolvidaService areaEnvolvidaService;
+
+    @Mock
     private ProcessoRepository processoRepository;
+
+    @Mock
+    private EtapaService etapaService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -75,15 +88,18 @@ public class ProcessoServiceTest {
         assertEquals(1, paginaSolicitada.getTotalElementos());
     }
     @Test
-    public void testProcessoCreateSuccess() {
+    public void testProcessoCreateSuccess() throws RegraDeNegocioException {
         //SETUP
         ProcessoCreateDTO processoCreateDTO = getProcessoCreateDTO();
         ProcessoEntity processoEntity = getProcessoEntity();
+        EtapaEntity etapaEntity = getEtapaEntity();
 
         when(processoRepository.save(any(ProcessoEntity.class))).thenReturn(processoEntity);
+        when(etapaService.findById(anyInt())).thenReturn(getEtapaEntity());
 
         //ACT
-        ProcessoDTO processoDTO = processoService.create(processoCreateDTO);
+        ProcessoDTO processoDTO = processoService.create(10, processoCreateDTO);
+        processoDTO.setIdProcesso(10);
 
         //ASSERT
         assertNotNull(processoDTO);
@@ -98,11 +114,16 @@ public class ProcessoServiceTest {
         ProcessoEntity processoEntity = getProcessoEntity();
         ProcessoEntity processoEntity1 = getProcessoEntity();
         processoEntity1.setOrdemExecucao(3);
+        Set<ResponsavelEntity> responsavelEntities = new HashSet<>();
+        responsavelEntities.add(getResponsavelEntity());
+        Set<AreaEnvolvidaEntity> areaEnvolvidaEntities = new HashSet<>();
+        areaEnvolvidaEntities.add(getAreaEnvolvida());
 
         when(processoRepository.findById(anyInt())).thenReturn(Optional.of(processoEntity));
         when(processoRepository.save(any())).thenReturn(processoEntity1);
 
         // ACT
+
         ProcessoDTO processoDTO = processoService.update(processoEntity.getIdProcesso(), processoCreateDTO);
 
         // ASSERT
@@ -168,7 +189,7 @@ public class ProcessoServiceTest {
         processoCreateDTO.setAreaEnvolvida(new HashSet<>());
         processoCreateDTO.setOrdemExecucao(10);
         processoCreateDTO.setDuracaoProcesso("1 dia");
-        processoCreateDTO.setDiasUteis(1);
+        processoCreateDTO.setDiasUteis(2);
 
         return processoCreateDTO;
     }
