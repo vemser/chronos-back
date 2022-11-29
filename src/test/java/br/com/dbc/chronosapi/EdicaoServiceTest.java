@@ -71,21 +71,6 @@ public class EdicaoServiceTest {
     }
 
     @Test
-    public void testFindByIdSuccess() throws RegraDeNegocioException {
-        // SETUP
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-
-        // ACT
-        EdicaoEntity edicao = edicaoService.findById(edicaoEntity.getIdEdicao());
-
-        // ASSERT
-        assertNotNull(edicao);
-        assertEquals(10, edicaoEntity.getIdEdicao());
-
-    }
-
-    @Test
     public void testEdicaoUpdateSuccess() throws RegraDeNegocioException {
 
         // SETUP
@@ -120,6 +105,21 @@ public class EdicaoServiceTest {
         verify(edicaoRepository, times(1)).delete(any());
     }
 
+    @Test
+    public void testFindByIdSuccess() throws RegraDeNegocioException {
+        // SETUP
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+
+        // ACT
+        EdicaoEntity edicao = edicaoService.findById(edicaoEntity.getIdEdicao());
+
+        // ASSERT
+        assertNotNull(edicao);
+        assertEquals(10, edicaoEntity.getIdEdicao());
+
+    }
+
     @Test(expected = RegraDeNegocioException.class)
     public void testEdicaoDeleteFail() throws RegraDeNegocioException {
         // SETUP
@@ -131,17 +131,18 @@ public class EdicaoServiceTest {
         // ASSERT
         verify(edicaoRepository, times(1)).delete(any());
     }
-    @Test(expected = RegraDeNegocioException.class)
-    public void testFindByIdFail() throws RegraDeNegocioException {
-        // SETUP
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.empty());
+    @Test
+    public void testEnableOrDisable(){
+
+        //SET
+        Integer idEdicao = 10;
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
 
         // ACT
-        edicaoService.findById(5);
+        edicaoService.save(edicaoEntity);
 
-        // ASSERT
-        verify(edicaoRepository, times(1)).findById(any());
-
+        //ASSERT
+        verify(edicaoRepository, times(1)).save(any());
     }
 
     @Test
@@ -161,6 +162,48 @@ public class EdicaoServiceTest {
         assertNotNull(paginaSolicitada);
         assertNotNull(paginaSolicitada.getPagina());
         assertEquals(1, paginaSolicitada.getTotalElementos());
+    }
+
+    @Test
+    public void testFindByIdWithSuccess() throws RegraDeNegocioException {
+        // SETUP
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+
+        // ACT
+        EdicaoEntity edicao = edicaoService.findById(edicaoEntity.getIdEdicao());
+
+        // ASSERT
+        assertNotNull(edicao);
+        assertEquals(10, edicaoEntity.getIdEdicao());
+
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void testFindByIdFail() throws RegraDeNegocioException {
+        // SETUP
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        // ACT
+        edicaoService.findById(5);
+
+        // ASSERT
+        verify(edicaoRepository, times(1)).findById(any());
+
+    }
+
+    @Test
+    public void testSaveSuccess(){
+
+        //SETUP
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+
+        //ACT
+        EdicaoDTO edicaoDTO = edicaoService.save(edicaoEntity);
+
+        //ASSERT
+        assertEquals(10, edicaoDTO.getIdEdicao());
+
     }
 
     private EdicaoCreateDTO getEdicaoCreateDTO() {
