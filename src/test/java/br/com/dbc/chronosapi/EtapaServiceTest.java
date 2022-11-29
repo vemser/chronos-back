@@ -203,8 +203,8 @@ public class EtapaServiceTest {
         processoEntity.setEtapa(getEtapaEntity());
         processoEntity.setOrdemExecucao(1);
         processoEntity.setDiasUteis(1);
-        processoEntity.setAreaEnvolvida(getAreaEnvolvida());
-        processoEntity.setResponsavel(getResponsavelEntity());
+        processoEntity.setAreasEnvolvidas(new HashSet<>());
+        processoEntity.setResponsaveis(new HashSet<>());
 
         return processoEntity;
     }

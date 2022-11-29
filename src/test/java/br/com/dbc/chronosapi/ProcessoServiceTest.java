@@ -1,7 +1,6 @@
 package br.com.dbc.chronosapi;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
@@ -16,7 +15,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.tomcat.jni.Proc;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -181,8 +179,8 @@ public class ProcessoServiceTest {
         processoEntity.setEtapa(getEtapaEntity());
         processoEntity.setOrdemExecucao(1);
         processoEntity.setDiasUteis(1);
-        processoEntity.setAreaEnvolvida(getAreaEnvolvida());
-        processoEntity.setResponsavel(getResponsavelEntity());
+        processoEntity.setAreasEnvolvidas(new HashSet<>());
+        processoEntity.setResponsaveis(new HashSet<>());
 
         return processoEntity;
     }
