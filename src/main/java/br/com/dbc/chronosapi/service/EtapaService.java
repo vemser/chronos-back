@@ -73,7 +73,8 @@ public class EtapaService {
     }
 
     public EtapaDTO save(EtapaEntity etapaEntity) {
-        return objectMapper.convertValue(etapaRepository.save(etapaEntity), EtapaDTO.class);
+        etapaRepository.save(etapaEntity);
+        return objectMapper.convertValue(etapaEntity, EtapaDTO.class);
     }
 
     private Set<ProcessoDTO> getProcessosDTO(Set<ProcessoEntity> processos) {

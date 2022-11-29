@@ -125,7 +125,7 @@ public class CargoServiceTest {
     private static ResponsavelEntity getResponsavelEntity() {
         ResponsavelEntity responsavelEntity = new ResponsavelEntity();
         responsavelEntity.setIdResponsavel(10);
-        responsavelEntity.setResponsavel("Fulano");
+//        responsavelEntity.setResponsavel("Fulano");
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();
         processoEntities.add(getProcessoEntity());
@@ -136,7 +136,7 @@ public class CargoServiceTest {
 
     private static AreaEnvolvidaEntity getAreaEnvolvida() {
         AreaEnvolvidaEntity areaEnvolvidaEntity = new AreaEnvolvidaEntity();
-        areaEnvolvidaEntity.setAreaEnvolvida("Area1");
+//        areaEnvolvidaEntity.setAreaEnvolvida("Area1");
         areaEnvolvidaEntity.setIdAreaEnvolvida(10);
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();

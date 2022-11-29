@@ -11,6 +11,7 @@ import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EtapaRepository;
+import br.com.dbc.chronosapi.service.EdicaoService;
 import br.com.dbc.chronosapi.service.EtapaService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +46,8 @@ public class EtapaServiceTest {
     private EtapaService etapaService;
     @Mock
     private EtapaRepository etapaRepository;
+    @Mock
+    private EdicaoService edicaoService;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
@@ -56,15 +59,16 @@ public class EtapaServiceTest {
     }
 
     @Test
-    public void testCreateEtapaSuccess() {
+    public void testCreateEtapaSuccess() throws RegraDeNegocioException {
         //SETUP
         EtapaCreateDTO etapaCreateDTO = getEtapaCreateDTO();
         EtapaEntity etapaEntity = getEtapaEntity();
 
         when(etapaRepository.save(any(EtapaEntity.class))).thenReturn(etapaEntity);
+        when(edicaoService.findById(anyInt())).thenReturn(getEdicaoEntity());
 
         //ACT
-        EtapaDTO etapaDTO = etapaService.create(etapaCreateDTO);
+        EtapaDTO etapaDTO = etapaService.create(1, etapaCreateDTO);
 
         //ASSERT
         assertNotNull(etapaDTO);
@@ -158,6 +162,19 @@ public class EtapaServiceTest {
         assertEquals(1, paginaSolicitada.getTotalElementos());
     }
 
+    @Test
+    public void testSaveSuccess(){
+
+        //SETUP
+        EtapaEntity etapaEntity = getEtapaEntity();
+
+        //ACT
+        EtapaDTO etapaDTO = etapaService.save(etapaEntity);
+
+        //ASSERT
+        assertEquals(10, etapaDTO.getIdEtapa());
+
+    }
 
     private EdicaoCreateDTO getEdicaoCreateDTO() {
         EdicaoCreateDTO edicaoCreateDTO = new EdicaoCreateDTO();
@@ -172,6 +189,18 @@ public class EtapaServiceTest {
         etapaCreateDTO.setNome("Etapa1");
 
         return etapaCreateDTO;
+    }
+
+    private EtapaDTO getEtapaDTO() {
+        EtapaDTO etapaDTO = new EtapaDTO();
+        etapaDTO.setIdEtapa(10);
+        etapaDTO.setOrdemExecucao(2);
+        etapaDTO.setNome("Etapa1");
+
+        etapaDTO.setProcessos(new HashSet<>());
+
+
+        return etapaDTO;
     }
     private static EdicaoEntity getEdicaoEntity() {
 
@@ -212,7 +241,7 @@ public class EtapaServiceTest {
     private static ResponsavelEntity getResponsavelEntity() {
         ResponsavelEntity responsavelEntity = new ResponsavelEntity();
         responsavelEntity.setIdResponsavel(10);
-        responsavelEntity.setResponsavel("Fulano");
+//        responsavelEntity.setResponsavel("Fulano");
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();
         processoEntities.add(getProcessoEntity());
@@ -223,7 +252,7 @@ public class EtapaServiceTest {
 
     private static AreaEnvolvidaEntity getAreaEnvolvida() {
         AreaEnvolvidaEntity areaEnvolvidaEntity = new AreaEnvolvidaEntity();
-        areaEnvolvidaEntity.setAreaEnvolvida("Area1");
+//        areaEnvolvidaEntity.setAreaEnvolvida("Area1");
         areaEnvolvidaEntity.setIdAreaEnvolvida(10);
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();
