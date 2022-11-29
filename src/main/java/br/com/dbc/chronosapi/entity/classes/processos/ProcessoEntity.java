@@ -21,7 +21,7 @@ public class ProcessoEntity {
     @Column(name = "ID_PROCESSO")
     private Integer idProcesso;
 
-    @Column(name = "IS_ETAPA", insertable = false, updatable = false)
+    @Column(name = "ID_ETAPA", insertable = false, updatable = false)
     private Integer idEtapa;
 
     @JsonIgnore

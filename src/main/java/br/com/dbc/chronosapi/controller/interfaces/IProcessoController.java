@@ -32,7 +32,8 @@ public interface IProcessoController {
             }
     )
     @PostMapping()
-    ResponseEntity<ProcessoDTO> create(@RequestBody ProcessoCreateDTO processoCreateDTO);
+    ResponseEntity<ProcessoDTO> create(@PathVariable("idEtapa") Integer idEtapa,
+                                       @RequestBody ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualizar processo", description = "Atualiza um processo do banco de dados")
     @ApiResponses(
