@@ -29,9 +29,9 @@ public class DiaNaoUtilService {
         if (diaNaoUtilCreateDTO.getRepeticaoAnual() == Status.INATIVO) {
             diaNaoUtilEntity.setRepeticaoAnual(Status.INATIVO);
 
-            if (diaNaoUtilCreateDTO.getDataFinal().isBefore(diaNaoUtilCreateDTO.getDataInicial())) {
+            if (diaNaoUtilCreateDTO.getDataFinal().isAfter(diaNaoUtilCreateDTO.getDataInicial())) {
                 diaNaoUtilEntity.setDataFinal(diaNaoUtilCreateDTO.getDataFinal());
-            } else if (diaNaoUtilCreateDTO.getDataFinal().isAfter(diaNaoUtilCreateDTO.getDataInicial())) {
+            } else if (diaNaoUtilCreateDTO.getDataFinal().isBefore(diaNaoUtilCreateDTO.getDataInicial())) {
                 throw new RegraDeNegocioException("A data final antecede a data inicial.");
             }
 
@@ -54,9 +54,9 @@ public class DiaNaoUtilService {
         if (diaNaoUtilUpdate.getRepeticaoAnual() == Status.INATIVO) {
             diaNaoUtilRecover.setRepeticaoAnual(Status.INATIVO);
 
-            if (diaNaoUtilUpdate.getDataFinal().isBefore(diaNaoUtilUpdate.getDataInicial())) {
+            if (diaNaoUtilUpdate.getDataFinal().isAfter(diaNaoUtilUpdate.getDataInicial())) {
                 diaNaoUtilRecover.setDataFinal(diaNaoUtilUpdate.getDataFinal());
-            } else if (diaNaoUtilUpdate.getDataFinal().isAfter(diaNaoUtilUpdate.getDataInicial())) {
+            } else if (diaNaoUtilUpdate.getDataFinal().isBefore(diaNaoUtilUpdate.getDataInicial())) {
                 throw new RegraDeNegocioException("A data final antecede a data inicial.");
             }
 
