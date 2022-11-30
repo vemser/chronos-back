@@ -49,6 +49,11 @@ public class UsuarioController implements IUsuarioController {
         return new ResponseEntity<>(usuarioService.uploadImage(idUsuario, imagem), HttpStatus.OK);
     }
 
+    @PutMapping(value = "/upload-image-perfil", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<UsuarioDTO> uploadImagePerfil(@Valid @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException {
+        return new ResponseEntity<>(usuarioService.uploadImagePerfil(imagem), HttpStatus.OK);
+    }
+
     @PutMapping(value = "/update-perfil")
     public ResponseEntity<UsuarioDTO> updatePerfil(@Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO) throws RegraDeNegocioException, IOException {
         log.info("Atualizando usuário....");

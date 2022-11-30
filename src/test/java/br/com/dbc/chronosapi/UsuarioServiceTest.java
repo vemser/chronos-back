@@ -276,7 +276,7 @@ public class UsuarioServiceTest {
     }
 
     @Test
-    public void deveTestarFindByEmailComSucesso() {
+    public void deveTestarFindByEmailComSucesso() throws RegraDeNegocioException {
         // Criar variaveis (SETUP)
         String email = "luiz@dbccompany.com.br";
         UsuarioEntity usuarioRecuperado = getUsuarioEntity();

@@ -47,7 +47,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("message", exception.getMessage());
+        body.put("errors", List.of(exception.getMessage()));
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 }

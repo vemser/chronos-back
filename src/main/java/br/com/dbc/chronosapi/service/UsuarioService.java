@@ -1,11 +1,7 @@
 package br.com.dbc.chronosapi.service;
 
-import br.com.dbc.chronosapi.dto.usuario.CargoDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
-import br.com.dbc.chronosapi.dto.usuario.UAdminUpdateDTO;
-import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
-import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
+import br.com.dbc.chronosapi.dto.usuario.*;
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
@@ -22,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,6 +61,17 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
+    public UsuarioDTO uploadImagePerfil(MultipartFile imagem) throws RegraDeNegocioException, IOException {
+        Integer idLoggedUser = loginService.getIdLoggedUser();
+
+        UsuarioEntity usuario = findById(idLoggedUser);
+        usuario.setImagem(imagem.getBytes());
+        Set<CargoEntity> cargosEntities = usuario.getCargos();
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuario), UsuarioDTO.class);
+        usuarioDTO.setCargos(getCargosDTO(cargosEntities));
+        return usuarioDTO;
+    }
+
     public UsuarioDTO create(UsuarioCreateDTO usuarioCreateDTO) throws IOException, RegraDeNegocioException {
         UsuarioEntity usuarioEntity = new UsuarioEntity();
         Faker faker = new Faker();
@@ -76,7 +82,7 @@ public class UsuarioService {
         usuarioEntity.setSenha(senhaCriptografada);
         Set<CargoEntity> cargos = usuarioCreateDTO.getCargos().stream()
                 .map(cargo -> (cargoService.findByNome(cargo))).collect(Collectors.toSet());
-        usuarioEntity.setCargos(new HashSet<>(cargos));
+        usuarioEntity.setCargos(cargos);
         usuarioEntity.setStatus(Status.ATIVO);
         usuarioEntity.setImagem(null);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
@@ -113,10 +119,10 @@ public class UsuarioService {
         usuarioRecover.setNome(usuarioUpdate.getNome());
         Set<CargoEntity> cargos = usuarioUpdate.getCargos().stream()
                 .map(cargo -> (cargoService.findByNome(cargo))).collect(Collectors.toSet());
-        usuarioRecover.setCargos(new HashSet<>(cargos));
+        usuarioRecover.setCargos(cargos);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioRecover), UsuarioDTO.class);
         Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
-        usuarioDTO.setCargos(new HashSet<>(cargosDTO));
+        usuarioDTO.setCargos(cargosDTO);
         return usuarioDTO;
     }
 
@@ -143,7 +149,7 @@ public class UsuarioService {
                 .collect(Collectors.toSet());
     }
 
-    public UsuarioEntity findByEmail(String email) {
+    public UsuarioEntity findByEmail(String email) throws RegraDeNegocioException {
         return usuarioRepository.findByEmail(email);
     }
 

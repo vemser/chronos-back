@@ -22,8 +22,7 @@ import java.io.Reader;
 import java.util.HashSet;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EmailServiceTest {
@@ -73,7 +72,7 @@ public class EmailServiceTest {
         verify(emailSender).send((MimeMessage) any());
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void deveRetornarUmaExcecaoQuandoOcorrerUmErroNoEnvioDoEmail() throws IOException, MessagingException, TemplateException {
         Template template = new Template("email-envio-senha-funciona-pfv.html", Reader.nullReader());
 
@@ -83,7 +82,7 @@ public class EmailServiceTest {
         final String assunto = "Recuperação de senha concluída com sucesso.";
 
         when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
-        when(fmConfiguration.getTemplate(nomeTemplate)).thenReturn(template);
+        doThrow(new IOException()).when(fmConfiguration).getTemplate(anyString());
 
         emailService.sendEmail(email, senha, nomeTemplate, assunto);
     }

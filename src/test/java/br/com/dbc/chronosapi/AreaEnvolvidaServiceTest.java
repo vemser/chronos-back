@@ -105,7 +105,7 @@ public class AreaEnvolvidaServiceTest {
         when(areaEnvolvidaRepository.findByNome(anyString())).thenReturn(areaEnvolvidaEntity);
 
         // ACT
-        AreaEnvolvidaEntity areaEnvolvidaEntity1 = areaEnvolvidaService.findByNome(areaEnvolvidaEntity.getNome());
+        AreaEnvolvidaEntity areaEnvolvidaEntity1 = areaEnvolvidaService.findByNomeContainingIgnoreCase(areaEnvolvidaEntity.getNome());
 
         // ASSERT
         assertNotNull(areaEnvolvidaEntity1);
