@@ -18,8 +18,9 @@ public class AreaEnvolvidaService {
 
     public AreaEnvolvidaDTO create(AreaEnvolvidaCreateDTO areaEnvolvidaCreateDTO) {
         AreaEnvolvidaEntity areaEnvolvidaEntity = objectMapper.convertValue(areaEnvolvidaCreateDTO, AreaEnvolvidaEntity.class);
-        areaEnvolvidaEntity.setNome(areaEnvolvidaCreateDTO.getNome());
-        return objectMapper.convertValue(areaEnvolvidaRepository.save(areaEnvolvidaEntity), AreaEnvolvidaDTO.class);
+        AreaEnvolvidaDTO areaEnvolvidaDTO = objectMapper.convertValue(areaEnvolvidaRepository.save(areaEnvolvidaEntity), AreaEnvolvidaDTO.class);
+        areaEnvolvidaDTO.setNome(areaEnvolvidaCreateDTO.getNome());
+        return areaEnvolvidaDTO;
     }
 
     public void delete(Integer idAreaEnvolvida) throws RegraDeNegocioException {

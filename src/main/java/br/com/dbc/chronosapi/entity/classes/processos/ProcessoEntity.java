@@ -32,8 +32,8 @@ public class ProcessoEntity {
     @JoinColumn(name = "ID_ETAPA", referencedColumnName = "ID_ETAPA")
     private EtapaEntity etapa;
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
+//    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "PROCESSO_AREA_ENVOLVIDA",
             joinColumns = @JoinColumn(name = "ID_PROCESSO"),
@@ -41,8 +41,8 @@ public class ProcessoEntity {
     )
     private Set<AreaEnvolvidaEntity> AreasEnvolvidas;
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
+//    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "PROCESSO_RESPONSAVEL",
             joinColumns = @JoinColumn(name = "ID_PROCESSO"),
