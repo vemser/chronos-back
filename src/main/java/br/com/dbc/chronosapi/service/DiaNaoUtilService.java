@@ -23,12 +23,18 @@ public class DiaNaoUtilService {
     private final DiaNaoUtilRepository diaNaoUtilRepository;
 
 
-    public DiaNaoUtilDTO create(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) {
+    public DiaNaoUtilDTO create(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) throws RegraDeNegocioException {
         DiaNaoUtilEntity diaNaoUtilEntity = objectMapper.convertValue(diaNaoUtilCreateDTO, DiaNaoUtilEntity.class);
         diaNaoUtilEntity.setDescricao(diaNaoUtilCreateDTO.getDescricao());
-        if(diaNaoUtilCreateDTO.getRepeticaoAnual() == Status.INATIVO) {
+        if (diaNaoUtilCreateDTO.getRepeticaoAnual() == Status.INATIVO) {
             diaNaoUtilEntity.setRepeticaoAnual(Status.INATIVO);
-            diaNaoUtilEntity.setDataFinal(diaNaoUtilCreateDTO.getDataFinal());
+
+            if (diaNaoUtilCreateDTO.getDataFinal().isBefore(diaNaoUtilCreateDTO.getDataInicial())) {
+                diaNaoUtilEntity.setDataFinal(diaNaoUtilCreateDTO.getDataFinal());
+            } else if (diaNaoUtilCreateDTO.getDataFinal().isAfter(diaNaoUtilCreateDTO.getDataInicial())) {
+                throw new RegraDeNegocioException("A data final antecede a data inicial.");
+            }
+
         } else {
             diaNaoUtilEntity.setRepeticaoAnual(Status.ATIVO);
             diaNaoUtilEntity.setDataFinal(null);
@@ -38,14 +44,22 @@ public class DiaNaoUtilService {
 
     }
 
-    public DiaNaoUtilDTO update(Integer idDiaNaoUtil, DiaNaoUtilCreateDTO diaNaoUtilUpdate) throws RegraDeNegocioException {
+    public DiaNaoUtilDTO update(Integer idDiaNaoUtil, DiaNaoUtilCreateDTO diaNaoUtilUpdate) throws
+            RegraDeNegocioException {
         DiaNaoUtilEntity diaNaoUtilRecover = findById(idDiaNaoUtil);
         diaNaoUtilRecover.setDescricao(diaNaoUtilUpdate.getDescricao());
         diaNaoUtilRecover.setDataInicial(diaNaoUtilUpdate.getDataInicial());
         diaNaoUtilRecover.setDataFinal(diaNaoUtilUpdate.getDataFinal());
 
-        if(diaNaoUtilUpdate.getRepeticaoAnual() == Status.INATIVO) {
+        if (diaNaoUtilUpdate.getRepeticaoAnual() == Status.INATIVO) {
             diaNaoUtilRecover.setRepeticaoAnual(Status.INATIVO);
+
+            if (diaNaoUtilUpdate.getDataFinal().isBefore(diaNaoUtilUpdate.getDataInicial())) {
+                diaNaoUtilRecover.setDataFinal(diaNaoUtilUpdate.getDataFinal());
+            } else if (diaNaoUtilUpdate.getDataFinal().isAfter(diaNaoUtilUpdate.getDataInicial())) {
+                throw new RegraDeNegocioException("A data final antecede a data inicial.");
+            }
+
         } else {
             diaNaoUtilRecover.setRepeticaoAnual(Status.ATIVO);
             diaNaoUtilRecover.setDataFinal(null);
