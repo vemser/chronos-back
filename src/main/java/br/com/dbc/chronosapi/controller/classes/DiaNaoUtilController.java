@@ -31,7 +31,7 @@ public class DiaNaoUtilController implements DiaNaoUtilControllerInterface {
     }
 
     @PostMapping
-    public ResponseEntity<DiaNaoUtilDTO> create(@Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) {
+    public ResponseEntity<DiaNaoUtilDTO> create(@Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) throws RegraDeNegocioException {
         return new ResponseEntity<>(diaNaoUtilService.create(diaNaoUtilCreateDTO), HttpStatus.OK);
     }
 

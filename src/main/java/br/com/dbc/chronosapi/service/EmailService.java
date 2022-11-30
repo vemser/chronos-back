@@ -4,6 +4,7 @@ import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -21,10 +22,9 @@ public class EmailService {
 
     private final freemarker.template.Configuration fmConfiguration;
 
-    private String from =
-            "gustavo.ferreira@dbccompany.com.br \n" +
-            "luiz.martins@dbccompany.com.br \n" +
-            "jean.jardim@dbccompany.com.br";
+    @Value("${spring.mail.username}")
+    private String from;
+
 
     private final JavaMailSender emailSender;
 
