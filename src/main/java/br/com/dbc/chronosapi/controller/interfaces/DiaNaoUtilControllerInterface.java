@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 
-public interface IDiaNaoUtilController {
+public interface DiaNaoUtilControllerInterface {
 
     @Operation(summary = "Listar todos os dias não úteis", description = "Lista todos os dias não úteis presentes no banco de dados")
     @ApiResponses(

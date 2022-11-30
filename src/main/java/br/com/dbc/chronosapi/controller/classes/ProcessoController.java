@@ -1,6 +1,6 @@
 package br.com.dbc.chronosapi.controller.classes;
 
-import br.com.dbc.chronosapi.controller.interfaces.IProcessoController;
+import br.com.dbc.chronosapi.controller.interfaces.ProcessoControllerInterface;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/processo")
-public class ProcessoController implements IProcessoController {
+public class ProcessoController implements ProcessoControllerInterface {
 
     private final ProcessoService processoService;
     @GetMapping

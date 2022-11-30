@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-public interface IEtapaController {
+public interface EtapaControllerInterface {
 
     @Operation(summary = "Criar uma nova etapa", description = "Cria uma nova etapa no banco de dados")
     @ApiResponses(

@@ -1,6 +1,6 @@
 package br.com.dbc.chronosapi.controller.classes;
 
-import br.com.dbc.chronosapi.controller.interfaces.IUsuarioController;
+import br.com.dbc.chronosapi.controller.interfaces.UsuarioControllerInterface;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.usuario.UAdminUpdateDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
@@ -25,7 +25,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/usuario")
-public class UsuarioController implements IUsuarioController {
+public class UsuarioController implements UsuarioControllerInterface {
 
     private final UsuarioService usuarioService;
 

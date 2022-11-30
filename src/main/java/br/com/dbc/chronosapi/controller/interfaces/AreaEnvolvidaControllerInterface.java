@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 
-public interface IAreaEnvolvidaController {
+public interface AreaEnvolvidaControllerInterface {
 
     @Operation(summary = "Criar uma nova área envolvida", description = "Cria uma nova área no banco de dados")
     @ApiResponses(

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 
-public interface IResponsavelController {
+public interface ResponsavelControllerInterface {
 
     @Operation(summary = "Criar um novo responsável", description = "Cria um novo responsável(campo de processo) no banco de dados")
     @ApiResponses(

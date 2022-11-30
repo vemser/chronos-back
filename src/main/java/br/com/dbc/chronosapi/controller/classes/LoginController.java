@@ -1,7 +1,7 @@
 package br.com.dbc.chronosapi.controller.classes;
 
 
-import br.com.dbc.chronosapi.controller.interfaces.ILoginController;
+import br.com.dbc.chronosapi.controller.interfaces.LoginControllerInterface;
 import br.com.dbc.chronosapi.dto.usuario.LoginDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.security.TokenService;
@@ -24,7 +24,7 @@ import javax.validation.Valid;
 @Validated
 @Slf4j
 @RequiredArgsConstructor
-public class LoginController implements ILoginController {
+public class LoginController implements LoginControllerInterface {
 
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;

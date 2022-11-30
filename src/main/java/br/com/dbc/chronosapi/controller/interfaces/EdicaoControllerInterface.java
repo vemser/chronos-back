@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-public interface IEdicaoController {
+public interface EdicaoControllerInterface {
 
     @Operation(summary = "Criar uma nova edição", description = "Cria uma nova edição do banco de dados")
     @ApiResponses(

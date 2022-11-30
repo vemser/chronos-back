@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 
-public interface ILoginController {
+public interface LoginControllerInterface {
 
     @Operation(summary = "Autenticar Login", description = "Autentica um usuário presente no banco de dados enviando-lhe o token de acesso.")
     @ApiResponses(

@@ -1,6 +1,6 @@
 package br.com.dbc.chronosapi.controller.classes;
 
-import br.com.dbc.chronosapi.controller.interfaces.IEtapaController;
+import br.com.dbc.chronosapi.controller.interfaces.EtapaControllerInterface;
 import br.com.dbc.chronosapi.dto.etapa.EtapaCreateDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
@@ -20,7 +20,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequestMapping("/etapa")
-public class EtapaController implements IEtapaController {
+public class EtapaController implements EtapaControllerInterface {
 
     private final EtapaService etapaService;
 

@@ -1,6 +1,6 @@
 package br.com.dbc.chronosapi.controller.classes;
 
-import br.com.dbc.chronosapi.controller.interfaces.IResponsavelController;
+import br.com.dbc.chronosapi.controller.interfaces.ResponsavelControllerInterface;
 import br.com.dbc.chronosapi.dto.processo.ResponsavelCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequestMapping("/responsavel")
-public class ResponsavelController implements IResponsavelController {
+public class ResponsavelController implements ResponsavelControllerInterface {
     private final ResponsavelService responsavelService;
 
     @PostMapping

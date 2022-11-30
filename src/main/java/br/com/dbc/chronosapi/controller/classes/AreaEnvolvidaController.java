@@ -1,6 +1,6 @@
 package br.com.dbc.chronosapi.controller.classes;
 
-import br.com.dbc.chronosapi.controller.interfaces.IAreaEnvolvidaController;
+import br.com.dbc.chronosapi.controller.interfaces.AreaEnvolvidaControllerInterface;
 import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequestMapping("/areaEnvolvida")
-public class AreaEnvolvidaController implements IAreaEnvolvidaController {
+public class AreaEnvolvidaController implements AreaEnvolvidaControllerInterface {
     private final AreaEnvolvidaService areaEnvolvidaService;
 
     @PostMapping

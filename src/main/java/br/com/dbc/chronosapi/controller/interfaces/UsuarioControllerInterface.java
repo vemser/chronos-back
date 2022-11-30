@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 
-public interface IUsuarioController {
+public interface UsuarioControllerInterface {
 
     @Operation(summary = "Listar usuários", description = "Lista todos os usuários presentes no banco de dados.")
     @ApiResponses(

@@ -1,7 +1,7 @@
 package br.com.dbc.chronosapi.controller.classes;
 
 
-import br.com.dbc.chronosapi.controller.interfaces.IDiaNaoUtilController;
+import br.com.dbc.chronosapi.controller.interfaces.DiaNaoUtilControllerInterface;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilCreateDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilDTO;
@@ -21,7 +21,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequestMapping("/dia-nao-util")
-public class DiaNaoUtilController implements IDiaNaoUtilController {
+public class DiaNaoUtilController implements DiaNaoUtilControllerInterface {
 
     private final DiaNaoUtilService diaNaoUtilService;
 

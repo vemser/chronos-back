@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-public interface IProcessoController {
+public interface ProcessoControllerInterface {
 
     @Operation(summary = "Listar todos os processos", description = "Lista todos os processos do banco de dados")
     @ApiResponses(

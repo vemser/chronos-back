@@ -1,6 +1,6 @@
 package br.com.dbc.chronosapi.controller.classes;
 
-import br.com.dbc.chronosapi.controller.interfaces.IEdicaoController;
+import br.com.dbc.chronosapi.controller.interfaces.EdicaoControllerInterface;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
@@ -21,7 +21,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/edicao")
 
-public class EdicaoController implements IEdicaoController {
+public class EdicaoController implements EdicaoControllerInterface {
 
     private final EdicaoService edicaoService;
 
