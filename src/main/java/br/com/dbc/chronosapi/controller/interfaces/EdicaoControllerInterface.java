@@ -23,7 +23,7 @@ public interface EdicaoControllerInterface {
             }
     )
     @PostMapping()
-     ResponseEntity<EdicaoDTO> create(@Valid @RequestBody EdicaoCreateDTO edicaoCreateDTO);
+     ResponseEntity<EdicaoDTO> create(@Valid @RequestBody EdicaoCreateDTO edicaoCreateDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualizar edição", description = "Atualiza uma edição do banco de dados")
     @ApiResponses(

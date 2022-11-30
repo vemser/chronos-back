@@ -28,21 +28,31 @@ public class EdicaoService {
     private final ObjectMapper objectMapper;
 
 
-    public EdicaoDTO create(EdicaoCreateDTO edicaoCreateDTO) {
+    public EdicaoDTO create(EdicaoCreateDTO edicaoCreateDTO) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = objectMapper.convertValue(edicaoCreateDTO, EdicaoEntity.class);
-        edicaoEntity.setStatus(Status.ATIVO);
-        edicaoEntity.setEtapas(new HashSet<>());
-        EdicaoEntity edicaoSaved = edicaoRepository.save(edicaoEntity);
-        return objectMapper.convertValue(edicaoSaved, EdicaoDTO.class);
+
+        if(edicaoCreateDTO.getDataInicial().isBefore(edicaoCreateDTO.getDataFinal())) {
+            edicaoEntity.setStatus(Status.ATIVO);
+            edicaoEntity.setEtapas(new HashSet<>());
+            EdicaoEntity edicaoSaved = edicaoRepository.save(edicaoEntity);
+            return objectMapper.convertValue(edicaoSaved, EdicaoDTO.class);
+        } else {
+            throw new RegraDeNegocioException("A data final antecede a data inicial.");
+        }
     }
 
     public EdicaoDTO update(Integer idEdicao, EdicaoCreateDTO edicaoUpdate) throws RegraDeNegocioException {
         EdicaoEntity edicaoRecover = findById(idEdicao);
-        edicaoRecover.setNome(edicaoUpdate.getNome());
-        edicaoRecover.setDataInicial(edicaoUpdate.getDataInicial());
-        edicaoRecover.setDataFinal(edicaoUpdate.getDataFinal());
-        edicaoRepository.save(edicaoRecover);
-        return objectMapper.convertValue(edicaoRecover, EdicaoDTO.class);
+
+        if(edicaoUpdate.getDataInicial().isBefore(edicaoUpdate.getDataFinal())) {
+            edicaoRecover.setNome(edicaoUpdate.getNome());
+            edicaoRecover.setDataInicial(edicaoUpdate.getDataInicial());
+            edicaoRecover.setDataFinal(edicaoUpdate.getDataFinal());
+            edicaoRepository.save(edicaoRecover);
+            return objectMapper.convertValue(edicaoRecover, EdicaoDTO.class);
+        } else {
+            throw new RegraDeNegocioException("A data final antecede a data inicial.");
+        }
     }
 
     public void delete(Integer idEdicao) throws RegraDeNegocioException {
