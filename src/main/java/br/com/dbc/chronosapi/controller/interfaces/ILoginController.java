@@ -45,5 +45,4 @@ public interface ILoginController {
     )
     @PostMapping("/change-password")
      ResponseEntity<String> updatePassword(String password) throws RegraDeNegocioException;
-
 }

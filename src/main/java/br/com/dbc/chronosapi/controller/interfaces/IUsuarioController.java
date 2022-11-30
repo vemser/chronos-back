@@ -30,6 +30,17 @@ public interface IUsuarioController {
     @GetMapping
     ResponseEntity<PageDTO<UsuarioDTO>> list(Integer pagina, Integer tamanho);
 
+    @Operation(summary = "Buscar o usuário logado no sistema", description = "Busca o usuário logado no sistema")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Usuário encontrado!!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/logged-user")
+    ResponseEntity <UsuarioDTO> getLoggedUser() throws RegraDeNegocioException;
+
     @Operation(summary = "Criar usuário", description = "Cria um novo usuário no banco de dados")
     @ApiResponses(
             value = {

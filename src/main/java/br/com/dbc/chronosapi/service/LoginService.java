@@ -1,6 +1,6 @@
 package br.com.dbc.chronosapi.service;
 
-import br.com.dbc.chronosapi.dto.usuario.LoginDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.UsuarioRepository;
@@ -25,14 +25,14 @@ public class LoginService {
         return Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
     }
 
-    public LoginDTO getLoggedUser() {
+    public UsuarioDTO getLoggedUser() {
         Optional<UsuarioEntity> userLogged = findById(getIdLoggedUser());
-        return objectMapper.convertValue(userLogged, LoginDTO.class);
+        return objectMapper.convertValue(userLogged, UsuarioDTO.class);
     }
 
     public String updatePassword(String senha) throws RegraDeNegocioException {
-        LoginDTO login = getLoggedUser();
-        UsuarioEntity usuarioEntity = usuarioRepository.findByEmail(login.getEmail());
+        UsuarioDTO usuarioDTO = getLoggedUser();
+        UsuarioEntity usuarioEntity = usuarioRepository.findByEmail(usuarioDTO.getEmail());
         if(usuarioEntity != null ) {
             usuarioEntity.setSenha(passwordEncoder.encode(senha));
             usuarioRepository.save(usuarioEntity);

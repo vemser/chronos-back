@@ -46,6 +46,4 @@ public class LoginController implements ILoginController {
     public ResponseEntity<String> updatePassword(String password) throws RegraDeNegocioException {
         return ResponseEntity.ok(loginService.updatePassword(password));
     }
-
-
 }

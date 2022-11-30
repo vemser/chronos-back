@@ -3,6 +3,7 @@ package br.com.dbc.chronosapi;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.dto.usuario.LoginDTO;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
@@ -86,11 +87,11 @@ public class LoginServiceTest {
         when(loginService.findById(anyInt())).thenReturn(Optional.of(usuarioEntity));
 
         // ACT
-        LoginDTO loginDTO = loginService.getLoggedUser();
-        loginDTO.setEmail("luiz@gemail.com");
+        UsuarioDTO usuarioDTO = loginService.getLoggedUser();
+        usuarioDTO.setEmail("luiz@gemail.com");
 
-        assertNotNull(loginDTO);
-        assertEquals(usuarioEntity.getEmail(), loginDTO.getEmail());
+        assertNotNull(usuarioDTO);
+        assertEquals(usuarioEntity.getEmail(), usuarioDTO.getEmail());
 
     }
 
@@ -101,11 +102,11 @@ public class LoginServiceTest {
         UsernamePasswordAuthenticationToken dto = new UsernamePasswordAuthenticationToken(1,null, Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(dto);
         UsuarioEntity usuarioEntity = getUsuarioEntity();
-        LoginDTO loginDTO = loginService.getLoggedUser();
+        UsuarioDTO usuarioDTO = loginService.getLoggedUser();
 
         when(loginService.findById(anyInt())).thenReturn(Optional.of(usuarioEntity));
 //        when(loginService.getLoggedUser()).thenReturn(loginDTO);
-        when(usuarioRepository.findByEmail(loginDTO.getEmail())).thenReturn(usuarioEntity);
+        when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(usuarioEntity);
         when(passwordEncoder.encode(anyString())).thenReturn("Ahu82hajij878");
 
         //ACT
@@ -132,7 +133,6 @@ public class LoginServiceTest {
 
         //ASSERT
         verify(usuarioRepository, times(1)).save(any(UsuarioEntity.class));
-
     }
 
     @Test

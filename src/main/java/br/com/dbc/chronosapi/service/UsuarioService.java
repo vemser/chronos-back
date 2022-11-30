@@ -52,6 +52,15 @@ public class UsuarioService {
         );
     }
 
+    public UsuarioDTO buscarUsuarioLogado() throws RegraDeNegocioException {
+        UsuarioDTO loggedUser = loginService.getLoggedUser();
+        UsuarioEntity usuarioEntity = findById(loggedUser.getIdUsuario());
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+        usuarioDTO.setCargos(getCargosDTO(usuarioEntity.getCargos()));
+        usuarioDTO.setImagem(usuarioEntity.getImagem());
+        return usuarioDTO;
+    }
+
     public UsuarioDTO uploadImage(Integer idUsuario, MultipartFile imagem) throws RegraDeNegocioException, IOException {
         UsuarioEntity usuario = findById(idUsuario);
         usuario.setImagem(imagem.getBytes());

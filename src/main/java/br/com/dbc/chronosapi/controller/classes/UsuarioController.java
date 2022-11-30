@@ -34,6 +34,11 @@ public class UsuarioController implements IUsuarioController {
         return new ResponseEntity<>(usuarioService.list(pagina, tamanho), HttpStatus.OK);
     }
 
+    @GetMapping("/logged-user")
+    public ResponseEntity <UsuarioDTO> getLoggedUser() throws RegraDeNegocioException {
+        return new ResponseEntity<>(usuarioService.buscarUsuarioLogado(), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<UsuarioDTO> create(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException, IOException {
         log.info("Cadastrando usuário...");
