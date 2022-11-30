@@ -136,7 +136,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void testSendRecoverPasswordEmail(){
+    public void testSendRecoverPasswordEmail() throws RegraDeNegocioException {
 
         //SETUP
         UsuarioEntity usuarioEntity = getUsuarioEntity();

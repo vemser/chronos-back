@@ -41,11 +41,11 @@ public class LoginService {
         throw new RegraDeNegocioException("Usuario não encontrado!");
     }
 
-    public String sendRecoverPasswordEmail(String email) {
+    public String sendRecoverPasswordEmail(String email) throws RegraDeNegocioException {
         UsuarioEntity usuario = usuarioRepository.findByEmail(email);
 
 //        String token = tokenService.getToken(usuario, true);
-        emailService.sendRecoverPasswordEmail(usuario, usuario.getSenha(),"Teste recuperação senha","email-recuperacao-senha-template.ftl");
+        emailService.sendEmailRecuperacaoSenha(usuario.getEmail(), usuario.getSenha());
 
         return "Verifique seu email para trocar a senha.";
     }

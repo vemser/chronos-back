@@ -127,7 +127,7 @@ public class UsuarioServiceTest {
         assertNotNull(usuarioDTO);
         assertEquals(1, usuarioDTO.getIdUsuario());
         verify(usuarioRepository, times(1)).save(any());
-        verify(emailService, times(1)).sendRecoverPasswordEmail(any(), any(), anyString(), anyString());
+        verify(emailService, times(1)).sendEmailEnvioSenha(any(), any());
     }
 
     @Test
