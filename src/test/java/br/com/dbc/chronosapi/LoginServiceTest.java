@@ -1,10 +1,8 @@
 package br.com.dbc.chronosapi;
 
-import br.com.dbc.chronosapi.controller.classes.LoginController;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.dto.usuario.LoginDTO;
-import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
@@ -12,7 +10,9 @@ import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
+import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.UsuarioRepository;
+import br.com.dbc.chronosapi.service.EmailService;
 import br.com.dbc.chronosapi.service.LoginService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -36,8 +37,8 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LoginServiceTest {
@@ -46,6 +47,10 @@ public class LoginServiceTest {
     private LoginService loginService;
     @Mock
     private UsuarioRepository usuarioRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private EmailService emailService;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
@@ -89,6 +94,72 @@ public class LoginServiceTest {
 
     }
 
+    @Test
+    public void testUpdatePassword() throws RegraDeNegocioException {
+
+        //SETUP
+        UsernamePasswordAuthenticationToken dto = new UsernamePasswordAuthenticationToken(1,null, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(dto);
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+        LoginDTO loginDTO = loginService.getLoggedUser();
+
+        when(loginService.findById(anyInt())).thenReturn(Optional.of(usuarioEntity));
+//        when(loginService.getLoggedUser()).thenReturn(loginDTO);
+        when(usuarioRepository.findByEmail(loginDTO.getEmail())).thenReturn(usuarioEntity);
+        when(passwordEncoder.encode(anyString())).thenReturn("Ahu82hajij878");
+
+        //ACT
+        loginService.updatePassword("rrrrrrrrrrrrr");
+
+        //ASSERT
+        verify(usuarioRepository, times(1)).save(any(UsuarioEntity.class));
+
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void testUpdatePasswordFail() throws RegraDeNegocioException {
+
+        //SETUP
+        UsernamePasswordAuthenticationToken dto = new UsernamePasswordAuthenticationToken(1,null, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(dto);
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+
+        when(loginService.findById(anyInt())).thenReturn(Optional.of(usuarioEntity));
+
+
+        //ACT
+        loginService.updatePassword("rrrrrrrrrrrrr");
+
+        //ASSERT
+        verify(usuarioRepository, times(1)).save(any(UsuarioEntity.class));
+
+    }
+
+    @Test
+    public void testSendRecoverPasswordEmail(){
+
+        //SETUP
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+        when(usuarioRepository.findByEmail(anyString())).thenReturn(usuarioEntity);
+
+        //ACT
+        loginService.sendRecoverPasswordEmail("test@gmail.com");
+
+    }
+    @Test
+    public void testFindByEmailandSenha() {
+
+        //SETUP
+        Optional<UsuarioEntity> usuarioEntity = Optional.of(getUsuarioEntity());
+        when(usuarioRepository.findByEmailAndSenha(anyString(), anyString())).thenReturn(usuarioEntity);
+
+        //ACT
+        Optional<UsuarioEntity> usuarioEntity1 = loginService.findByEmailAndSenha("dawdawd@gmail.com", "wadwad12");
+
+        assertNotNull(usuarioEntity1);
+        assertEquals("luiz@gemail.com", usuarioEntity1.get().getEmail());
+
+    }
 
 
     private static UsuarioEntity getUsuarioEntity() {
