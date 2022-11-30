@@ -39,6 +39,6 @@ public class EdicaoEntity {
     private Status status;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "edicao", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "edicao", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     Set<EtapaEntity> etapas;
 }

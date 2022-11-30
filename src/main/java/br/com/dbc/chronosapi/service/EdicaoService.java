@@ -50,7 +50,7 @@ public class EdicaoService {
         edicaoRepository.delete(edicaoRecover);
     }
 
-    public void enableOrDisable(Integer idEdicao) throws RegraDeNegocioException {
+    public EdicaoDTO enableOrDisable(Integer idEdicao) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = this.findById(idEdicao);
         if(edicaoEntity.getStatus() == Status.ATIVO) {
             edicaoEntity.setStatus(Status.INATIVO);
@@ -59,6 +59,7 @@ public class EdicaoService {
             edicaoEntity.setStatus(Status.ATIVO);
             edicaoRepository.save(edicaoEntity);
         }
+        return objectMapper.convertValue(edicaoEntity, EdicaoDTO.class);
     }
 
     public PageDTO<EdicaoDTO> list(Integer pagina, Integer tamanho) {

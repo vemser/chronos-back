@@ -35,7 +35,7 @@ public class EtapaEntity {
     private Integer ordemExecucao;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_EDICAO", referencedColumnName = "ID_EDICAO")
     private EdicaoEntity edicao;
 

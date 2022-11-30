@@ -34,7 +34,7 @@ public class AreaEnvolvidaService {
                 .orElseThrow(() -> new RegraDeNegocioException("Responsavel não encontrado!"));
     }
 
-    public AreaEnvolvidaEntity findByNome(String nome) {
-        return areaEnvolvidaRepository.findByNome(nome);
+    public AreaEnvolvidaEntity findByNomeContainingIgnoreCase(String nome) {
+        return areaEnvolvidaRepository.findByNomeContainingIgnoreCase(nome);
     }
 }

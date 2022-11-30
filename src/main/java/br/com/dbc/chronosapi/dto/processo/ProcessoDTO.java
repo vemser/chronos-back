@@ -1,5 +1,6 @@
 package br.com.dbc.chronosapi.dto.processo;
 
+
 import lombok.Data;
 
 import java.util.Set;

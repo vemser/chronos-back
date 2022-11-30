@@ -35,4 +35,8 @@ public class ResponsavelService {
     public ResponsavelEntity findByNome(String nome) {
         return responsavelRepository.findByNome(nome);
     }
+
+    public ResponsavelEntity findByNomeContainingIgnoreCase(String nome) {
+        return responsavelRepository.findByNomeContainingIgnoreCase(nome);
+    }
 }
