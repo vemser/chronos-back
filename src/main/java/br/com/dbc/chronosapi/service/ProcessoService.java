@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,7 +33,8 @@ public class ProcessoService {
     private final EtapaService etapaService;
 
     public PageDTO<ProcessoDTO> list(Integer pagina, Integer tamanho) {
-        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        Sort ordeancao = Sort.by("ordemExecucao", "nome");
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho, ordeancao);
         Page<ProcessoEntity> paginaDoRepositorio = processoRepository.findAll(pageRequest);
         List<ProcessoDTO> processoDTOList = paginaDoRepositorio.getContent().stream()
                 .map(processo -> {

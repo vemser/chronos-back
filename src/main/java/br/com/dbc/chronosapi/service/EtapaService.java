@@ -3,6 +3,7 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaCreateDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
+import br.com.dbc.chronosapi.dto.etapa.EtapaProcessoRelatorioDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,11 +32,12 @@ public class EtapaService {
     private final ProcessoRepository processoRepository;
 
     public PageDTO<EtapaDTO> list(Integer pagina, Integer tamanho) {
-        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        Sort ordenacao = Sort.by("ordemExecucao", "nome");
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho, ordenacao);
         Page<EtapaEntity> paginaDoRepositorio = etapaRepository.findAll(pageRequest);
         List<EtapaDTO> etapasDaPagina = paginaDoRepositorio.getContent().stream()
                 .map(etapaEntity -> {
-                    etapaEntity.setProcessos(processoRepository.findAllByOrderByOrdemExecucaoAndNome());
+                    etapaEntity.setProcessos(processoRepository.findProcessosByOrdemExecucao(etapaEntity.getIdEtapa()));
                     EtapaDTO etapaDTO = objectMapper.convertValue(etapaEntity, EtapaDTO.class);
                     return etapaDTO;
                 }).toList();
@@ -44,6 +47,11 @@ public class EtapaService {
                 tamanho,
                 etapasDaPagina
         );
+    }
+
+    public Set<ProcessoEntity> listarRelatorioEtapaProcesso (Integer id) {
+//        ProcessoDTO processoDTO = objectMapper.convertValue(etapaRepository.findProcessosByOrdemExecucao(id), ProcessoDTO.class);
+        return  processoRepository.findProcessosByOrdemExecucao(id);
     }
 
     public EtapaDTO create(Integer idEdicao, EtapaCreateDTO etapaCreateDTO) throws RegraDeNegocioException {

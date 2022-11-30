@@ -7,6 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EtapaRepository extends JpaRepository<EtapaEntity, Integer> {
 
-    EtapaEntity findAllByOrderByOrdemExecucaoAndNome();
-
 }
