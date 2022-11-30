@@ -10,14 +10,4 @@ import java.util.Set;
 @Repository
 public interface ProcessoRepository extends JpaRepository<ProcessoEntity, Integer> {
 
-    Set<ProcessoEntity> findByOrderByOrdemExecucaoAsc();
-
-    @Query("select p " +
-            "from PROCESSO p " +
-            "join p.etapa e " +
-            "join e.processos pr " +
-            "where pr.idEtapa = ?1 " +
-            "order by p.ordemExecucao")
-    Set<ProcessoEntity> findProcessosByOrdemExecucao(Integer idEtapa);
-
 }

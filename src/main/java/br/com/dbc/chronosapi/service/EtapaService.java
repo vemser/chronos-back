@@ -3,7 +3,6 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaCreateDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
-import br.com.dbc.chronosapi.dto.etapa.EtapaProcessoRelatorioDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
@@ -37,8 +36,10 @@ public class EtapaService {
         Page<EtapaEntity> paginaDoRepositorio = etapaRepository.findAll(pageRequest);
         List<EtapaDTO> etapasDaPagina = paginaDoRepositorio.getContent().stream()
                 .map(etapaEntity -> {
-                    etapaEntity.setProcessos(processoRepository.findProcessosByOrdemExecucao(etapaEntity.getIdEtapa()));
                     EtapaDTO etapaDTO = objectMapper.convertValue(etapaEntity, EtapaDTO.class);
+                    etapaDTO.setProcessos(etapaEntity.getProcessos().stream()
+                            .map(processoEntity -> objectMapper.convertValue(processoEntity, ProcessoDTO.class))
+                            .collect(Collectors.toList()));
                     return etapaDTO;
                 }).toList();
         return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
@@ -47,11 +48,6 @@ public class EtapaService {
                 tamanho,
                 etapasDaPagina
         );
-    }
-
-    public Set<ProcessoEntity> listarRelatorioEtapaProcesso (Integer id) {
-//        ProcessoDTO processoDTO = objectMapper.convertValue(etapaRepository.findProcessosByOrdemExecucao(id), ProcessoDTO.class);
-        return  processoRepository.findProcessosByOrdemExecucao(id);
     }
 
     public EtapaDTO create(Integer idEdicao, EtapaCreateDTO etapaCreateDTO) throws RegraDeNegocioException {

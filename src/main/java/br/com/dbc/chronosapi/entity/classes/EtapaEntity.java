@@ -39,7 +39,8 @@ public class EtapaEntity {
     @JoinColumn(name = "ID_EDICAO", referencedColumnName = "ID_EDICAO")
     private EdicaoEntity edicao;
 
-//    @JsonIgnore
-    @OneToMany(mappedBy = "etapa", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OrderBy(value = "ordemExecucao asc")
+    @OneToMany(mappedBy = "etapa", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<ProcessoEntity> processos;
 }
