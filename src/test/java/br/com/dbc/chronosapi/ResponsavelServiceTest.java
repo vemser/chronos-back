@@ -113,6 +113,22 @@ public class ResponsavelServiceTest {
 
     }
 
+    @Test
+    public void testFindByNomeContainingIgnoreCase() throws RegraDeNegocioException {
+        // SETUP
+        ResponsavelEntity responsavelEntity = getResponsavelEntity();
+        when(responsavelRepository.findByNomeContainingIgnoreCase(anyString())).thenReturn(responsavelEntity);
+
+        // ACT
+        ResponsavelEntity responsavelEntity1 = responsavelService.findByNomeContainingIgnoreCase(responsavelEntity.getNome());
+
+        // ASSERT
+        assertNotNull(responsavelEntity1);
+        assertEquals("Fulano", responsavelEntity1.getNome());
+
+    }
+
+
     private static ResponsavelEntity getResponsavelEntity() {
         ResponsavelEntity responsavelEntity = new ResponsavelEntity();
         responsavelEntity.setIdResponsavel(10);

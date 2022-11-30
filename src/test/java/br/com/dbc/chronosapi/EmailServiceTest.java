@@ -89,16 +89,16 @@ public class EmailServiceTest {
 
     @Test
     public void deveRetornarUmaExcecaoQuandoOcorrerUmErroNoEnvioDoEmailRecover() throws IOException {
-        Template template = new Template("email-recuperacao-senha-template.html", Reader.nullReader());
+        Template template = new Template("email-recuperacao-senhaaaaa.html", Reader.nullReader());
 
         final String email = "teste@email.com.br";
-        final String senha = "senhaaocontrario";
-        final String nomeTemplate = "template.html";
-        final String link = "recuperadorDeSenha@dbccompany.com.br";
+        final String senha = "$123senha";
+        final String link = "google.com";
+        final String nomeTemplate = "email-envio-senha-template.html";
         final String assunto = "Recuperação de senha concluída com sucesso.";
 
         when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
-        when(fmConfiguration.getTemplate(nomeTemplate)).thenReturn(template);
+        doThrow(new IOException()).when(fmConfiguration).getTemplate(anyString());
 
         emailService.sendEmailRecover(email, senha, link, nomeTemplate, assunto);
     }

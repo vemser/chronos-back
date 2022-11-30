@@ -112,6 +112,25 @@ public class UsuarioServiceTest {
     }
 
     @Test
+    public void deveTestarUploadImageComSucessoPerfil() throws RegraDeNegocioException, IOException {
+        // SETUP
+        UsuarioEntity usuario = getUsuarioEntity();
+        byte[] imagemBytes = new byte[5*1024];
+        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
+
+        when(loginService.getIdLoggedUser()).thenReturn(usuario.getIdUsuario());
+        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any())).thenReturn(getUsuarioEntity());
+
+        // ACT
+        UsuarioDTO usuarioDTO = usuarioService.uploadImagePerfil(imagem);
+
+        // ASSERT
+        assertNotEquals(usuario.getImagem(), usuarioDTO.getImagem());
+        assertNotNull(usuarioDTO);
+    }
+
+    @Test
     public void deveTestarCreateComSucesso() throws RegraDeNegocioException, IOException {
         // SETUP
         String senhaCriptografada = "$oieufr9873he4j809fy43";

@@ -23,9 +23,8 @@ public class DiaNaoUtilCreateDTO {
     @Schema(description = "data final do dia não util")
     private LocalDate dataFinal;
 
+    @Schema(description = "status da repetição anual do dia não util")
     private Status repeticaoAnual;
 
-//    @Schema(description = "status da repetição anual do dia não util")
-//    private Status repeticaoAnual;
 
 }
