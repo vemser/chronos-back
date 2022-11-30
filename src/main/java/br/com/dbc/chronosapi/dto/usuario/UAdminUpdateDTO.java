@@ -16,5 +16,5 @@ public class UAdminUpdateDTO {
 
     @NotNull
     @Schema(description = "Cargos do usuário")
-    private List<String> cargos;
+    private List<CargoDTO> cargos;
 }
