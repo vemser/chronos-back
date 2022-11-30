@@ -90,7 +90,7 @@ public class UsuarioService {
         usuarioEntity.setEmail(usuarioCreateDTO.getEmail());
         usuarioEntity.setSenha(senhaCriptografada);
         Set<CargoEntity> cargos = usuarioCreateDTO.getCargos().stream()
-                .map(cargo -> (cargoService.findByNome(cargo))).collect(Collectors.toSet());
+                .map(cargo -> (cargoService.findByNome(cargo.getNome()))).collect(Collectors.toSet());
         usuarioEntity.setCargos(cargos);
         usuarioEntity.setStatus(Status.ATIVO);
         usuarioEntity.setImagem(null);
