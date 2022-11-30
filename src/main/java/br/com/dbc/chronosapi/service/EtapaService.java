@@ -38,8 +38,10 @@ public class EtapaService {
                 .map(etapaEntity -> {
                     EtapaDTO etapaDTO = objectMapper.convertValue(etapaEntity, EtapaDTO.class);
                     etapaDTO.setProcessos(etapaEntity.getProcessos().stream()
-                            .map(processoEntity -> objectMapper.convertValue(processoEntity, ProcessoDTO.class))
-                            .collect(Collectors.toList()));
+                            .map(processoEntity -> {
+                                processoRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
+                                return objectMapper.convertValue(processoEntity, ProcessoDTO.class);
+                            }).collect(Collectors.toList()));
                     return etapaDTO;
                 }).toList();
         return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
