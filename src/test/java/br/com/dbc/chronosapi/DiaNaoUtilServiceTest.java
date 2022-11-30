@@ -53,7 +53,7 @@ public class DiaNaoUtilServiceTest {
     public void testCreateDiaNaoUtilWithINATIVOSucess() throws RegraDeNegocioException {
         DiaNaoUtilCreateDTO diaNaoUtilCreateDTO = getDiaNaoUtilCreateDTO();
         DiaNaoUtilEntity diaNaoUtilEntity = getDiaNaoUtilEntity();
-        diaNaoUtilEntity.setRepeticaoAnual(Status.ATIVO);
+        diaNaoUtilCreateDTO.setRepeticaoAnual(Status.INATIVO);
         when(diaNaoUtilRepository.save(any(DiaNaoUtilEntity.class))).thenReturn(diaNaoUtilEntity);
 
         DiaNaoUtilDTO diaNaoUtilDTO = diaNaoUtilService.create(diaNaoUtilCreateDTO);
@@ -66,6 +66,7 @@ public class DiaNaoUtilServiceTest {
     public void testCreateDiaNaoUtilWithATIVOSucess() throws RegraDeNegocioException {
         DiaNaoUtilCreateDTO diaNaoUtilCreateDTO = getDiaNaoUtilCreateDTO();
         DiaNaoUtilEntity diaNaoUtilEntity = getDiaNaoUtilEntity();
+        diaNaoUtilCreateDTO.setRepeticaoAnual(Status.ATIVO);
         when(diaNaoUtilRepository.save(any(DiaNaoUtilEntity.class))).thenReturn(diaNaoUtilEntity);
 
         DiaNaoUtilDTO diaNaoUtilDTO = diaNaoUtilService.create(diaNaoUtilCreateDTO);
@@ -80,7 +81,7 @@ public class DiaNaoUtilServiceTest {
         DiaNaoUtilEntity diaNaoUtilEntity = getDiaNaoUtilEntity();
         DiaNaoUtilEntity diaNaoUtilEntityUpdate = getDiaNaoUtilEntity();
         diaNaoUtilEntityUpdate.setDescricao("Ano novo");
-        diaNaoUtilEntityUpdate.setRepeticaoAnual(Status.ATIVO);
+        diaNaoUtilCreateDTO.setRepeticaoAnual(Status.ATIVO);
         when(diaNaoUtilRepository.findById(anyInt())).thenReturn(Optional.of(diaNaoUtilEntity));
         when(diaNaoUtilRepository.save(any())).thenReturn(diaNaoUtilEntityUpdate);
 
@@ -97,7 +98,7 @@ public class DiaNaoUtilServiceTest {
         DiaNaoUtilEntity diaNaoUtilEntity = getDiaNaoUtilEntity();
         DiaNaoUtilEntity diaNaoUtilEntityUpdate = getDiaNaoUtilEntity();
         diaNaoUtilEntityUpdate.setDescricao("Ano novo");
-        diaNaoUtilEntityUpdate.setRepeticaoAnual(Status.INATIVO);
+        diaNaoUtilCreateDTO.setRepeticaoAnual(Status.INATIVO);
         when(diaNaoUtilRepository.findById(anyInt())).thenReturn(Optional.of(diaNaoUtilEntity));
         when(diaNaoUtilRepository.save(any())).thenReturn(diaNaoUtilEntityUpdate);
 
@@ -156,6 +157,7 @@ public class DiaNaoUtilServiceTest {
         diaNaoUtilCreateDTO.setDescricao("natal");
         diaNaoUtilCreateDTO.setDataInicial(LocalDate.parse("1900-12-25"));
         diaNaoUtilCreateDTO.setDataFinal(LocalDate.parse("2022-12-25"));
+        diaNaoUtilCreateDTO.setRepeticaoAnual(Status.INATIVO);
         return diaNaoUtilCreateDTO;
     }
 
