@@ -33,7 +33,7 @@ public interface DiaNaoUtilControllerInterface {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<DiaNaoUtilDTO> create(@Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO);
+    ResponseEntity<DiaNaoUtilDTO> create(@Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualizar dia não util", description = "Atualiza um dia não util no banco de dados")
     @ApiResponses(
