@@ -127,7 +127,7 @@ public class UsuarioService {
         UsuarioEntity usuarioRecover = findById(id);
         usuarioRecover.setNome(usuarioUpdate.getNome());
         Set<CargoEntity> cargos = usuarioUpdate.getCargos().stream()
-                .map(cargo -> (cargoService.findByNome(cargo))).collect(Collectors.toSet());
+                .map(cargo -> (cargoService.findByNome(cargo.getNome()))).collect(Collectors.toSet());
         usuarioRecover.setCargos(cargos);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioRecover), UsuarioDTO.class);
         Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
