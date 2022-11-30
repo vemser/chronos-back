@@ -56,7 +56,7 @@ public class DiaNaoUtilServiceTest {
         diaNaoUtilEntity.setRepeticaoAnual(Status.ATIVO);
         when(diaNaoUtilRepository.save(any(DiaNaoUtilEntity.class))).thenReturn(diaNaoUtilEntity);
 
-        DiaNaoUtilDTO diaNaoUtilDTO = diaNaoUtilService.create(diaNaoUtilCreateDTO, Status.INATIVO);
+        DiaNaoUtilDTO diaNaoUtilDTO = diaNaoUtilService.create(diaNaoUtilCreateDTO);
 
         assertNotNull(diaNaoUtilDTO);
         assertEquals(10, diaNaoUtilDTO.getIdDiaNaoUtil());
@@ -68,7 +68,7 @@ public class DiaNaoUtilServiceTest {
         DiaNaoUtilEntity diaNaoUtilEntity = getDiaNaoUtilEntity();
         when(diaNaoUtilRepository.save(any(DiaNaoUtilEntity.class))).thenReturn(diaNaoUtilEntity);
 
-        DiaNaoUtilDTO diaNaoUtilDTO = diaNaoUtilService.create(diaNaoUtilCreateDTO, Status.ATIVO);
+        DiaNaoUtilDTO diaNaoUtilDTO = diaNaoUtilService.create(diaNaoUtilCreateDTO);
 
         assertNotNull(diaNaoUtilDTO);
         assertEquals(10, diaNaoUtilDTO.getIdDiaNaoUtil());
@@ -84,7 +84,7 @@ public class DiaNaoUtilServiceTest {
         when(diaNaoUtilRepository.findById(anyInt())).thenReturn(Optional.of(diaNaoUtilEntity));
         when(diaNaoUtilRepository.save(any())).thenReturn(diaNaoUtilEntityUpdate);
 
-        DiaNaoUtilDTO diaNaoUtilDTO = diaNaoUtilService.update(diaNaoUtilEntity.getIdDiaNaoUtil(), diaNaoUtilCreateDTO, Status.INATIVO);
+        DiaNaoUtilDTO diaNaoUtilDTO = diaNaoUtilService.update(diaNaoUtilEntity.getIdDiaNaoUtil(), diaNaoUtilCreateDTO);
 
         assertNotNull(diaNaoUtilDTO);
         assertEquals("Ano novo", diaNaoUtilDTO.getDescricao());
@@ -101,7 +101,7 @@ public class DiaNaoUtilServiceTest {
         when(diaNaoUtilRepository.findById(anyInt())).thenReturn(Optional.of(diaNaoUtilEntity));
         when(diaNaoUtilRepository.save(any())).thenReturn(diaNaoUtilEntityUpdate);
 
-        DiaNaoUtilDTO diaNaoUtilDTO = diaNaoUtilService.update(diaNaoUtilEntity.getIdDiaNaoUtil(), diaNaoUtilCreateDTO, Status.ATIVO);
+        DiaNaoUtilDTO diaNaoUtilDTO = diaNaoUtilService.update(diaNaoUtilEntity.getIdDiaNaoUtil(), diaNaoUtilCreateDTO);
 
         assertNotNull(diaNaoUtilDTO);
         assertEquals("Ano novo", diaNaoUtilDTO.getDescricao());
