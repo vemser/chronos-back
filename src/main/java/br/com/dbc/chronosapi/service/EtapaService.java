@@ -9,6 +9,7 @@ import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EtapaRepository;
+import br.com.dbc.chronosapi.repository.ProcessoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,24 @@ public class EtapaService {
     private final ObjectMapper objectMapper;
     private final EtapaRepository etapaRepository;
     private final EdicaoService edicaoService;
+    private final ProcessoRepository processoRepository;
+
+    public PageDTO<EtapaDTO> list(Integer pagina, Integer tamanho) {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        Page<EtapaEntity> paginaDoRepositorio = etapaRepository.findAll(pageRequest);
+        List<EtapaDTO> etapasDaPagina = paginaDoRepositorio.getContent().stream()
+                .map(etapaEntity -> {
+                    etapaEntity.setProcessos(processoRepository.findAllByOrderByOrdemExecucaoAndNome());
+                    EtapaDTO etapaDTO = objectMapper.convertValue(etapaEntity, EtapaDTO.class);
+                    return etapaDTO;
+                }).toList();
+        return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                paginaDoRepositorio.getTotalPages(),
+                pagina,
+                tamanho,
+                etapasDaPagina
+        );
+    }
 
     public EtapaDTO create(Integer idEdicao, EtapaCreateDTO etapaCreateDTO) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = edicaoService.findById(idEdicao);
@@ -47,23 +66,6 @@ public class EtapaService {
     public void delete(Integer idEtapa) throws RegraDeNegocioException {
         EtapaEntity etapaRecover = findById(idEtapa);
         etapaRepository.delete(etapaRecover);
-    }
-
-    public PageDTO<EtapaDTO> list(Integer pagina, Integer tamanho) {
-        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<EtapaEntity> paginaDoRepositorio = etapaRepository.findAll(pageRequest);
-        List<EtapaDTO> etapasDaPagina = paginaDoRepositorio.getContent().stream()
-                .map(etapaEntity -> {
-                    EtapaDTO etapaDTO = objectMapper.convertValue(etapaEntity, EtapaDTO.class);
-                    etapaDTO.setProcessos(getProcessosDTO(etapaEntity.getProcessos()));
-                    return etapaDTO;
-                }).toList();
-        return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
-                paginaDoRepositorio.getTotalPages(),
-                pagina,
-                tamanho,
-                etapasDaPagina
-        );
     }
 
     public EtapaEntity findById(Integer id) throws RegraDeNegocioException {
