@@ -17,8 +17,9 @@ public class ResponsavelService {
 
     public ResponsavelDTO create(ResponsavelCreateDTO responsavelCreateDTO) {
         ResponsavelEntity responsavelEntity = objectMapper.convertValue(responsavelCreateDTO, ResponsavelEntity.class);
-        responsavelEntity.setNome(responsavelCreateDTO.getNome());
-        return objectMapper.convertValue(responsavelRepository.save(responsavelEntity), ResponsavelDTO.class);
+        ResponsavelDTO responsavelDTO = objectMapper.convertValue(responsavelRepository.save(responsavelEntity), ResponsavelDTO.class);
+        responsavelDTO.setNome(responsavelCreateDTO.getNome());
+        return responsavelDTO;
     }
 
     public void delete(Integer idResponsavel) throws RegraDeNegocioException {

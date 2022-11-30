@@ -41,5 +41,4 @@ public class EdicaoEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "edicao", fetch = FetchType.LAZY)
     Set<EtapaEntity> etapas;
-
 }
