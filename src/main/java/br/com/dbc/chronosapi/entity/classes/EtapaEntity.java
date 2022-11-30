@@ -40,6 +40,6 @@ public class EtapaEntity {
     private EdicaoEntity edicao;
 
 //    @JsonIgnore
-    @OneToMany(mappedBy = "etapa", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "etapa", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<ProcessoEntity> processos;
 }
