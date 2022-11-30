@@ -1,9 +1,8 @@
 package br.com.dbc.chronosapi.controller.interfaces;
 
+import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilCreateDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilDTO;
-import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
@@ -35,8 +33,7 @@ public interface IDiaNaoUtilController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<DiaNaoUtilDTO> create(@Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO,
-                                         @Valid @RequestParam Status repeticaoAnual);
+    ResponseEntity<DiaNaoUtilDTO> create(@Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO);
 
     @Operation(summary = "Atualizar dia não util", description = "Atualiza um dia não util no banco de dados")
     @ApiResponses(
@@ -47,8 +44,7 @@ public interface IDiaNaoUtilController {
             }
     )
     ResponseEntity<DiaNaoUtilDTO> update(@Valid @PathVariable ("idDiaNaoUtil") Integer idDiaNaoUtil,
-                                         @Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO,
-                                         @Valid @RequestParam Status repeticaoAnual) throws RegraDeNegocioException;
+                                         @Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Deletar um dia não util", description = "Deleta um dia não util do banco de dados")
     @ApiResponses(

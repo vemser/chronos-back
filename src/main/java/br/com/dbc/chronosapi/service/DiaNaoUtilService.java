@@ -23,10 +23,10 @@ public class DiaNaoUtilService {
     private final DiaNaoUtilRepository diaNaoUtilRepository;
 
 
-    public DiaNaoUtilDTO create(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO, Status repeticaoAnual) {
+    public DiaNaoUtilDTO create(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) {
         DiaNaoUtilEntity diaNaoUtilEntity = objectMapper.convertValue(diaNaoUtilCreateDTO, DiaNaoUtilEntity.class);
         diaNaoUtilEntity.setDescricao(diaNaoUtilCreateDTO.getDescricao());
-        if(Status.INATIVO == repeticaoAnual) {
+        if(diaNaoUtilCreateDTO.getRepeticaoAnual() == Status.INATIVO) {
             diaNaoUtilEntity.setRepeticaoAnual(Status.INATIVO);
             diaNaoUtilEntity.setDataFinal(diaNaoUtilCreateDTO.getDataFinal());
         } else {
@@ -38,13 +38,13 @@ public class DiaNaoUtilService {
 
     }
 
-    public DiaNaoUtilDTO update(Integer idDiaNaoUtil, DiaNaoUtilCreateDTO diaNaoUtilUpdate, Status repeticaoAnual) throws RegraDeNegocioException {
+    public DiaNaoUtilDTO update(Integer idDiaNaoUtil, DiaNaoUtilCreateDTO diaNaoUtilUpdate) throws RegraDeNegocioException {
         DiaNaoUtilEntity diaNaoUtilRecover = findById(idDiaNaoUtil);
         diaNaoUtilRecover.setDescricao(diaNaoUtilUpdate.getDescricao());
         diaNaoUtilRecover.setDataInicial(diaNaoUtilUpdate.getDataInicial());
         diaNaoUtilRecover.setDataFinal(diaNaoUtilUpdate.getDataFinal());
 
-        if(Status.INATIVO == repeticaoAnual) {
+        if(diaNaoUtilUpdate.getRepeticaoAnual() == Status.INATIVO) {
             diaNaoUtilRecover.setRepeticaoAnual(Status.INATIVO);
         } else {
             diaNaoUtilRecover.setRepeticaoAnual(Status.ATIVO);

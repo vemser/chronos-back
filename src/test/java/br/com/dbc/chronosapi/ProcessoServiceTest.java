@@ -185,8 +185,8 @@ public class ProcessoServiceTest {
     private ProcessoCreateDTO getProcessoCreateDTO() {
         ProcessoCreateDTO processoCreateDTO = new ProcessoCreateDTO();
         processoCreateDTO.setNome("processo1");
-        processoCreateDTO.setResponsavel(new HashSet<>());
-        processoCreateDTO.setAreaEnvolvida(new HashSet<>());
+        processoCreateDTO.setResponsaveis(new HashSet<>());
+        processoCreateDTO.setAreasEnvolvidas(new HashSet<>());
         processoCreateDTO.setOrdemExecucao(10);
         processoCreateDTO.setDuracaoProcesso("1 dia");
         processoCreateDTO.setDiasUteis(2);

@@ -2,10 +2,9 @@ package br.com.dbc.chronosapi.controller.classes;
 
 
 import br.com.dbc.chronosapi.controller.interfaces.IDiaNaoUtilController;
+import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilCreateDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilDTO;
-import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.service.DiaNaoUtilService;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +31,14 @@ public class DiaNaoUtilController implements IDiaNaoUtilController {
     }
 
     @PostMapping
-    public ResponseEntity<DiaNaoUtilDTO> create(@Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO,
-                                                @Valid @RequestParam Status repeticaoAnual) {
-        return new ResponseEntity<>(diaNaoUtilService.create(diaNaoUtilCreateDTO, repeticaoAnual), HttpStatus.OK);
+    public ResponseEntity<DiaNaoUtilDTO> create(@Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) {
+        return new ResponseEntity<>(diaNaoUtilService.create(diaNaoUtilCreateDTO), HttpStatus.OK);
     }
 
     @PutMapping("/{idDiaNaoUtil}")
     public ResponseEntity<DiaNaoUtilDTO> update(@Valid @PathVariable ("idDiaNaoUtil") Integer idDiaNaoUtil,
-                                                @Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO,
-                                                @Valid @RequestParam Status repeticaoAnual) throws RegraDeNegocioException {
-        return new ResponseEntity<>(diaNaoUtilService.update(idDiaNaoUtil, diaNaoUtilCreateDTO, repeticaoAnual), HttpStatus.OK);
+                                                @Valid @RequestBody DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) throws RegraDeNegocioException {
+        return new ResponseEntity<>(diaNaoUtilService.update(idDiaNaoUtil, diaNaoUtilCreateDTO), HttpStatus.OK);
     }
 
     @DeleteMapping("/{idDiaNaoUtil}")
