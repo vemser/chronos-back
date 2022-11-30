@@ -56,11 +56,11 @@ public class ProcessoService {
         processoEntity.setEtapa(etapaEntity);
         etapaService.save(etapaEntity);
         Set<AreaEnvolvidaEntity> areas = processoCreateDTO.getAreasEnvolvidas().stream()
-                .map(area -> areaEnvolvidaService.findByNomeContainingIgnoreCase(area))
+                .map(area -> areaEnvolvidaService.findByNomeContainingIgnoreCase(area.getNome()))
                 .collect(Collectors.toSet());
         processoEntity.setAreasEnvolvidas(areas);
         Set<ResponsavelEntity> responsaveis = processoCreateDTO.getAreasEnvolvidas().stream()
-                .map(responsavel -> responsavelService.findByNomeContainingIgnoreCase(responsavel))
+                .map(responsavel -> responsavelService.findByNomeContainingIgnoreCase(responsavel.getNome()))
                 .collect(Collectors.toSet());
         processoEntity.setResponsaveis(responsaveis);
         ProcessoEntity processoSaved = processoRepository.save(processoEntity);
@@ -77,11 +77,11 @@ public class ProcessoService {
         processoRecover.setDuracaoProcesso(processoUpdate.getDuracaoProcesso());
         processoRecover.setDiasUteis(processoUpdate.getDiasUteis());
         Set<AreaEnvolvidaEntity> areaEnvolvidasEntities = processoUpdate.getAreasEnvolvidas().stream()
-                .map(area -> areaEnvolvidaService.findByNomeContainingIgnoreCase(area))
+                .map(area -> areaEnvolvidaService.findByNomeContainingIgnoreCase(area.getNome()))
                 .collect(Collectors.toSet());
         processoRecover.setAreasEnvolvidas(areaEnvolvidasEntities);
         Set<ResponsavelEntity> responsaveisEntities = processoUpdate.getAreasEnvolvidas().stream()
-                .map(responsavel -> responsavelService.findByNomeContainingIgnoreCase(responsavel))
+                .map(responsavel -> responsavelService.findByNomeContainingIgnoreCase(responsavel.getNome()))
                 .collect(Collectors.toSet());
         processoRecover.setResponsaveis(responsaveisEntities);
         ProcessoDTO processoDTO = objectMapper.convertValue(processoRepository.save(processoRecover), ProcessoDTO.class);

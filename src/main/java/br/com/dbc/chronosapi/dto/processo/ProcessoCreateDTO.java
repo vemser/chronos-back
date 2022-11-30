@@ -14,10 +14,10 @@ public class ProcessoCreateDTO {
     private String nome;
 
     @NotNull
-    private Set<String> areasEnvolvidas;
+    private Set<ResponsavelCreateDTO> areasEnvolvidas;
 
     @NotNull
-    private Set<String> responsaveis;
+    private Set<ResponsavelCreateDTO> responsaveis;
 
     @NotNull
     @NotBlank

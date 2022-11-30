@@ -4,7 +4,6 @@ import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -22,20 +21,22 @@ public class EmailService {
 
     private final freemarker.template.Configuration fmConfiguration;
 
-    @Value("${spring.mail.username}")
-    private String from;
+    private String from =
+            "gustavo.ferreira@dbccompany.com.br \n" +
+            "luiz.martins@dbccompany.com.br \n" +
+            "jean.jardim@dbccompany.com.br";
 
     private final JavaMailSender emailSender;
 
     public void sendEmailEnvioSenha(String email, String senha) throws RegraDeNegocioException {
         String subject = "Sua conta foi criada com sucesso!";
-        sendEmail(email, senha, "envio-senha-template.html", subject);
+        sendEmail(email, senha, "email-envio-senha-template.html", subject);
     }
 
     public void sendEmailRecuperacaoSenha(String email, String token) throws RegraDeNegocioException {
         String subject = "Recuperação de senha concluída com sucesso!";
         String link = "recuperadorDeSenha@dbccompany.com.br";
-        sendEmailRecover(email, token, link,"email-recuperacao-senha-template.html", subject);
+        sendEmailRecover(email, token, link, "email-recuperacao-senha-template.html", subject);
     }
 
     public void sendEmail(String email, String senha, String nomeTemplate, String assunto) {
@@ -51,7 +52,9 @@ public class EmailService {
         } catch (MessagingException | IOException | TemplateException e) {
             e.printStackTrace();
         }
-    } public void sendEmailRecover(String email, String senha, String link, String nomeTemplate, String assunto) {
+    }
+
+    public void sendEmailRecover(String email, String senha, String link, String nomeTemplate, String assunto) {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
 
         try {
@@ -65,17 +68,19 @@ public class EmailService {
             e.printStackTrace();
         }
     }
+
     public String getContentFromTemplate(String nomeTemplate, String senha) throws IOException, TemplateException {
         Map<String, Object> dados = new HashMap<>();
-        dados.put("email", from);
+        dados.put("emailSuporte", from);
         dados.put("senha", senha);
         Template template = fmConfiguration.getTemplate(nomeTemplate);
         return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
     }
-    public String getContentFromTemplateRecover(String nomeTemplate, String senha, String link) throws IOException, TemplateException {
+
+    public String getContentFromTemplateRecover(String nomeTemplate, String token, String link) throws IOException, TemplateException {
         Map<String, Object> dados = new HashMap<>();
-        dados.put("email", from);
-        dados.put("senha", senha);
+        dados.put("emailSuporte", from);
+        dados.put("token", token);
         dados.put("link", link);
         Template template = fmConfiguration.getTemplate(nomeTemplate);
         return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
