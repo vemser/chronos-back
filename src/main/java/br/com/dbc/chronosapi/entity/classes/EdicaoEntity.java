@@ -39,6 +39,7 @@ public class EdicaoEntity {
     private Status status;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "edicao", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    Set<EtapaEntity> etapas;
+    @OrderBy(value = "ordemExecucao asc")
+    @OneToMany(mappedBy = "edicao", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<EtapaEntity> etapas;
 }

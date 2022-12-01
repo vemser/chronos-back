@@ -10,7 +10,6 @@ import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EdicaoRepository;
 import br.com.dbc.chronosapi.repository.EtapaRepository;
-import br.com.dbc.chronosapi.repository.ProcessoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,9 +27,7 @@ public class EdicaoService {
 
     private final EdicaoRepository edicaoRepository;
     private final ObjectMapper objectMapper;
-
     private EtapaRepository etapaRepository;
-    private ProcessoRepository processoRepository;
 
     public EdicaoDTO create(EdicaoCreateDTO edicaoCreateDTO) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = objectMapper.convertValue(edicaoCreateDTO, EdicaoEntity.class);
@@ -118,7 +115,11 @@ public class EdicaoService {
         List<EdicaoDTO> edicaoDTOList = paginaDoRepositorio.getContent().stream()
                 .map(edicao -> {
                     EdicaoDTO edicaoDTO = objectMapper.convertValue(edicao, EdicaoDTO.class);
-                    edicaoDTO.setEtapas(getEtapasDTO(edicao.getEtapas()));
+                    edicaoDTO.setEtapas(edicao.getEtapas().stream()
+                            .map(etapaEntity -> {
+//                                etapaRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
+                                return objectMapper.convertValue(etapaEntity, EtapaDTO.class);
+                            }).collect(Collectors.toList()));
                     return edicaoDTO;
                 }).toList();
 
