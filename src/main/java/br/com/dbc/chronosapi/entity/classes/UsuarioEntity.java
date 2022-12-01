@@ -37,9 +37,8 @@ public class UsuarioEntity implements UserDetails {
     @Column(name = "SENHA")
     private String senha;
 
-    @Lob
-    @Column(name = "IMAGEM")
-    private byte[] imagem;
+    @OneToOne(mappedBy = "usuario")
+    private FotoEntity foto;
 
     @Column(name = "STATUS")
     private Status status;
