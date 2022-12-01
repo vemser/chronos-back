@@ -115,7 +115,7 @@ public class EdicaoService {
         return objectMapper.convertValue(edicaoEntityCloneSaved, EdicaoDTO.class);
     }
 
-    public PageDTO<EdicaoDTO> list(Integer pagina, Integer tamanho) {
+    public PageDTO<EdicaoDTO> listComEtapa(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         Page<EdicaoEntity> paginaDoRepositorio = edicaoRepository.findAll(pageRequest);
         List<EdicaoDTO> edicaoDTOList = paginaDoRepositorio.getContent().stream()
@@ -126,6 +126,24 @@ public class EdicaoService {
 //                                etapaRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
                                 return objectMapper.convertValue(etapaEntity, EtapaDTO.class);
                             }).collect(Collectors.toList()));
+                    return edicaoDTO;
+                }).toList();
+
+        return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                paginaDoRepositorio.getTotalPages(),
+                pagina,
+                tamanho,
+                edicaoDTOList);
+    }
+
+    public PageDTO<EdicaoDTO> list(Integer pagina, Integer tamanho) {
+
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        Page<EdicaoEntity> paginaDoRepositorio = edicaoRepository.findAll(pageRequest);
+
+        List<EdicaoDTO> edicaoDTOList = paginaDoRepositorio.getContent().stream()
+                .map(edicao -> {
+                    EdicaoDTO edicaoDTO = objectMapper.convertValue(edicao, EdicaoDTO.class);
                     return edicaoDTO;
                 }).toList();
 

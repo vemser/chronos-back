@@ -8,6 +8,7 @@ import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
+import br.com.dbc.chronosapi.repository.EdicaoRepository;
 import br.com.dbc.chronosapi.repository.EtapaRepository;
 import br.com.dbc.chronosapi.repository.ProcessoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +29,7 @@ public class EtapaService {
     private final ObjectMapper objectMapper;
     private final EtapaRepository etapaRepository;
     private final EdicaoService edicaoService;
+    private final EdicaoRepository edicaoRepository;
     private final ProcessoRepository processoRepository;
 
     public PageDTO<EtapaDTO> list(Integer pagina, Integer tamanho) {
@@ -50,6 +52,17 @@ public class EtapaService {
                 tamanho,
                 etapasDaPagina
         );
+    }
+
+    public List<EtapaDTO> listEtapasDaEdicao(Integer idEdicao) throws RegraDeNegocioException {
+
+        EdicaoEntity edicaoEntity = edicaoService.findById(idEdicao);
+        return edicaoEntity.getEtapas().stream()
+                .map(etapaEntity -> {
+                    etapaRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
+                    return objectMapper.convertValue(etapaEntity, EtapaDTO.class);
+        }).collect(Collectors.toList());
+
     }
 
     public EtapaDTO create(Integer idEdicao, EtapaCreateDTO etapaCreateDTO) throws RegraDeNegocioException {

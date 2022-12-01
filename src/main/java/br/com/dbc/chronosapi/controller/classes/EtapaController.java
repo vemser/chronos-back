@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Validated
@@ -45,5 +46,10 @@ public class EtapaController implements EtapaControllerInterface {
     @GetMapping
     public ResponseEntity<PageDTO<EtapaDTO>> list(Integer pagina, Integer tamanho) {
         return new ResponseEntity<>(etapaService.list(pagina, tamanho), HttpStatus.OK);
+    }
+
+    @GetMapping("/{idEdicao}")
+    public ResponseEntity<List<EtapaDTO>> listEtapasPorEdicao(@PathVariable("idEdicao") Integer idEdicao) throws RegraDeNegocioException {
+        return new ResponseEntity<>(etapaService.listEtapasDaEdicao(idEdicao), HttpStatus.OK);
     }
 }

@@ -1,10 +1,12 @@
 package br.com.dbc.chronosapi.service;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
+import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
 import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
+import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
@@ -48,6 +50,21 @@ public class ProcessoService {
                 pagina,
                 tamanho,
                 processoDTOList);
+    }
+
+    public List<ProcessoDTO> listProcessosDaEtapa(Integer idEtapa) throws RegraDeNegocioException {
+
+        EtapaEntity etapaEntity = etapaService.findById(idEtapa);
+        List<ProcessoDTO> processoDTOS = etapaEntity.getProcessos().stream()
+                .map(processoEntity -> {
+                    ProcessoDTO processoDTO = objectMapper.convertValue(processoEntity, ProcessoDTO.class);
+                    processoRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
+                    processoDTO.setAreasEnvolvidas(getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
+                    processoDTO.setResponsaveis(getResponsavelDTO(processoEntity.getResponsaveis()));
+
+                    return processoDTO;
+                }).toList();
+        return processoDTOS;
     }
 
     public ProcessoDTO create(Integer idEtapa, ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException {
