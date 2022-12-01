@@ -10,6 +10,7 @@ import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EdicaoRepository;
 import br.com.dbc.chronosapi.repository.EtapaRepository;
+import br.com.dbc.chronosapi.repository.ProcessoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,11 +30,12 @@ public class EdicaoService {
     private final ObjectMapper objectMapper;
 
     private EtapaRepository etapaRepository;
+    private ProcessoRepository processoRepository;
 
     public EdicaoDTO create(EdicaoCreateDTO edicaoCreateDTO) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = objectMapper.convertValue(edicaoCreateDTO, EdicaoEntity.class);
 
-        if(edicaoCreateDTO.getDataInicial().isBefore(edicaoCreateDTO.getDataFinal())) {
+        if (edicaoCreateDTO.getDataInicial().isBefore(edicaoCreateDTO.getDataFinal())) {
             edicaoEntity.setStatus(Status.ATIVO);
             edicaoEntity.setEtapas(new HashSet<>());
             EdicaoEntity edicaoSaved = edicaoRepository.save(edicaoEntity);
@@ -46,7 +48,7 @@ public class EdicaoService {
     public EdicaoDTO update(Integer idEdicao, EdicaoCreateDTO edicaoUpdate) throws RegraDeNegocioException {
         EdicaoEntity edicaoRecover = findById(idEdicao);
 
-        if(edicaoUpdate.getDataInicial().isBefore(edicaoUpdate.getDataFinal())) {
+        if (edicaoUpdate.getDataInicial().isBefore(edicaoUpdate.getDataFinal())) {
             edicaoRecover.setNome(edicaoUpdate.getNome());
             edicaoRecover.setDataInicial(edicaoUpdate.getDataInicial());
             edicaoRecover.setDataFinal(edicaoUpdate.getDataFinal());
@@ -64,10 +66,10 @@ public class EdicaoService {
 
     public EdicaoDTO enableOrDisable(Integer idEdicao) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = this.findById(idEdicao);
-        if(edicaoEntity.getStatus() == Status.ATIVO) {
+        if (edicaoEntity.getStatus() == Status.ATIVO) {
             edicaoEntity.setStatus(Status.INATIVO);
             edicaoRepository.save(edicaoEntity);
-        }else {
+        } else {
             edicaoEntity.setStatus(Status.ATIVO);
             edicaoRepository.save(edicaoEntity);
         }
@@ -76,18 +78,39 @@ public class EdicaoService {
 
 
     // falta terminar
-    public EdicaoDTO clone(Integer idEdicao) throws RegraDeNegocioException {
-        EdicaoEntity edicaoEntity = findById(idEdicao);
-        Set<EtapaEntity> etapaEntities = etapaRepository.findAllByEdicao(edicaoEntity);
-        EdicaoEntity edicaoEntityClone = new EdicaoEntity();
-        Set<EtapaEntity> etapaEntities = new HashSet<>(edicaoEntity.getEtapas());
-        edicaoEntityClone.setEtapas(etapaEntities);
-        edicaoEntityClone.setNome(edicaoEntity.getNome() + " - Clone" );
-        edicaoEntityClone.setStatus(Status.INATIVO);
-        edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
-        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
-        return objectMapper.convertValue(edicaoRepository.save(edicaoEntityClone), EdicaoDTO.class);
-    }
+//    public EdicaoDTO clone(Integer idEdicao) throws RegraDeNegocioException {
+//        EdicaoEntity edicaoEntity = findById(idEdicao);
+//        EdicaoEntity edicaoEntityClone = new EdicaoEntity();
+//        edicaoEntityClone.setNome(edicaoEntity.getNome() + " - Clone");
+//        edicaoEntityClone.setStatus(Status.INATIVO);
+//        edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
+//        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
+//        EdicaoEntity edicaoEntity1 = edicaoRepository.save(edicaoEntityClone);
+//        Set<EtapaEntity> etapaEntities = new HashSet<>(edicaoEntity.getEtapas().stream()
+//                .map(etapaEntity -> {
+//                    EtapaEntity etapaEntityClone = new EtapaEntity();
+//                    etapaEntityClone.setEdicao(edicaoEntity1);
+//                    etapaEntityClone.setNome(etapaEntity.getNome());
+//                    etapaEntityClone.setOrdemExecucao(etapaEntity.getOrdemExecucao());
+//                    EtapaEntity etapaEntity1 = etapaRepository.save(etapaEntityClone);
+//                    Set<ProcessoEntity> processoEntities = new HashSet<>(etapaEntity.getProcessos().stream()
+//                            .map(processoEntity -> {
+//                                ProcessoEntity processoEntityClone = new ProcessoEntity();
+//                                processoEntityClone.setAreasEnvolvidas(processoEntity.getAreasEnvolvidas());
+//                                processoEntityClone.setResponsaveis(processoEntity.getResponsaveis());
+//                                processoEntityClone.setEtapa(etapaEntity1);
+//                                processoEntityClone.setDiasUteis(processoEntity.getDiasUteis());
+//                                processoEntityClone.setNome(processoEntity.getNome());
+//                                processoEntityClone.setDuracaoProcesso(processoEntity.getDuracaoProcesso());
+//                                ProcessoEntity processoEntity1 = processoRepository.save(processoEntityClone);
+//                                return processoEntity1;
+//                            }).collect(Collectors.toSet()));
+//                    etapaEntityClone.setProcessos(processoEntities);
+//                    return etapaEntity1;
+//                }).collect(Collectors.toSet()));
+//        edicaoEntityClone.setEtapas(etapaEntities);
+//        return objectMapper.convertValue(edicaoEntity1, EdicaoDTO.class);
+//    }
 
     public PageDTO<EdicaoDTO> list(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
