@@ -30,8 +30,13 @@ public class EdicaoController implements EdicaoControllerInterface {
         return new ResponseEntity<>(edicaoService.create(edicaoCreateDTO), HttpStatus.OK);
     }
 
-    @PutMapping("/{id-edicao}")
-    public ResponseEntity<EdicaoDTO> update(@Valid @PathVariable ("id-edicao") Integer idEdicao,
+    @PostMapping("/clone/{idEdicao}")
+    public ResponseEntity<EdicaoDTO> clone(@Valid @PathVariable("idEdicao") Integer idEdicao) throws RegraDeNegocioException {
+        return new ResponseEntity<>(edicaoService.clone(idEdicao), HttpStatus.OK);
+    }
+
+    @PutMapping("/{idEdicao}")
+    public ResponseEntity<EdicaoDTO> update(@Valid @PathVariable ("idEdicao") Integer idEdicao,
                                             @Valid @RequestBody EdicaoCreateDTO edicaoCreateDTO) throws RegraDeNegocioException {
         return new ResponseEntity<>(edicaoService.update(idEdicao, edicaoCreateDTO), HttpStatus.OK);
     }
@@ -42,8 +47,8 @@ public class EdicaoController implements EdicaoControllerInterface {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id-edicao}")
-    public ResponseEntity<Void> delete(@Valid @PathVariable ("id-edicao") Integer idEdicao) throws RegraDeNegocioException {
+    @DeleteMapping("/{idEdicao}")
+    public ResponseEntity<Void> delete(@Valid @PathVariable ("idEdicao") Integer idEdicao) throws RegraDeNegocioException {
         edicaoService.delete(idEdicao);
         return ResponseEntity.noContent().build();
     }

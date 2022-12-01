@@ -9,6 +9,7 @@ import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EdicaoRepository;
+import br.com.dbc.chronosapi.repository.EtapaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ public class EdicaoService {
     private final EdicaoRepository edicaoRepository;
     private final ObjectMapper objectMapper;
 
+    private EtapaRepository etapaRepository;
 
     public EdicaoDTO create(EdicaoCreateDTO edicaoCreateDTO) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = objectMapper.convertValue(edicaoCreateDTO, EdicaoEntity.class);
@@ -70,6 +72,21 @@ public class EdicaoService {
             edicaoRepository.save(edicaoEntity);
         }
         return objectMapper.convertValue(edicaoEntity, EdicaoDTO.class);
+    }
+
+
+    // falta terminar
+    public EdicaoDTO clone(Integer idEdicao) throws RegraDeNegocioException {
+        EdicaoEntity edicaoEntity = findById(idEdicao);
+        Set<EtapaEntity> etapaEntities = etapaRepository.findAllByEdicao(edicaoEntity);
+        EdicaoEntity edicaoEntityClone = new EdicaoEntity();
+        Set<EtapaEntity> etapaEntities = new HashSet<>(edicaoEntity.getEtapas());
+        edicaoEntityClone.setEtapas(etapaEntities);
+        edicaoEntityClone.setNome(edicaoEntity.getNome() + " - Clone" );
+        edicaoEntityClone.setStatus(Status.INATIVO);
+        edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
+        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
+        return objectMapper.convertValue(edicaoRepository.save(edicaoEntityClone), EdicaoDTO.class);
     }
 
     public PageDTO<EdicaoDTO> list(Integer pagina, Integer tamanho) {
