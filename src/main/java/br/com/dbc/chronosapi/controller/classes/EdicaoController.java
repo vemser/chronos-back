@@ -30,10 +30,10 @@ public class EdicaoController implements EdicaoControllerInterface {
         return new ResponseEntity<>(edicaoService.create(edicaoCreateDTO), HttpStatus.OK);
     }
 
-//    @PostMapping("/clone/{idEdicao}")
-//    public ResponseEntity<EdicaoDTO> clone(@Valid @PathVariable("idEdicao") Integer idEdicao) throws RegraDeNegocioException {
-//        return new ResponseEntity<>(edicaoService.clone(idEdicao), HttpStatus.OK);
-//    }
+    @PostMapping("/clone/{idEdicao}")
+    public ResponseEntity<EdicaoDTO> clone(@Valid @PathVariable("idEdicao") Integer idEdicao) throws RegraDeNegocioException {
+        return new ResponseEntity<>(edicaoService.clone(idEdicao), HttpStatus.OK);
+    }
 
     @PutMapping("/{idEdicao}")
     public ResponseEntity<EdicaoDTO> update(@Valid @PathVariable ("idEdicao") Integer idEdicao,
