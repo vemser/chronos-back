@@ -326,7 +326,7 @@ public class UsuarioServiceTest {
     private static UsuarioCreateDTO getUsuarioCreateDTO() {
         UsuarioCreateDTO usuarioCreateDTO = new UsuarioCreateDTO();
         usuarioCreateDTO.setNome("Luiz ");
-        usuarioCreateDTO.setCargos(new ArrayList<>());
+        usuarioCreateDTO.setCargos(new HashSet<>());
 
         return usuarioCreateDTO;
     }

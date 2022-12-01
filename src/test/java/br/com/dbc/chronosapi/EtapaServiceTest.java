@@ -191,17 +191,6 @@ public class EtapaServiceTest {
         return etapaCreateDTO;
     }
 
-    private EtapaDTO getEtapaDTO() {
-        EtapaDTO etapaDTO = new EtapaDTO();
-        etapaDTO.setIdEtapa(10);
-        etapaDTO.setOrdemExecucao(2);
-        etapaDTO.setNome("Etapa1");
-
-        etapaDTO.setProcessos(new HashSet<>());
-
-
-        return etapaDTO;
-    }
     private static EdicaoEntity getEdicaoEntity() {
 
         EdicaoEntity edicaoEntity = new EdicaoEntity();

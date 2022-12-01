@@ -56,7 +56,7 @@ public class EdicaoServiceTest {
     }
 
     @Test
-    public void testCreateEdicaoSuccess() {
+    public void testCreateEdicaoSuccess() throws RegraDeNegocioException {
         //SETUP
         EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
         EdicaoEntity edicaoEntity = getEdicaoEntity();

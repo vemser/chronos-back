@@ -31,10 +31,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -181,7 +178,7 @@ public class LoginServiceTest {
         etapaDTO.setOrdemExecucao(2);
         etapaDTO.setNome("Etapa1");
 
-        etapaDTO.setProcessos(new HashSet<>());
+        etapaDTO.setProcessos(new ArrayList<>());
 
 
         return etapaDTO;
