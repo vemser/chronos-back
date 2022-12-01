@@ -6,10 +6,12 @@ import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
+import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
+import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
+import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
-import br.com.dbc.chronosapi.repository.EdicaoRepository;
-import br.com.dbc.chronosapi.repository.EtapaRepository;
+import br.com.dbc.chronosapi.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,7 +29,8 @@ public class EdicaoService {
 
     private final EdicaoRepository edicaoRepository;
     private final ObjectMapper objectMapper;
-    private EtapaRepository etapaRepository;
+    private final EtapaRepository etapaRepository;
+    private final ProcessoRepository processoRepository;
 
     public EdicaoDTO create(EdicaoCreateDTO edicaoCreateDTO) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = objectMapper.convertValue(edicaoCreateDTO, EdicaoEntity.class);
@@ -74,40 +77,63 @@ public class EdicaoService {
     }
 
 
-    // falta terminar
-//    public EdicaoDTO clone(Integer idEdicao) throws RegraDeNegocioException {
-//        EdicaoEntity edicaoEntity = findById(idEdicao);
-//        EdicaoEntity edicaoEntityClone = new EdicaoEntity();
-//        edicaoEntityClone.setNome(edicaoEntity.getNome() + " - Clone");
-//        edicaoEntityClone.setStatus(Status.INATIVO);
-//        edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
-//        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
-//        EdicaoEntity edicaoEntity1 = edicaoRepository.save(edicaoEntityClone);
-//        Set<EtapaEntity> etapaEntities = new HashSet<>(edicaoEntity.getEtapas().stream()
-//                .map(etapaEntity -> {
-//                    EtapaEntity etapaEntityClone = new EtapaEntity();
-//                    etapaEntityClone.setEdicao(edicaoEntity1);
-//                    etapaEntityClone.setNome(etapaEntity.getNome());
-//                    etapaEntityClone.setOrdemExecucao(etapaEntity.getOrdemExecucao());
-//                    EtapaEntity etapaEntity1 = etapaRepository.save(etapaEntityClone);
-//                    Set<ProcessoEntity> processoEntities = new HashSet<>(etapaEntity.getProcessos().stream()
-//                            .map(processoEntity -> {
-//                                ProcessoEntity processoEntityClone = new ProcessoEntity();
-//                                processoEntityClone.setAreasEnvolvidas(processoEntity.getAreasEnvolvidas());
-//                                processoEntityClone.setResponsaveis(processoEntity.getResponsaveis());
-//                                processoEntityClone.setEtapa(etapaEntity1);
-//                                processoEntityClone.setDiasUteis(processoEntity.getDiasUteis());
-//                                processoEntityClone.setNome(processoEntity.getNome());
-//                                processoEntityClone.setDuracaoProcesso(processoEntity.getDuracaoProcesso());
-//                                ProcessoEntity processoEntity1 = processoRepository.save(processoEntityClone);
-//                                return processoEntity1;
-//                            }).collect(Collectors.toSet()));
-//                    etapaEntityClone.setProcessos(processoEntities);
-//                    return etapaEntity1;
-//                }).collect(Collectors.toSet()));
-//        edicaoEntityClone.setEtapas(etapaEntities);
-//        return objectMapper.convertValue(edicaoEntity1, EdicaoDTO.class);
-//    }
+    //     falta terminar
+    public EdicaoDTO clone(Integer idEdicao) throws RegraDeNegocioException {
+        EdicaoEntity edicaoEntity = findById(idEdicao);
+        EdicaoEntity edicaoEntityClone = new EdicaoEntity();
+        edicaoEntityClone.setNome(edicaoEntity.getNome() + " - Clone");
+        edicaoEntityClone.setStatus(Status.INATIVO);
+        edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
+        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
+        EdicaoEntity edicaoEntityCloneSaved = edicaoRepository.save(edicaoEntityClone);
+        Set<EtapaEntity> etapaEntities = new HashSet<>(edicaoEntity.getEtapas().stream()
+                .map(etapaEntity -> {
+                    EtapaEntity etapaEntityClone = new EtapaEntity();
+                    etapaEntityClone.setEdicao(edicaoEntityCloneSaved);
+                    etapaEntityClone.setNome(etapaEntity.getNome());
+                    etapaEntityClone.setOrdemExecucao(etapaEntity.getOrdemExecucao());
+                    EtapaEntity etapaEntityCloneSaved = etapaRepository.save(etapaEntityClone);
+                    Set<ProcessoEntity> processoEntities = new HashSet<>(etapaEntity.getProcessos().stream()
+                            .map(processoEntity -> {
+                                ProcessoEntity processoEntityClone = new ProcessoEntity();
+                                Set<AreaEnvolvidaEntity> areasEnvolvidasEntities = new HashSet<>(processoEntity.getAreasEnvolvidas());
+                                Set<ResponsavelEntity> responsaveisEntities = new HashSet<>(processoEntity.getResponsaveis());
+                                processoEntityClone.setEtapa(etapaEntityCloneSaved);
+                                processoEntityClone.setDiasUteis(processoEntity.getDiasUteis());
+                                processoEntityClone.setNome(processoEntity.getNome());
+                                processoEntityClone.setDuracaoProcesso(processoEntity.getDuracaoProcesso());
+                                processoEntityClone.setAreasEnvolvidas(areasEnvolvidasEntities);
+                                processoEntityClone.setResponsaveis(responsaveisEntities);
+                                ProcessoEntity processoEntityCloneSaved = processoRepository.save(processoEntityClone);
+                                return processoEntityCloneSaved;
+                            }).collect(Collectors.toSet()));
+                    etapaEntityClone.setProcessos(processoEntities);
+                    return etapaEntityCloneSaved;
+                }).collect(Collectors.toSet()));
+        edicaoEntityClone.setEtapas(etapaEntities);
+        return objectMapper.convertValue(edicaoEntityCloneSaved, EdicaoDTO.class);
+    }
+
+//    Set<AreaEnvolvidaEntity> areasEnvolvidasEntities = new HashSet<>(processoEntity.getAreasEnvolvidas().stream()
+//            .map(areaEnvolvidaEntity -> {
+//                AreaEnvolvidaEntity areaEnvolvidaEntityClone = new AreaEnvolvidaEntity();
+//                areaEnvolvidaEntityClone.setIdAreaEnvolvida(areaEnvolvidaEntity.getIdAreaEnvolvida());
+//                areaEnvolvidaEntityClone.setNome(areaEnvolvidaEntity.getNome());
+//
+//                areaEnvolvidaEntityClone.setProcessos(processoEntities);
+//                AreaEnvolvidaEntity areaEnvolvidaEntityCloneSaved = areaEnvolvidaRepository.save(areaEnvolvidaEntityClone);
+//                return areaEnvolvidaEntityCloneSaved;
+//            }).collect(Collectors.toSet()));
+//                                processoEntityCloneSaved.setAreasEnvolvidas(areasEnvolvidasEntities);
+//    Set<ResponsavelEntity> responsavelEntities = new HashSet<>(processoEntity.getResponsaveis().stream()
+//            .map(responsavelEntity -> {
+//                ResponsavelEntity responsavelEntityClone = new ResponsavelEntity();
+//                responsavelEntityClone.setIdResponsavel(responsavelEntity.getIdResponsavel());
+//                responsavelEntityClone.setNome(responsavelEntity.getNome());
+//                responsavelEntityClone.setProcessos();
+//                ResponsavelEntity responsavelEntityCloneSaved = responsavelRepository.save(responsavelEntityClone);
+//                return responsavelEntityCloneSaved;
+//            }).collect(Collectors.toSet()));
 
     public PageDTO<EdicaoDTO> list(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
