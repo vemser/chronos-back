@@ -61,7 +61,6 @@ public class UsuarioService {
         UsuarioEntity usuarioEntity = findById(loggedUser.getIdUsuario());
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
         usuarioDTO.setCargos(getCargosDTO(usuarioEntity.getCargos()));
-        usuarioDTO.setImagem(usuarioEntity.getImagem());
         return usuarioDTO;
     }
 
@@ -70,7 +69,6 @@ public class UsuarioService {
         Integer idLoggedUser = loginService.getIdLoggedUser();
 
         UsuarioEntity usuario = findById(idLoggedUser);
-        usuario.setImagem(imagem.getBytes());
         FotoEntity fotoEntity = fotoService.findById(usuario.getIdUsuario());
         String nomeFoto = StringUtils.cleanPath((imagem.getOriginalFilename()));
         fotoEntity.setArquivo(imagem.getBytes());
@@ -96,7 +94,6 @@ public class UsuarioService {
                 .map(cargo -> (cargoService.findByNome(cargo.getNome()))).collect(Collectors.toSet());
         usuarioEntity.setCargos(cargos);
         usuarioEntity.setStatus(Status.ATIVO);
-        usuarioEntity.setImagem(null);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
         Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
         usuarioDTO.setCargos(cargosDTO);
