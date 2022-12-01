@@ -93,6 +93,25 @@ public class UsuarioServiceTest {
     }
 
     @Test
+    public void deveTestarBuscarUsuarioLogado() throws RegraDeNegocioException {
+
+        // SETUP
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+        UsuarioDTO usuarioDTO = getUsuarioDTO();
+
+        when(usuarioRepository.findById(any())).thenReturn(Optional.of(usuarioEntity));
+        when(loginService.getLoggedUser()).thenReturn(usuarioDTO);
+
+        // ACT
+        UsuarioDTO usuarioDTO1 = usuarioService.buscarUsuarioLogado();
+        usuarioDTO.setEmail("luiz@gemail.com");
+
+        assertNotNull(usuarioDTO);
+        assertEquals(usuarioEntity.getEmail(), usuarioDTO.getEmail());
+
+    }
+
+    @Test
     public void deveTestarUploadImageComSucesso() throws RegraDeNegocioException, IOException {
         // SETUP
         UsuarioEntity usuario = getUsuarioEntity();
@@ -329,6 +348,18 @@ public class UsuarioServiceTest {
         usuarioCreateDTO.setCargos(new HashSet<>());
 
         return usuarioCreateDTO;
+    }
+
+    private static UsuarioDTO getUsuarioDTO() {
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+        usuarioDTO.setNome("Luiz");
+        usuarioDTO.setIdUsuario(10);
+        usuarioDTO.setNome("fulano");
+        usuarioDTO.setEmail("fulano@gmaiul.com");
+        usuarioDTO.setStatus(Status.ATIVO);
+        usuarioDTO.setCargos(new HashSet<>());
+
+        return usuarioDTO;
     }
 
     private static UsuarioUpdateDTO getUsuarioUpdateDTO() {
