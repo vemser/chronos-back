@@ -98,6 +98,7 @@ public class EdicaoService {
                                 ProcessoEntity processoEntityClone = new ProcessoEntity();
                                 Set<AreaEnvolvidaEntity> areasEnvolvidasEntities = new HashSet<>(processoEntity.getAreasEnvolvidas());
                                 Set<ResponsavelEntity> responsaveisEntities = new HashSet<>(processoEntity.getResponsaveis());
+                                processoEntityClone.setOrdemExecucao(processoEntity.getOrdemExecucao());
                                 processoEntityClone.setEtapa(etapaEntityCloneSaved);
                                 processoEntityClone.setDiasUteis(processoEntity.getDiasUteis());
                                 processoEntityClone.setNome(processoEntity.getNome());
@@ -113,27 +114,6 @@ public class EdicaoService {
         edicaoEntityClone.setEtapas(etapaEntities);
         return objectMapper.convertValue(edicaoEntityCloneSaved, EdicaoDTO.class);
     }
-
-//    Set<AreaEnvolvidaEntity> areasEnvolvidasEntities = new HashSet<>(processoEntity.getAreasEnvolvidas().stream()
-//            .map(areaEnvolvidaEntity -> {
-//                AreaEnvolvidaEntity areaEnvolvidaEntityClone = new AreaEnvolvidaEntity();
-//                areaEnvolvidaEntityClone.setIdAreaEnvolvida(areaEnvolvidaEntity.getIdAreaEnvolvida());
-//                areaEnvolvidaEntityClone.setNome(areaEnvolvidaEntity.getNome());
-//
-//                areaEnvolvidaEntityClone.setProcessos(processoEntities);
-//                AreaEnvolvidaEntity areaEnvolvidaEntityCloneSaved = areaEnvolvidaRepository.save(areaEnvolvidaEntityClone);
-//                return areaEnvolvidaEntityCloneSaved;
-//            }).collect(Collectors.toSet()));
-//                                processoEntityCloneSaved.setAreasEnvolvidas(areasEnvolvidasEntities);
-//    Set<ResponsavelEntity> responsavelEntities = new HashSet<>(processoEntity.getResponsaveis().stream()
-//            .map(responsavelEntity -> {
-//                ResponsavelEntity responsavelEntityClone = new ResponsavelEntity();
-//                responsavelEntityClone.setIdResponsavel(responsavelEntity.getIdResponsavel());
-//                responsavelEntityClone.setNome(responsavelEntity.getNome());
-//                responsavelEntityClone.setProcessos();
-//                ResponsavelEntity responsavelEntityCloneSaved = responsavelRepository.save(responsavelEntityClone);
-//                return responsavelEntityCloneSaved;
-//            }).collect(Collectors.toSet()));
 
     public PageDTO<EdicaoDTO> list(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
