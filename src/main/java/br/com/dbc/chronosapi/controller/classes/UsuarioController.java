@@ -50,12 +50,12 @@ public class UsuarioController implements UsuarioControllerInterface {
 
     @PutMapping(value = "/upload-image/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<UsuarioDTO> uploadImage(@Valid @PathVariable("idUsuario") Integer idUsuario,
-                                                  @Valid @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException {
+                                                  @Valid @RequestPart("file") MultipartFile imagem) throws RegraDeNegocioException, IOException {
         return new ResponseEntity<>(usuarioService.uploadImage(idUsuario, imagem), HttpStatus.OK);
     }
 
     @PutMapping(value = "/upload-image-perfil", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<UsuarioDTO> uploadImagePerfil(@Valid @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException {
+    public ResponseEntity<UsuarioDTO> uploadImagePerfil(@Valid @RequestPart("file") MultipartFile imagem) throws RegraDeNegocioException, IOException {
         return new ResponseEntity<>(usuarioService.uploadImagePerfil(imagem), HttpStatus.OK);
     }
 

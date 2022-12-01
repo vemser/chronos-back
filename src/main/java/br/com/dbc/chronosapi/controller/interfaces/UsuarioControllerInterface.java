@@ -62,7 +62,7 @@ public interface UsuarioControllerInterface {
     )
     @PutMapping(value = "/upload-image/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
     ResponseEntity<UsuarioDTO> uploadImage(@Valid @PathVariable("idUsuario") Integer idUsuario,
-                                           @Valid @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException;
+                                                  @Valid @RequestPart("file") MultipartFile imagem) throws RegraDeNegocioException, IOException;
 
     @Operation(summary = "Inserir foto ao perfil do usuario", description = "Insere uma foto ao perfil do usuario presente no banco de dados")
     @ApiResponses(
@@ -73,7 +73,7 @@ public interface UsuarioControllerInterface {
             }
     )
     @PutMapping(value = "/upload-image-perfil", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    ResponseEntity<UsuarioDTO> uploadImagePerfil(@Valid @RequestPart (name = "question-image", required = false) MultipartFile imagem) throws RegraDeNegocioException, IOException;
+    ResponseEntity<UsuarioDTO> uploadImagePerfil(@Valid @RequestPart("file") MultipartFile imagem) throws RegraDeNegocioException, IOException;
 
     @Operation(summary = "Atualizar perfil do usuário", description = "Endpoint para o usuário poder atualizar o próprio perfil presente no banco de dados.")
     @ApiResponses(
