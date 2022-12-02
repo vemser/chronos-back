@@ -62,6 +62,21 @@ public class DiaNaoUtilServiceTest {
         assertEquals(10, diaNaoUtilDTO.getIdDiaNaoUtil());
     }
 
+    @Test(expected = RegraDeNegocioException.class)
+    public void testCreateDiaNaoUtilFail() throws RegraDeNegocioException {
+        DiaNaoUtilCreateDTO diaNaoUtilCreateDTO = getDiaNaoUtilCreateDTO();
+        diaNaoUtilCreateDTO.setDataInicial(LocalDate.parse("2022-12-25"));
+        diaNaoUtilCreateDTO.setDataFinal(LocalDate.parse("1900-12-25"));
+
+        DiaNaoUtilEntity diaNaoUtilEntity = getDiaNaoUtilEntity();
+        diaNaoUtilCreateDTO.setRepeticaoAnual(Status.INATIVO);
+
+        DiaNaoUtilDTO diaNaoUtilDTO = diaNaoUtilService.create(diaNaoUtilCreateDTO);
+
+        assertNotNull(diaNaoUtilDTO);
+        assertEquals(10, diaNaoUtilDTO.getIdDiaNaoUtil());
+    }
+
     @Test
     public void testCreateDiaNaoUtilWithATIVOSucess() throws RegraDeNegocioException {
         DiaNaoUtilCreateDTO diaNaoUtilCreateDTO = getDiaNaoUtilCreateDTO();
@@ -74,6 +89,7 @@ public class DiaNaoUtilServiceTest {
         assertNotNull(diaNaoUtilDTO);
         assertEquals(10, diaNaoUtilDTO.getIdDiaNaoUtil());
     }
+
     @Test
     public void testUpdateDiaNaoUtilWithAtivoSucess() throws RegraDeNegocioException {
 

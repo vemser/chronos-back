@@ -37,9 +37,9 @@ public class UsuarioEntity implements UserDetails {
     @Column(name = "SENHA")
     private String senha;
 
-//    @JsonIgnore
-//    @OneToOne(mappedBy = "usuario", fetch = FetchType.LAZY)
-//    private FotoEntity foto;
+    @JsonIgnore
+    @OneToOne(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private FotoEntity foto;
 
     @Column(name = "STATUS")
     private Status status;

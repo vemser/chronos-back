@@ -1,19 +1,16 @@
 package br.com.dbc.chronosapi.service;
 
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
-import br.com.dbc.chronosapi.entity.classes.CargoEntity;
 import br.com.dbc.chronosapi.entity.classes.FotoEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.FotoRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +19,6 @@ public class FotoService {
     private final UsuarioService usuarioService;
     private final FotoRepository fotoRepository;
     private final LoginService loginService;
-    private final ObjectMapper objectMapper;
 
     public FotoEntity findById(Integer idPerfil) throws RegraDeNegocioException {
         return fotoRepository.findById(idPerfil)
@@ -41,8 +37,9 @@ public class FotoService {
         return SalvarUsuarioComFotoDTO(imagem, usuario);
     }
 
-    private UsuarioDTO SalvarUsuarioComFotoDTO(MultipartFile imagem, UsuarioEntity usuario) throws IOException {
+    public UsuarioDTO SalvarUsuarioComFotoDTO(MultipartFile imagem, UsuarioEntity usuario) throws IOException {
         FotoEntity fotoRecuperada = fotoRepository.findByUsuario(usuario);
+        UsuarioDTO usuarioDTO;
         if(fotoRecuperada == null) {
             FotoEntity fotoEntity = new FotoEntity();
             String nomeFoto = StringUtils.cleanPath((imagem.getOriginalFilename()));
@@ -50,18 +47,24 @@ public class FotoService {
             fotoEntity.setTipo(imagem.getContentType());
             fotoEntity.setNome(nomeFoto);
             fotoEntity.setUsuario(usuario);
+            usuario.setFoto(fotoEntity);
+            FotoEntity fotoSaved = fotoRepository.save(fotoEntity);
+            usuarioDTO = usuarioService.salvarUsuario(usuario);
+            usuarioDTO.setCargos(usuarioService.getCargosDTO(usuario.getCargos()));
+            usuarioDTO.setImagem(fotoSaved.getArquivo());
+
         }else {
             String nomeFoto = StringUtils.cleanPath((imagem.getOriginalFilename()));
             fotoRecuperada.setArquivo(imagem.getBytes());
             fotoRecuperada.setTipo(imagem.getContentType());
             fotoRecuperada.setNome(nomeFoto);
             fotoRecuperada.setUsuario(usuario);
+            usuario.setFoto(fotoRecuperada);
+            FotoEntity fotoSaved = fotoRepository.save(fotoRecuperada);
+            usuarioDTO = usuarioService.salvarUsuario(usuario);
+            usuarioDTO.setCargos(usuarioService.getCargosDTO(usuario.getCargos()));
+            usuarioDTO.setImagem(fotoSaved.getArquivo());
         }
-        FotoEntity fotoSaved = fotoRepository.save(fotoRecuperada);
-        Set<CargoEntity> cargosEntities = usuario.getCargos();
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioService.salvarUsuario(usuario), UsuarioDTO.class);
-        usuarioDTO.setCargos(usuarioService.getCargosDTO(cargosEntities));
-        usuarioDTO.setImagem(fotoSaved.getArquivo());
         return usuarioDTO;
     }
 }

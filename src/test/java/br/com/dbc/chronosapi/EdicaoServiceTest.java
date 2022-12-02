@@ -1,8 +1,10 @@
 package br.com.dbc.chronosapi;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
+import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
+import br.com.dbc.chronosapi.entity.classes.DiaNaoUtilEntity;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
@@ -11,6 +13,8 @@ import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EdicaoRepository;
+import br.com.dbc.chronosapi.repository.EtapaRepository;
+import br.com.dbc.chronosapi.repository.ProcessoRepository;
 import br.com.dbc.chronosapi.service.EdicaoService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +49,10 @@ public class EdicaoServiceTest {
     private EdicaoService edicaoService;
     @Mock
     private EdicaoRepository edicaoRepository;
+    @Mock
+    private EtapaRepository etapaRepository;
+    @Mock
+    private ProcessoRepository processoRepository;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
@@ -60,6 +68,24 @@ public class EdicaoServiceTest {
         //SETUP
         EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
         EdicaoEntity edicaoEntity = getEdicaoEntity();
+
+        when(edicaoRepository.save(any(EdicaoEntity.class))).thenReturn(edicaoEntity);
+
+        //ACT
+        EdicaoDTO edicaoDTO = edicaoService.create(edicaoCreateDTO);
+
+        //ASSERT
+        assertNotNull(edicaoDTO);
+        assertEquals(10, edicaoDTO.getIdEdicao());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void testCreateEdicaoFail() throws RegraDeNegocioException {
+        //SETUP
+        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        edicaoCreateDTO.setDataInicial(LocalDate.parse("2022-12-25"));
+        edicaoCreateDTO.setDataFinal(LocalDate.parse("1900-12-25"));
 
         when(edicaoRepository.save(any(EdicaoEntity.class))).thenReturn(edicaoEntity);
 
@@ -92,6 +118,73 @@ public class EdicaoServiceTest {
         assertNotEquals("nomeDiferente", edicaoDTO.getNome());
     }
 
+    @Test(expected = RegraDeNegocioException.class)
+    public void testEdicaoUpdateFail() throws RegraDeNegocioException {
+
+        // SETUP
+        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
+
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        EdicaoEntity edicaoEntity1 = getEdicaoEntity();
+        edicaoCreateDTO.setDataInicial(LocalDate.parse("2022-12-25"));
+        edicaoCreateDTO.setDataFinal(LocalDate.parse("1900-12-25"));
+        edicaoEntity1.setNome("nomeDiferente");
+
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+        when(edicaoRepository.save(any())).thenReturn(edicaoEntity1);
+
+        // ACT
+        EdicaoDTO edicaoDTO = edicaoService.update(edicaoEntity.getIdEdicao(), edicaoCreateDTO);
+
+        // ASSERT
+        assertNotNull(edicaoDTO);
+        assertNotEquals("nomeDiferente", edicaoDTO.getNome());
+    }
+//    @Test
+//    public void testClone() throws RegraDeNegocioException {
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//        EdicaoEntity edicaoEntityClone = getEdicaoEntity();
+//        EtapaEntity etapaEntity = getEtapaEntity();
+//        EtapaEntity etapaEntityClone = getEtapaEntity();
+//        ProcessoEntity processoEntity = getProcessoEntity();
+//        ProcessoEntity processoEntityClone = getProcessoEntity();
+//
+//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+//        when(edicaoRepository.save(any(EdicaoEntity.class))).thenReturn(edicaoEntityClone);
+//        when(etapaRepository.save(any(EtapaEntity.class))).thenReturn(etapaEntityClone);
+//        when(processoRepository.save(any(ProcessoEntity.class))).thenReturn(processoEntityClone);
+//
+//        EdicaoDTO edicaoDTO = edicaoService.clone(edicaoEntity.getIdEdicao());
+//
+//        assertNotNull(edicaoDTO);
+//    }
+
+    @Test
+    public void testGenerate(){
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+
+    }
+
+    @Test
+    public void testListComEtapaSucess(){
+        // SETUP
+        Integer pagina = 10;
+        Integer quantidade = 5;
+
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        Page<EdicaoEntity> paginaMock = new PageImpl<>(List.of(edicaoEntity));
+        when(edicaoRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
+
+        // ACT
+        PageDTO<EdicaoDTO> paginaSolicitada = edicaoService.listComEtapa(pagina, quantidade);
+
+        // ASSERT
+        assertNotNull(paginaSolicitada);
+        assertNotNull(paginaSolicitada.getPagina());
+        assertEquals(1, paginaSolicitada.getTotalElementos());
+    }
     @Test
     public void testEdicaoDeleteSuccess() throws RegraDeNegocioException {
         // SETUP
@@ -164,25 +257,6 @@ public class EdicaoServiceTest {
         assertNotNull(paginaSolicitada);
         assertNotNull(paginaSolicitada.getPagina());
         assertEquals(1, paginaSolicitada.getTotalElementos());
-    }
-
-    @Test
-    public void testCloneSucess() throws RegraDeNegocioException {
-        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-        EdicaoEntity edicaoEntityClone = new EdicaoEntity();
-        edicaoEntityClone.setNome(edicaoEntity.getNome() + " - Clone");
-        edicaoEntityClone.setIdEdicao(12);
-        edicaoEntityClone.setStatus(Status.INATIVO);
-        edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
-        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-        when(edicaoRepository.save(any())).thenReturn(edicaoEntityClone);
-
-        EdicaoDTO edicaoDTO = edicaoService.clone(edicaoEntity.getIdEdicao());
-
-        assertNotNull(edicaoDTO);
-        assertEquals(12, edicaoDTO.getIdEdicao());
     }
 
     @Test
@@ -260,7 +334,6 @@ public class EdicaoServiceTest {
 
         return etapaEntity;
     }
-
     private static ProcessoEntity getProcessoEntity() {
         ProcessoEntity processoEntity = new ProcessoEntity();
         processoEntity.setIdProcesso(10);
@@ -273,7 +346,6 @@ public class EdicaoServiceTest {
 
         return processoEntity;
     }
-
     private static ResponsavelEntity getResponsavelEntity() {
         ResponsavelEntity responsavelEntity = new ResponsavelEntity();
         responsavelEntity.setIdResponsavel(10);
