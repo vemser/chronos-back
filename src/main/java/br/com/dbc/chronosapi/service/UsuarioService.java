@@ -3,7 +3,6 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.usuario.*;
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
-import br.com.dbc.chronosapi.entity.classes.FotoEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -16,8 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,8 +32,6 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final LoginService loginService;
-
-    private final FotoService fotoService;
 
     public PageDTO<UsuarioDTO> list(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
@@ -61,24 +56,6 @@ public class UsuarioService {
         UsuarioEntity usuarioEntity = findById(loggedUser.getIdUsuario());
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
         usuarioDTO.setCargos(getCargosDTO(usuarioEntity.getCargos()));
-        return usuarioDTO;
-    }
-
-
-    public UsuarioDTO uploadImagePerfil(MultipartFile imagem) throws RegraDeNegocioException, IOException {
-        Integer idLoggedUser = loginService.getIdLoggedUser();
-
-        UsuarioEntity usuario = findById(idLoggedUser);
-        FotoEntity fotoEntity = fotoService.findById(usuario.getIdUsuario());
-        String nomeFoto = StringUtils.cleanPath((imagem.getOriginalFilename()));
-        fotoEntity.setArquivo(imagem.getBytes());
-        fotoEntity.setTipo(imagem.getContentType());
-        fotoEntity.setNome(nomeFoto);
-        fotoEntity.setUsuario(usuario);
-        fotoService.save(fotoEntity);
-        Set<CargoEntity> cargosEntities = usuario.getCargos();
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuario), UsuarioDTO.class);
-        usuarioDTO.setCargos(getCargosDTO(cargosEntities));
         return usuarioDTO;
     }
 
@@ -165,5 +142,9 @@ public class UsuarioService {
     public UsuarioEntity findById(Integer idUsuario) throws RegraDeNegocioException {
         return usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado!"));
+    }
+
+    public UsuarioDTO salvarUsuario(UsuarioEntity usuario) {
+        return objectMapper.convertValue(usuarioRepository.save(usuario), UsuarioDTO.class);
     }
 }

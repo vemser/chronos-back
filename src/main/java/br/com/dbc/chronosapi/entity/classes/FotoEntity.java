@@ -27,8 +27,8 @@ public class FotoEntity {
     @Column(name = "tipo")
     private String tipo;
 
-    @Column(name = "arquivo")
     @Lob
+    @Column(name = "arquivo")
     private byte[] arquivo;
 
     @JsonIgnore

@@ -1,6 +1,7 @@
 package br.com.dbc.chronosapi.controller.classes;
 
 import br.com.dbc.chronosapi.controller.interfaces.FotoControllerInterface;
+import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.service.FotoService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -19,15 +21,15 @@ import java.io.IOException;
 public class FotoController implements FotoControllerInterface {
     private final FotoService fotoService;
 
-    @PutMapping(value = "/upload-foto", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Void> uploadFoto(@RequestPart("file") MultipartFile file,
-                                           @RequestParam("email") String email) throws RegraDeNegocioException, IOException {
-        fotoService.arquivarUsuario(file, email);
-        return ResponseEntity.ok().build();
+
+    @PutMapping(value = "/upload-image/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<UsuarioDTO> uploadImage(@Valid @PathVariable("idUsuario") Integer idUsuario,
+                                           @Valid @RequestPart("imagem") MultipartFile imagem) throws RegraDeNegocioException, IOException{
+        return new ResponseEntity<>(fotoService.uploadImage(idUsuario, imagem), HttpStatus.OK);
     }
 
-    @GetMapping("/recuperar-foto")
-    public ResponseEntity<String> fotoRecover(@RequestParam("email") String email) throws RegraDeNegocioException{
-        return new ResponseEntity<>(fotoService.pegarImagemUsuario(email), HttpStatus.OK);
+    @PutMapping(value = "/upload-image-perfil", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<UsuarioDTO> uploadImagePerfil(@Valid @RequestPart("imagem") MultipartFile imagem) throws RegraDeNegocioException, IOException {
+        return new ResponseEntity<>(fotoService.uploadImagePerfil(imagem), HttpStatus.OK);
     }
 }

@@ -11,11 +11,9 @@ import br.com.dbc.chronosapi.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -46,17 +44,6 @@ public class UsuarioController implements UsuarioControllerInterface {
         log.info("Usuário cadastrado com sucesso!");
 
         return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
-    }
-
-    @PutMapping(value = "/upload-image/{idUsuario}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<UsuarioDTO> uploadImage(@Valid @PathVariable("idUsuario") Integer idUsuario,
-                                                  @Valid @RequestPart("file") MultipartFile imagem) throws RegraDeNegocioException, IOException {
-        return new ResponseEntity<>(usuarioService.uploadImage(idUsuario, imagem), HttpStatus.OK);
-    }
-
-    @PutMapping(value = "/upload-image-perfil", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<UsuarioDTO> uploadImagePerfil(@Valid @RequestPart("file") MultipartFile imagem) throws RegraDeNegocioException, IOException {
-        return new ResponseEntity<>(usuarioService.uploadImagePerfil(imagem), HttpStatus.OK);
     }
 
     @PutMapping(value = "/update-perfil")

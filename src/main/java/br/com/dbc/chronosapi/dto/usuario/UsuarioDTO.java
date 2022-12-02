@@ -1,5 +1,6 @@
 package br.com.dbc.chronosapi.dto.usuario;
 
+import br.com.dbc.chronosapi.entity.classes.FotoEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
 import lombok.Data;
 
@@ -12,5 +13,5 @@ public class UsuarioDTO {
     private String email;
     private Status status;
     private Set<CargoDTO> cargos;
-    private byte[] imagem;
+    private FotoEntity imagem;
 }
