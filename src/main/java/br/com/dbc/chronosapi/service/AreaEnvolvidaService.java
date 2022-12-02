@@ -2,12 +2,15 @@ package br.com.dbc.chronosapi.service;
 
 import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaDTO;
+import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.AreaEnvolvidaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +39,12 @@ public class AreaEnvolvidaService {
 
     public AreaEnvolvidaEntity findByNomeContainingIgnoreCase(String nome) {
         return areaEnvolvidaRepository.findByNomeContainingIgnoreCase(nome);
+    }
+
+    public List<AreaEnvolvidaDTO> listarAreas(){
+
+        return areaEnvolvidaRepository.findAll().stream()
+                .map(area -> objectMapper.convertValue(area, AreaEnvolvidaDTO.class))
+                .toList();
     }
 }

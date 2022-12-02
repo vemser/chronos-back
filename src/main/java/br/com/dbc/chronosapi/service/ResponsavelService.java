@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ResponsavelService {
@@ -38,5 +40,12 @@ public class ResponsavelService {
 
     public ResponsavelEntity findByNomeContainingIgnoreCase(String nome) {
         return responsavelRepository.findByNomeContainingIgnoreCase(nome);
+    }
+
+    public List<ResponsavelDTO> listarResponsaveis(){
+
+        return responsavelRepository.findAll().stream()
+                .map(responsavel -> objectMapper.convertValue(responsavel, ResponsavelDTO.class))
+                .toList();
     }
 }

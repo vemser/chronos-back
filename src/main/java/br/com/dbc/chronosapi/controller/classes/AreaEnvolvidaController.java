@@ -3,6 +3,7 @@ package br.com.dbc.chronosapi.controller.classes;
 import br.com.dbc.chronosapi.controller.interfaces.AreaEnvolvidaControllerInterface;
 import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaDTO;
+import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.service.AreaEnvolvidaService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Validated
@@ -22,6 +24,11 @@ import javax.validation.Valid;
 public class AreaEnvolvidaController implements AreaEnvolvidaControllerInterface {
     private final AreaEnvolvidaService areaEnvolvidaService;
 
+    @GetMapping
+    public ResponseEntity<List<AreaEnvolvidaDTO>> listaAreas() {
+        List<AreaEnvolvidaDTO> responsaveis = areaEnvolvidaService.listarAreas();
+        return new ResponseEntity<>(responsaveis, HttpStatus.OK);
+    }
     @PostMapping
     public ResponseEntity<AreaEnvolvidaDTO> create(@Valid @RequestBody AreaEnvolvidaCreateDTO areaEnvolvidaCreateDTO) {
         return new ResponseEntity<>(areaEnvolvidaService.create(areaEnvolvidaCreateDTO), HttpStatus.OK);
