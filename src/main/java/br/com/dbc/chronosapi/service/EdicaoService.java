@@ -127,7 +127,7 @@ public class EdicaoService {
         EdicaoEntity edicaoEntity = findById(idEdicao);
         Set<EtapaEntity> etapas = edicaoEntity.getEtapas();
         LocalDate dataInicial = edicaoEntity.getDataInicial();
-        LocalDate dataFinal = edicaoEntity.getDataFinal();
+        LocalDate dataFinal = edicaoEntity.getDataFinal().plusDays(1);
         List<DiaDTO> dias = new ArrayList<>();
         dia = dataInicial;
 
