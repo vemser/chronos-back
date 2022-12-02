@@ -56,10 +56,21 @@ public class SecurityConfiguration {
                                 .antMatchers(HttpMethod.DELETE, "/processo/**").hasRole("GESTAO_DE_PESSOAS")
                                 .antMatchers("/processo/**").hasRole("GESTAO_DE_PESSOAS")
 
+                                .antMatchers(HttpMethod.GET, "/area-envolvida").hasAnyRole("GESTAO_DE_PESSOAS", "INSTRUTOR")
+                                .antMatchers(HttpMethod.POST, "/area-envolvida").hasRole("GESTAO_DE_PESSOAS")
+                                .antMatchers(HttpMethod.DELETE, "/area-envolvida").hasRole("GESTAO_DE_PESSOAS")
+                                .antMatchers("/area-envolvida/**").hasRole("GESTAO_DE_PESSOAS")
+
+                                .antMatchers(HttpMethod.GET, "/responsavel").hasAnyRole("GESTAO_DE_PESSOAS", "INSTRUTOR")
+                                .antMatchers(HttpMethod.POST, "/responsavel").hasRole("GESTAO_DE_PESSOAS")
+                                .antMatchers(HttpMethod.DELETE, "/responsavel").hasRole("GESTAO_DE_PESSOAS")
+                                .antMatchers("/responsavel/**").hasRole("GESTAO_DE_PESSOAS")
+
                                 .antMatchers(HttpMethod.GET, "/dia-nao-util").hasAnyRole("GESTAO_DE_PESSOAS", "INSTRUTOR")
                                 .antMatchers(HttpMethod.POST, "/dia-nao-util").hasRole("GESTAO_DE_PESSOAS")
                                 .antMatchers(HttpMethod.DELETE, "/dia-nao-util").hasRole("GESTAO_DE_PESSOAS")
                                 .antMatchers("/dia-nao-util/**").hasRole("GESTAO_DE_PESSOAS")
+
 
                                 .antMatchers(HttpMethod.GET, "/**").hasRole("INSTRUTOR")
 
