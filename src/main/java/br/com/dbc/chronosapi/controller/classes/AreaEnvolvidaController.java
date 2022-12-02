@@ -19,7 +19,7 @@ import java.util.List;
 @Validated
 @Slf4j
 @RestController
-@RequestMapping("/areaEnvolvida")
+@RequestMapping("/area-envolvida")
 public class AreaEnvolvidaController implements AreaEnvolvidaControllerInterface {
     private final AreaEnvolvidaService areaEnvolvidaService;
 
