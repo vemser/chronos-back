@@ -1,12 +1,10 @@
 package br.com.dbc.chronosapi.service;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
 import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
-import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
@@ -57,11 +55,10 @@ public class ProcessoService {
         EtapaEntity etapaEntity = etapaService.findById(idEtapa);
         List<ProcessoDTO> processoDTOS = etapaEntity.getProcessos().stream()
                 .map(processoEntity -> {
-                    ProcessoDTO processoDTO = objectMapper.convertValue(processoEntity, ProcessoDTO.class);
                     processoRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
+                    ProcessoDTO processoDTO = objectMapper.convertValue(processoEntity, ProcessoDTO.class);
                     processoDTO.setAreasEnvolvidas(getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
                     processoDTO.setResponsaveis(getResponsavelDTO(processoEntity.getResponsaveis()));
-
                     return processoDTO;
                 }).toList();
         return processoDTOS;
@@ -76,7 +73,7 @@ public class ProcessoService {
                 .map(area -> areaEnvolvidaService.findByNomeContainingIgnoreCase(area.getNome()))
                 .collect(Collectors.toSet());
         processoEntity.setAreasEnvolvidas(areas);
-        Set<ResponsavelEntity> responsaveis = processoCreateDTO.getAreasEnvolvidas().stream()
+        Set<ResponsavelEntity> responsaveis = processoCreateDTO.getResponsaveis().stream()
                 .map(responsavel -> responsavelService.findByNomeContainingIgnoreCase(responsavel.getNome()))
                 .collect(Collectors.toSet());
         processoEntity.setResponsaveis(responsaveis);
@@ -97,7 +94,7 @@ public class ProcessoService {
                 .map(area -> areaEnvolvidaService.findByNomeContainingIgnoreCase(area.getNome()))
                 .collect(Collectors.toSet());
         processoRecover.setAreasEnvolvidas(areaEnvolvidasEntities);
-        Set<ResponsavelEntity> responsaveisEntities = processoUpdate.getAreasEnvolvidas().stream()
+        Set<ResponsavelEntity> responsaveisEntities = processoUpdate.getResponsaveis().stream()
                 .map(responsavel -> responsavelService.findByNomeContainingIgnoreCase(responsavel.getNome()))
                 .collect(Collectors.toSet());
         processoRecover.setResponsaveis(responsaveisEntities);
