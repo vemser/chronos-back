@@ -1,6 +1,7 @@
 package br.com.dbc.chronosapi;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
+import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
@@ -27,6 +28,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -158,6 +160,24 @@ public class ProcessoServiceTest {
         assertEquals(10, processoEntity.getIdProcesso());
 
     }
+
+//    @Test
+//    public void testListProcessoDaEtapaSucess() throws RegraDeNegocioException {
+//        // SETUP
+//
+//        EtapaEntity etapaEntity = getEtapaEntity();
+//        ProcessoEntity processoEntity = getProcessoEntity();
+//
+//        when(processoRepository.findAll((Sort) any(ProcessoEntity.class))).thenReturn((List<ProcessoEntity>) processoEntity);
+//
+//        // ACT
+//        List<ProcessoDTO> paginaSolicitada = processoService.listProcessosDaEtapa(etapaEntity.getIdEtapa());
+//
+//        // ASSERT
+//        assertNotNull(paginaSolicitada);
+//        assertNotNull(paginaSolicitada.getPagina());
+//        assertEquals(1, paginaSolicitada.getTotalElementos());
+//    }
 
     private static EdicaoEntity getEdicaoEntity() {
 
