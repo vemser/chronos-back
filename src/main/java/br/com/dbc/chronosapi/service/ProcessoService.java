@@ -65,16 +65,28 @@ public class ProcessoService {
     }
 
     public ProcessoDTO create(Integer idEtapa, ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException {
+
         EtapaEntity etapaEntity = etapaService.findById(idEtapa);
         ProcessoEntity processoEntity = objectMapper.convertValue(processoCreateDTO, ProcessoEntity.class);
         processoEntity.setEtapa(etapaEntity);
         etapaService.save(etapaEntity);
         Set<AreaEnvolvidaEntity> areas = processoCreateDTO.getAreasEnvolvidas().stream()
-                .map(area -> areaEnvolvidaService.findByNomeContainingIgnoreCase(area.getNome()))
-                .collect(Collectors.toSet());
+                .map(area -> {
+                    AreaEnvolvidaEntity areaEnvolvidaEntity = areaEnvolvidaService.findByNomeContainingIgnoreCase(area.getNome());
+                    if(areaEnvolvidaEntity == null) {
+                        return objectMapper.convertValue(areaEnvolvidaService.create(area), AreaEnvolvidaEntity.class);
+                    }
+                    return areaEnvolvidaEntity;
+                }).collect(Collectors.toSet());
         processoEntity.setAreasEnvolvidas(areas);
         Set<ResponsavelEntity> responsaveis = processoCreateDTO.getResponsaveis().stream()
-                .map(responsavel -> responsavelService.findByNomeContainingIgnoreCase(responsavel.getNome()))
+                .map(responsavel -> {
+                    ResponsavelEntity responsavelEntity = responsavelService.findByNomeContainingIgnoreCase(responsavel.getNome());
+                    if(responsavelEntity == null) {
+                        return objectMapper.convertValue(responsavelService.create(responsavel), ResponsavelEntity.class);
+                    }
+                    return responsavelEntity;
+                })
                 .collect(Collectors.toSet());
         processoEntity.setResponsaveis(responsaveis);
         ProcessoEntity processoSaved = processoRepository.save(processoEntity);
@@ -90,17 +102,28 @@ public class ProcessoService {
         processoRecover.setOrdemExecucao(processoUpdate.getOrdemExecucao());
         processoRecover.setDuracaoProcesso(processoUpdate.getDuracaoProcesso());
         processoRecover.setDiasUteis(processoUpdate.getDiasUteis());
-        Set<AreaEnvolvidaEntity> areaEnvolvidasEntities = processoUpdate.getAreasEnvolvidas().stream()
-                .map(area -> areaEnvolvidaService.findByNomeContainingIgnoreCase(area.getNome()))
+        Set<AreaEnvolvidaEntity> areas = processoUpdate.getAreasEnvolvidas().stream()
+                .map(area -> {
+                    AreaEnvolvidaEntity areaEnvolvidaEntity = areaEnvolvidaService.findByNomeContainingIgnoreCase(area.getNome());
+                    if(areaEnvolvidaEntity == null) {
+                        return objectMapper.convertValue(areaEnvolvidaService.create(area), AreaEnvolvidaEntity.class);
+                    }
+                    return areaEnvolvidaEntity;
+                }).collect(Collectors.toSet());
+        processoRecover.setAreasEnvolvidas(areas);
+        Set<ResponsavelEntity> responsaveis = processoUpdate.getResponsaveis().stream()
+                .map(responsavel -> {
+                    ResponsavelEntity responsavelEntity = responsavelService.findByNomeContainingIgnoreCase(responsavel.getNome());
+                    if(responsavelEntity == null) {
+                        return objectMapper.convertValue(responsavelService.create(responsavel), ResponsavelEntity.class);
+                    }
+                    return responsavelEntity;
+                })
                 .collect(Collectors.toSet());
-        processoRecover.setAreasEnvolvidas(areaEnvolvidasEntities);
-        Set<ResponsavelEntity> responsaveisEntities = processoUpdate.getResponsaveis().stream()
-                .map(responsavel -> responsavelService.findByNomeContainingIgnoreCase(responsavel.getNome()))
-                .collect(Collectors.toSet());
-        processoRecover.setResponsaveis(responsaveisEntities);
+        processoRecover.setResponsaveis(responsaveis);
         ProcessoDTO processoDTO = objectMapper.convertValue(processoRepository.save(processoRecover), ProcessoDTO.class);
-        processoDTO.setResponsaveis(getResponsavelDTO(responsaveisEntities));
-        processoDTO.setAreasEnvolvidas(getAreaEnvolvidaDTO(areaEnvolvidasEntities));
+        processoDTO.setResponsaveis(getResponsavelDTO(responsaveis));
+        processoDTO.setAreasEnvolvidas(getAreaEnvolvidaDTO(areas));
         return processoDTO;
     }
 

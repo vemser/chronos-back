@@ -41,7 +41,13 @@ public class EtapaService {
                     EtapaDTO etapaDTO = objectMapper.convertValue(etapaEntity, EtapaDTO.class);
                     etapaDTO.setProcessos(etapaEntity.getProcessos().stream()
                             .map(processoEntity -> {
-                                processoRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
+                                List<ProcessoEntity> processos = processoRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
+                                processos.stream()
+                                        .map(processo -> {
+                                            processo.setAreasEnvolvidas(processoEntity.getAreasEnvolvidas());
+                                            processo.setResponsaveis(processoEntity.getResponsaveis());
+                                            return processo;
+                                        }).collect(Collectors.toSet());
                                 return objectMapper.convertValue(processoEntity, ProcessoDTO.class);
                             }).collect(Collectors.toList()));
                     return etapaDTO;
@@ -61,7 +67,8 @@ public class EtapaService {
                 .map(etapaEntity -> {
                     etapaRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
                     EtapaDTO etapaDTO = objectMapper.convertValue(etapaEntity, EtapaDTO.class);
-                    etapaDTO.setProcessos(getProcessosDTO(etapaEntity.getProcessos()));
+                    List<ProcessoDTO> processosDTO = getProcessosDTO(etapaEntity.getProcessos());
+                    etapaDTO.setProcessos(processosDTO);
                     return etapaDTO;
                 }).collect(Collectors.toList());
     }

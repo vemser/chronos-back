@@ -14,7 +14,7 @@ public class ProcessoCreateDTO {
     private String nome;
 
     @NotNull
-    private Set<ResponsavelCreateDTO> areasEnvolvidas;
+    private Set<AreaEnvolvidaCreateDTO> areasEnvolvidas;
 
     @NotNull
     private Set<ResponsavelCreateDTO> responsaveis;
