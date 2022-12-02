@@ -20,8 +20,9 @@ public class AreaEnvolvidaService {
 
     public AreaEnvolvidaDTO create(AreaEnvolvidaCreateDTO areaEnvolvidaCreateDTO) {
         AreaEnvolvidaEntity areaEnvolvidaEntity = objectMapper.convertValue(areaEnvolvidaCreateDTO, AreaEnvolvidaEntity.class);
+        areaEnvolvidaEntity.setNome(areaEnvolvidaCreateDTO.getNome());
         AreaEnvolvidaDTO areaEnvolvidaDTO = objectMapper.convertValue(areaEnvolvidaRepository.save(areaEnvolvidaEntity), AreaEnvolvidaDTO.class);
-        areaEnvolvidaDTO.setNome(areaEnvolvidaCreateDTO.getNome());
+        areaEnvolvidaDTO.setNome(areaEnvolvidaCreateDTO.getNome().toUpperCase());
         return areaEnvolvidaDTO;
     }
 

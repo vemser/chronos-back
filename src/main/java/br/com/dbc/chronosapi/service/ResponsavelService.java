@@ -20,7 +20,7 @@ public class ResponsavelService {
     public ResponsavelDTO create(ResponsavelCreateDTO responsavelCreateDTO) {
         ResponsavelEntity responsavelEntity = objectMapper.convertValue(responsavelCreateDTO, ResponsavelEntity.class);
         ResponsavelDTO responsavelDTO = objectMapper.convertValue(responsavelRepository.save(responsavelEntity), ResponsavelDTO.class);
-        responsavelDTO.setNome(responsavelCreateDTO.getNome());
+        responsavelDTO.setNome(responsavelCreateDTO.getNome().toUpperCase());
         return responsavelDTO;
     }
 
