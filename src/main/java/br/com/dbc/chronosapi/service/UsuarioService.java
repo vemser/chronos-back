@@ -41,6 +41,12 @@ public class UsuarioService {
                 .map(usuario -> {
                     UsuarioDTO usuarioDTO = objectMapper.convertValue(usuario, UsuarioDTO.class);
                     usuarioDTO.setCargos(getCargosDTO(usuario.getCargos()));
+                    FotoEntity foto = usuario.getFoto();
+                    if(foto == null) {
+                        usuarioDTO.setImagem(null);
+                    }else {
+                        usuarioDTO.setImagem(usuario.getFoto().getArquivo());
+                    }
                     return usuarioDTO;
                 })
                 .toList();
