@@ -47,7 +47,7 @@ public class UsuarioController implements UsuarioControllerInterface {
     }
 
     @PutMapping(value = "/update-perfil")
-    public ResponseEntity<UsuarioDTO> updatePerfil(@Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO) throws RegraDeNegocioException, IOException {
+    public ResponseEntity<UsuarioDTO> updatePerfil(@Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO) throws RegraDeNegocioException {
         log.info("Atualizando usuário....");
         UsuarioDTO usuarioDTO = usuarioService.updatePerfil(usuarioUpdateDTO);
         log.info("Usuário atualizado com sucesso!");

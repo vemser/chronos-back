@@ -1,8 +1,6 @@
 package br.com.dbc.chronosapi.controller.classes;
 
 import br.com.dbc.chronosapi.controller.interfaces.ResponsavelControllerInterface;
-import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilDTO;
 import br.com.dbc.chronosapi.dto.processo.ResponsavelCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;

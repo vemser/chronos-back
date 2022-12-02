@@ -38,7 +38,7 @@ public class LoginController implements LoginControllerInterface {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> sendRecoverPasswordEmail(String email) throws RegraDeNegocioException {
+    public ResponseEntity<String> sendRecoverPasswordEmail(String email) {
         return ResponseEntity.ok(loginService.sendRecoverPasswordEmail(email));
     }
 
