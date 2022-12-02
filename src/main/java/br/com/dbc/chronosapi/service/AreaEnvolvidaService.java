@@ -31,7 +31,7 @@ public class AreaEnvolvidaService {
 
     public AreaEnvolvidaEntity findById(Integer id) throws RegraDeNegocioException {
         return areaEnvolvidaRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Responsavel não encontrado!"));
+                .orElseThrow(() -> new RegraDeNegocioException("Área envolvida não encontrada!"));
     }
 
     public AreaEnvolvidaEntity findByNomeContainingIgnoreCase(String nome) {

@@ -32,6 +32,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((auth) -> auth.antMatchers("/", "/login", "/login-forgot-password").permitAll()
 //                .authorizeHttpRequests((auth) -> auth.antMatchers("/**").permitAll()
 //                                 permissões
+                                .antMatchers(HttpMethod.PUT, "/foto/upload-image/**").hasRole("ADMIN")
+                                .antMatchers(HttpMethod.PUT, "/foto/upload-image-perfil").hasAnyRole("INSTRUTOR", "GESTAO_DE_PESSOAS", "ADMIN")
                                 .antMatchers(HttpMethod.GET,"/usuario/logged-user").hasAnyRole("INSTRUTOR", "GESTAO_DE_PESSOAS", "ADMIN")
                                 .antMatchers(HttpMethod.GET, "/usuario").hasAnyRole("ADMIN", "INSTRUTOR")
                                 .antMatchers(HttpMethod.POST, "/usuario").hasRole("ADMIN")
