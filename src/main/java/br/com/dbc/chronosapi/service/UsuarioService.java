@@ -3,6 +3,7 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.usuario.*;
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
+import br.com.dbc.chronosapi.entity.classes.FotoEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -56,6 +57,12 @@ public class UsuarioService {
         UsuarioEntity usuarioEntity = findById(loggedUser.getIdUsuario());
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
         usuarioDTO.setCargos(getCargosDTO(usuarioEntity.getCargos()));
+        FotoEntity foto = usuarioEntity.getFoto();
+        if(foto == null) {
+            usuarioDTO.setImagem(null);
+        }else {
+            usuarioDTO.setImagem(usuarioEntity.getFoto().getArquivo());
+        }
         return usuarioDTO;
     }
 
@@ -94,6 +101,12 @@ public class UsuarioService {
             Set<CargoEntity> cargosEntities = usuarioRecover.getCargos();
             Set<CargoDTO> cargosDTO = getCargosDTO(cargosEntities);
             usuarioDTO.setCargos(cargosDTO);
+            FotoEntity foto = usuarioRecover.getFoto();
+            if(foto == null) {
+                usuarioDTO.setImagem(null);
+            }else {
+                usuarioDTO.setImagem(usuarioRecover.getFoto().getArquivo());
+            }
             return usuarioDTO;
         } else {
             throw new RegraDeNegocioException("Senha atual inválida!");
@@ -109,6 +122,12 @@ public class UsuarioService {
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioRecover), UsuarioDTO.class);
         Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
         usuarioDTO.setCargos(cargosDTO);
+        FotoEntity foto = usuarioRecover.getFoto();
+        if(foto == null) {
+            usuarioDTO.setImagem(null);
+        }else {
+            usuarioDTO.setImagem(usuarioRecover.getFoto().getArquivo());
+        }
         return usuarioDTO;
     }
 
@@ -121,7 +140,14 @@ public class UsuarioService {
             usuarioEntity.setStatus(Status.ATIVO);
             usuarioRepository.save(usuarioEntity);
         }
-        return objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+        FotoEntity foto = usuarioEntity.getFoto();
+        if(foto == null) {
+            usuarioDTO.setImagem(null);
+        }else {
+            usuarioDTO.setImagem(usuarioEntity.getFoto().getArquivo());
+        }
+        return usuarioDTO;
     }
 
     public void delete(Integer idUsuario) throws RegraDeNegocioException {
