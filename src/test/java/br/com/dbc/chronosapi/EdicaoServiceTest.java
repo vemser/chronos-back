@@ -135,34 +135,40 @@ public class EdicaoServiceTest {
         assertNotNull(edicaoDTO);
         assertNotEquals("nomeDiferente", edicaoDTO.getNome());
     }
-//    @Test
-//    public void testCloneSucess() throws RegraDeNegocioException {
-//        // teste edicao
-//        EdicaoEntity edicaoEntity = getEdicaoEntity();
-//        EdicaoEntity edicaoEntityClone = new EdicaoEntity();
-//        edicaoEntityClone.setNome(edicaoEntity.getNome() + " - Clone");
-//        edicaoEntityClone.setIdEdicao(12);
-//        edicaoEntityClone.setStatus(Status.INATIVO);
-//        edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
-//        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
-//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-//        when(edicaoRepository.save(any())).thenReturn(edicaoEntityClone);
-//
-//        Set<EtapaEntity> etapaEntity = edicaoEntityClone.getEtapas();
-//        EtapaEntity etapaEntityClone = new EtapaEntity();
-//        when(etapaRepository.save(any())).thenReturn(etapaEntityClone);
-//
-//        Set<ProcessoEntity> processoEntity = etapaEntityClone.getProcessos();
-//        ProcessoEntity processoEntityClone = new ProcessoEntity();
-//
-//        when(processoRepository.save(any())).thenReturn(processoEntityClone);
-//
-//        EdicaoDTO edicaoDTO = edicaoService.clone(edicaoEntity.getIdEdicao());
-//
-//
-//        assertNotNull(edicaoDTO);
-//        assertEquals(12, edicaoDTO.getIdEdicao());
-//    }
+    @Test
+    public void testCloneSucess() throws RegraDeNegocioException {
+        // teste edicao
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+
+        Set<EtapaEntity> etapaEntities = new HashSet<>();
+        etapaEntities.add(getEtapaEntity());
+        etapaEntities.add(getEtapaEntity2());
+
+        edicaoEntity.setEtapas(etapaEntities);
+        EdicaoEntity edicaoEntityClone = new EdicaoEntity();
+        edicaoEntityClone.setNome(edicaoEntity.getNome() + " - Clone");
+        edicaoEntityClone.setIdEdicao(12);
+        edicaoEntityClone.setStatus(Status.INATIVO);
+        edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
+        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+        when(edicaoRepository.save(any())).thenReturn(edicaoEntityClone);
+
+        Set<EtapaEntity> etapaEntity = edicaoEntityClone.getEtapas();
+        EtapaEntity etapaEntityClone = new EtapaEntity();
+        when(etapaRepository.save(any())).thenReturn(etapaEntityClone);
+
+        Set<ProcessoEntity> processoEntity = etapaEntityClone.getProcessos();
+        ProcessoEntity processoEntityClone = new ProcessoEntity();
+
+        when(processoRepository.save(any())).thenReturn(processoEntityClone);
+
+        EdicaoDTO edicaoDTO = edicaoService.clone(edicaoEntity.getIdEdicao());
+
+
+        assertNotNull(edicaoDTO);
+        assertEquals(12, edicaoDTO.getIdEdicao());
+    }
 
     @Test
     public void testListComEtapaSucess(){
@@ -330,6 +336,18 @@ public class EdicaoServiceTest {
 
         return etapaEntity;
     }
+
+    private static EtapaEntity getEtapaEntity2() {
+        EtapaEntity etapaEntity = new EtapaEntity();
+        etapaEntity.setIdEtapa(3);
+        etapaEntity.setNome("Etapa2");
+
+        Set<ProcessoEntity> processoEntities = new HashSet<>();
+        processoEntities.add(getProcessoEntity());
+        etapaEntity.setProcessos(processoEntities);
+
+        return etapaEntity;
+    }
     private static ProcessoEntity getProcessoEntity() {
         ProcessoEntity processoEntity = new ProcessoEntity();
         processoEntity.setIdProcesso(10);
@@ -341,6 +359,19 @@ public class EdicaoServiceTest {
 
         return processoEntity;
     }
+
+    private static ProcessoEntity getProcessoEntity2() {
+        ProcessoEntity processoEntity = new ProcessoEntity();
+        processoEntity.setIdProcesso(9);
+        processoEntity.setDuracaoProcesso("2dia");
+        processoEntity.setOrdemExecucao(1);
+        processoEntity.setDiasUteis(1);
+        processoEntity.setAreasEnvolvidas(new HashSet<>());
+        processoEntity.setResponsaveis(new HashSet<>());
+
+        return processoEntity;
+    }
+
     private static ResponsavelEntity getResponsavelEntity() {
         ResponsavelEntity responsavelEntity = new ResponsavelEntity();
         responsavelEntity.setIdResponsavel(10);
