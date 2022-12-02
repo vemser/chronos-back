@@ -1,7 +1,10 @@
 package br.com.dbc.chronosapi;
 
+import br.com.dbc.chronosapi.dto.PageDTO;
+import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.dto.processo.ResponsavelCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
+import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.ResponsavelRepository;
@@ -16,13 +19,17 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -128,6 +135,22 @@ public class ResponsavelServiceTest {
 
     }
 
+    @Test
+    public void testListResponsaveis(){
+        // SETUP
+        List<ResponsavelEntity> lista = new ArrayList<>();
+        lista.add(getResponsavelEntity());
+        when(responsavelRepository.findAll()).thenReturn(lista);
+
+        //(ACT)
+        List<ResponsavelDTO> listaDto = responsavelService.listarResponsaveis();
+
+        // (ASSERT)
+        assertNotNull(listaDto);
+        assertTrue(listaDto.size() > 0);
+        assertEquals(1, lista.size());
+    }
+
 
     private static ResponsavelEntity getResponsavelEntity() {
         ResponsavelEntity responsavelEntity = new ResponsavelEntity();
@@ -136,6 +159,14 @@ public class ResponsavelServiceTest {
         responsavelEntity.setProcessos(new HashSet<>());
 
         return responsavelEntity;
+    }
+
+    private static ResponsavelDTO getResponsavelDTO() {
+        ResponsavelDTO responsavelDTO = new ResponsavelDTO();
+        responsavelDTO.setIdResponsavel(10);
+        responsavelDTO.setNome("Fulano");
+
+        return responsavelDTO;
     }
 
     private static ResponsavelCreateDTO getResponsavelCreateDTO() {
