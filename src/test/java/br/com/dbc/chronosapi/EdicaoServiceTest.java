@@ -87,8 +87,6 @@ public class EdicaoServiceTest {
         edicaoCreateDTO.setDataInicial(LocalDate.parse("2022-12-25"));
         edicaoCreateDTO.setDataFinal(LocalDate.parse("1900-12-25"));
 
-        when(edicaoRepository.save(any(EdicaoEntity.class))).thenReturn(edicaoEntity);
-
         //ACT
         EdicaoDTO edicaoDTO = edicaoService.create(edicaoCreateDTO);
 
@@ -131,7 +129,6 @@ public class EdicaoServiceTest {
         edicaoEntity1.setNome("nomeDiferente");
 
         when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-        when(edicaoRepository.save(any())).thenReturn(edicaoEntity1);
 
         // ACT
         EdicaoDTO edicaoDTO = edicaoService.update(edicaoEntity.getIdEdicao(), edicaoCreateDTO);
@@ -159,13 +156,13 @@ public class EdicaoServiceTest {
 //        assertNotNull(edicaoDTO);
 //    }
 
-    @Test
-    public void testGenerate(){
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-
-    }
+//    @Test
+//    public void testGenerate(){
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//
+//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+//
+//    }
 
     @Test
     public void testListComEtapaSucess(){
