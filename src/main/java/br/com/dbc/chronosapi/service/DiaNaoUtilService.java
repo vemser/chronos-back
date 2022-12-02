@@ -56,8 +56,6 @@ public class DiaNaoUtilService {
 
             if (diaNaoUtilUpdate.getDataFinal().isAfter(diaNaoUtilUpdate.getDataInicial())) {
                 diaNaoUtilRecover.setDataFinal(diaNaoUtilUpdate.getDataFinal());
-            } else if (diaNaoUtilUpdate.getDataFinal().isBefore(diaNaoUtilUpdate.getDataInicial())) {
-                throw new RegraDeNegocioException("A data final antecede a data inicial.");
             }
 
         } else {
