@@ -65,7 +65,6 @@ public class ProcessoService {
     }
 
     public ProcessoDTO create(Integer idEtapa, ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException {
-
         EtapaEntity etapaEntity = etapaService.findById(idEtapa);
         ProcessoEntity processoEntity = objectMapper.convertValue(processoCreateDTO, ProcessoEntity.class);
         processoEntity.setEtapa(etapaEntity);

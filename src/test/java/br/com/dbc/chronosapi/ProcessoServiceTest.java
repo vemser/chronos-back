@@ -162,16 +162,15 @@ public class ProcessoServiceTest {
     }
 
 //    @Test
-//    public void testListProcessoDaEtapaSucess() throws RegraDeNegocioException {
+//    public void testListSucess(){
 //        // SETUP
 //
 //        EtapaEntity etapaEntity = getEtapaEntity();
-//        ProcessoEntity processoEntity = getProcessoEntity();
 //
-//        when(processoRepository.findAll((Sort) any(ProcessoEntity.class))).thenReturn((List<ProcessoEntity>) processoEntity);
+//        when(etapaRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
 //
 //        // ACT
-//        List<ProcessoDTO> paginaSolicitada = processoService.listProcessosDaEtapa(etapaEntity.getIdEtapa());
+//        PageDTO<EtapaDTO> paginaSolicitada = etapaService.list(pagina, quantidade);
 //
 //        // ASSERT
 //        assertNotNull(paginaSolicitada);
