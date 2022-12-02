@@ -2,7 +2,6 @@ package br.com.dbc.chronosapi.service;
 
 import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaDTO;
-import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.AreaEnvolvidaRepository;

@@ -85,7 +85,6 @@ public class EdicaoService {
     }
 
 
-    //     falta terminar
     public EdicaoDTO clone(Integer idEdicao) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = findById(idEdicao);
         EdicaoEntity edicaoEntityClone = new EdicaoEntity();
@@ -94,14 +93,14 @@ public class EdicaoService {
         edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
         edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
         EdicaoEntity edicaoEntityCloneSaved = edicaoRepository.save(edicaoEntityClone);
-        Set<EtapaEntity> etapaEntities = new HashSet<>(edicaoEntity.getEtapas().stream()
+        Set<EtapaEntity> etapaEntities = edicaoEntity.getEtapas().stream()
                 .map(etapaEntity -> {
                     EtapaEntity etapaEntityClone = new EtapaEntity();
                     etapaEntityClone.setEdicao(edicaoEntityCloneSaved);
                     etapaEntityClone.setNome(etapaEntity.getNome());
                     etapaEntityClone.setOrdemExecucao(etapaEntity.getOrdemExecucao());
                     EtapaEntity etapaEntityCloneSaved = etapaRepository.save(etapaEntityClone);
-                    Set<ProcessoEntity> processoEntities = new HashSet<>(etapaEntity.getProcessos().stream()
+                    Set<ProcessoEntity> processoEntities = etapaEntity.getProcessos().stream()
                             .map(processoEntity -> {
                                 ProcessoEntity processoEntityClone = new ProcessoEntity();
                                 Set<AreaEnvolvidaEntity> areasEnvolvidasEntities = new HashSet<>(processoEntity.getAreasEnvolvidas());
@@ -114,10 +113,10 @@ public class EdicaoService {
                                 processoEntityClone.setAreasEnvolvidas(areasEnvolvidasEntities);
                                 processoEntityClone.setResponsaveis(responsaveisEntities);
                                 return processoRepository.save(processoEntityClone);
-                            }).collect(Collectors.toSet()));
+                            }).collect(Collectors.toSet());
                     etapaEntityClone.setProcessos(processoEntities);
                     return etapaEntityCloneSaved;
-                }).collect(Collectors.toSet()));
+                }).collect(Collectors.toSet());
         edicaoEntityClone.setEtapas(etapaEntities);
         return objectMapper.convertValue(edicaoEntityCloneSaved, EdicaoDTO.class);
     }
@@ -135,7 +134,7 @@ public class EdicaoService {
                     return etapaEntity.getProcessos().stream()
                             .map(processoEntity -> {
                                 Integer diasUteisProcesso = processoEntity.getDiasUteis();
-                                Integer contDiasUteis = 1;
+                                int contDiasUteis = 1;
                                 while(contDiasUteis <= diasUteisProcesso && dia.isBefore(dataFinal)) {
                                     DayOfWeek diaDaSemana = dia.getDayOfWeek();
                                     if(diaDaSemana == DayOfWeek.SATURDAY || diaDaSemana == DayOfWeek.SUNDAY ) {
@@ -192,10 +191,7 @@ public class EdicaoService {
         Page<EdicaoEntity> paginaDoRepositorio = edicaoRepository.findAll(pageRequest);
 
         List<EdicaoDTO> edicaoDTOList = paginaDoRepositorio.getContent().stream()
-                .map(edicao -> {
-                    EdicaoDTO edicaoDTO = objectMapper.convertValue(edicao, EdicaoDTO.class);
-                    return edicaoDTO;
-                }).toList();
+                .map(edicao -> objectMapper.convertValue(edicao, EdicaoDTO.class)).toList();
 
         return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
                 paginaDoRepositorio.getTotalPages(),
@@ -205,9 +201,8 @@ public class EdicaoService {
     }
 
     public EdicaoEntity findById(Integer id) throws RegraDeNegocioException {
-        EdicaoEntity edicaoEntity = edicaoRepository.findById(id)
+        return edicaoRepository.findById(id)
                 .orElseThrow(() -> new RegraDeNegocioException("Edição não encontrada!"));
-        return edicaoEntity;
     }
 
     public EdicaoDTO save(EdicaoEntity edicaoEntity) {

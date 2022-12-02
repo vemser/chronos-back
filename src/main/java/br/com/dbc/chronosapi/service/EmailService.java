@@ -1,6 +1,5 @@
 package br.com.dbc.chronosapi.service;
 
-import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +27,12 @@ public class EmailService {
 
     private final JavaMailSender emailSender;
 
-    public void sendEmailEnvioSenha(String email, String senha) throws RegraDeNegocioException {
+    public void sendEmailEnvioSenha(String email, String senha) {
         String subject = "Sua conta foi criada com sucesso!";
         sendEmail(email, senha, "email-envio-senha-template.html", subject);
     }
 
-    public void sendEmailRecuperacaoSenha(String email, String token) throws RegraDeNegocioException {
+    public void sendEmailRecuperacaoSenha(String email, String token) {
         String subject = "Recuperação de senha concluída com sucesso!";
         String link = "recuperadorDeSenha@dbccompany.com.br";
         sendEmailRecover(email, token, link, "email-recuperacao-senha-template.html", subject);

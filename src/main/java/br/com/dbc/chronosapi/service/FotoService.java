@@ -42,29 +42,26 @@ public class FotoService {
         UsuarioDTO usuarioDTO;
         if(fotoRecuperada == null) {
             FotoEntity fotoEntity = new FotoEntity();
-            String nomeFoto = StringUtils.cleanPath((imagem.getOriginalFilename()));
-            fotoEntity.setArquivo(imagem.getBytes());
-            fotoEntity.setTipo(imagem.getContentType());
-            fotoEntity.setNome(nomeFoto);
-            fotoEntity.setUsuario(usuario);
-            usuario.setFoto(fotoEntity);
-            FotoEntity fotoSaved = fotoRepository.save(fotoEntity);
-            usuarioDTO = usuarioService.salvarUsuario(usuario);
-            usuarioDTO.setCargos(usuarioService.getCargosDTO(usuario.getCargos()));
-            usuarioDTO.setImagem(fotoSaved.getArquivo());
+            usuarioDTO = getUsuarioDTO(imagem, usuario, fotoEntity);
 
         }else {
-            String nomeFoto = StringUtils.cleanPath((imagem.getOriginalFilename()));
-            fotoRecuperada.setArquivo(imagem.getBytes());
-            fotoRecuperada.setTipo(imagem.getContentType());
-            fotoRecuperada.setNome(nomeFoto);
-            fotoRecuperada.setUsuario(usuario);
-            usuario.setFoto(fotoRecuperada);
-            FotoEntity fotoSaved = fotoRepository.save(fotoRecuperada);
-            usuarioDTO = usuarioService.salvarUsuario(usuario);
-            usuarioDTO.setCargos(usuarioService.getCargosDTO(usuario.getCargos()));
-            usuarioDTO.setImagem(fotoSaved.getArquivo());
+             usuarioDTO = getUsuarioDTO(imagem, usuario, fotoRecuperada);
         }
+        return usuarioDTO;
+    }
+
+    private UsuarioDTO getUsuarioDTO(MultipartFile imagem, UsuarioEntity usuario, FotoEntity fotoEntity) throws IOException {
+        UsuarioDTO usuarioDTO;
+        String nomeFoto = StringUtils.cleanPath((imagem.getOriginalFilename()));
+        fotoEntity.setArquivo(imagem.getBytes());
+        fotoEntity.setTipo(imagem.getContentType());
+        fotoEntity.setNome(nomeFoto);
+        fotoEntity.setUsuario(usuario);
+        usuario.setFoto(fotoEntity);
+        FotoEntity fotoSaved = fotoRepository.save(fotoEntity);
+        usuarioDTO = usuarioService.salvarUsuario(usuario);
+        usuarioDTO.setCargos(usuarioService.getCargosDTO(usuario.getCargos()));
+        usuarioDTO.setImagem(fotoSaved.getArquivo());
         return usuarioDTO;
     }
 }

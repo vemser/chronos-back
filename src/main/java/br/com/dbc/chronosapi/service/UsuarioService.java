@@ -99,18 +99,22 @@ public class UsuarioService {
             }
             UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRecover, UsuarioDTO.class);
             Set<CargoEntity> cargosEntities = usuarioRecover.getCargos();
-            Set<CargoDTO> cargosDTO = getCargosDTO(cargosEntities);
-            usuarioDTO.setCargos(cargosDTO);
-            FotoEntity foto = usuarioRecover.getFoto();
-            if(foto == null) {
-                usuarioDTO.setImagem(null);
-            }else {
-                usuarioDTO.setImagem(usuarioRecover.getFoto().getArquivo());
-            }
-            return usuarioDTO;
+            return getUsuarioDTO(usuarioRecover, usuarioDTO, cargosEntities);
         } else {
             throw new RegraDeNegocioException("Senha atual inválida!");
         }
+    }
+
+    private UsuarioDTO getUsuarioDTO(UsuarioEntity usuarioRecover, UsuarioDTO usuarioDTO, Set<CargoEntity> cargosEntities) {
+        Set<CargoDTO> cargosDTO = getCargosDTO(cargosEntities);
+        usuarioDTO.setCargos(cargosDTO);
+        FotoEntity foto = usuarioRecover.getFoto();
+        if(foto == null) {
+            usuarioDTO.setImagem(null);
+        }else {
+            usuarioDTO.setImagem(usuarioRecover.getFoto().getArquivo());
+        }
+        return usuarioDTO;
     }
 
     public UsuarioDTO updateAdmin(Integer id, UAdminUpdateDTO usuarioUpdate) throws RegraDeNegocioException {
@@ -120,15 +124,7 @@ public class UsuarioService {
                 .map(cargo -> (cargoService.findByNome(cargo.getNome()))).collect(Collectors.toSet());
         usuarioRecover.setCargos(cargos);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioRecover), UsuarioDTO.class);
-        Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
-        usuarioDTO.setCargos(cargosDTO);
-        FotoEntity foto = usuarioRecover.getFoto();
-        if(foto == null) {
-            usuarioDTO.setImagem(null);
-        }else {
-            usuarioDTO.setImagem(usuarioRecover.getFoto().getArquivo());
-        }
-        return usuarioDTO;
+        return getUsuarioDTO(usuarioRecover, usuarioDTO, cargos);
     }
 
     public UsuarioDTO enableOrDisable(Integer idUsuario) throws RegraDeNegocioException {
