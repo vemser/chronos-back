@@ -60,9 +60,10 @@ public class EtapaService {
         return edicaoEntity.getEtapas().stream()
                 .map(etapaEntity -> {
                     etapaRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
-                    return objectMapper.convertValue(etapaEntity, EtapaDTO.class);
-        }).collect(Collectors.toList());
-
+                    EtapaDTO etapaDTO = objectMapper.convertValue(etapaEntity, EtapaDTO.class);
+                    etapaDTO.setProcessos(getProcessosDTO(etapaEntity.getProcessos()));
+                    return etapaDTO;
+                }).collect(Collectors.toList());
     }
 
     public EtapaDTO create(Integer idEdicao, EtapaCreateDTO etapaCreateDTO) throws RegraDeNegocioException {
@@ -98,9 +99,9 @@ public class EtapaService {
         return objectMapper.convertValue(etapaEntity, EtapaDTO.class);
     }
 
-    private Set<ProcessoDTO> getProcessosDTO(Set<ProcessoEntity> processos) {
+    private List<ProcessoDTO> getProcessosDTO(Set<ProcessoEntity> processos) {
         return processos.stream()
                 .map(processoEntity -> objectMapper.convertValue(processoEntity, ProcessoDTO.class))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 }
