@@ -61,7 +61,7 @@ public class FotoService {
         Set<CargoEntity> cargosEntities = usuario.getCargos();
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioService.salvarUsuario(usuario), UsuarioDTO.class);
         usuarioDTO.setCargos(usuarioService.getCargosDTO(cargosEntities));
-        usuarioDTO.setImagem(fotoSaved);
+        usuarioDTO.setImagem(fotoSaved.getArquivo());
         return usuarioDTO;
     }
 }
