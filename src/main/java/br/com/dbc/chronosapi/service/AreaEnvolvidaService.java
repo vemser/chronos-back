@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AreaEnvolvidaService {
@@ -36,5 +38,12 @@ public class AreaEnvolvidaService {
 
     public AreaEnvolvidaEntity findByNomeContainingIgnoreCase(String nome) {
         return areaEnvolvidaRepository.findByNomeContainingIgnoreCase(nome);
+    }
+
+    public List<AreaEnvolvidaDTO> listarAreas(){
+
+        return areaEnvolvidaRepository.findAll().stream()
+                .map(area -> objectMapper.convertValue(area, AreaEnvolvidaDTO.class))
+                .toList();
     }
 }

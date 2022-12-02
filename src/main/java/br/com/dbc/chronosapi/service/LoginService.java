@@ -41,7 +41,7 @@ public class LoginService {
         throw new RegraDeNegocioException("Usuario não encontrado!");
     }
 
-    public String sendRecoverPasswordEmail(String email) throws RegraDeNegocioException {
+    public String sendRecoverPasswordEmail(String email) {
         UsuarioEntity usuario = usuarioRepository.findByEmail(email);
 
 //        String token = tokenService.getToken(usuario, true);

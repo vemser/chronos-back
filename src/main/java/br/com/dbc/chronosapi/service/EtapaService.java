@@ -8,7 +8,6 @@ import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
-import br.com.dbc.chronosapi.repository.EdicaoRepository;
 import br.com.dbc.chronosapi.repository.EtapaRepository;
 import br.com.dbc.chronosapi.repository.ProcessoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +28,6 @@ public class EtapaService {
     private final ObjectMapper objectMapper;
     private final EtapaRepository etapaRepository;
     private final EdicaoService edicaoService;
-    private final EdicaoRepository edicaoRepository;
     private final ProcessoRepository processoRepository;
 
     public PageDTO<EtapaDTO> list(Integer pagina, Integer tamanho) {
@@ -96,9 +94,8 @@ public class EtapaService {
     }
 
     public EtapaEntity findById(Integer id) throws RegraDeNegocioException {
-        EtapaEntity etapaEntity = etapaRepository.findById(id)
+        return etapaRepository.findById(id)
                 .orElseThrow(() -> new RegraDeNegocioException("Etapa não encontrada"));
-        return etapaEntity;
     }
 
     public EtapaDTO save(EtapaEntity etapaEntity) {

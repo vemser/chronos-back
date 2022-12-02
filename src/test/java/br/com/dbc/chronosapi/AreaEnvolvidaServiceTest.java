@@ -18,10 +18,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
@@ -113,6 +114,22 @@ public class AreaEnvolvidaServiceTest {
 
     }
 
+    @Test
+    public void testList(){
+        // (SETUP)
+        List<AreaEnvolvidaEntity> lista = new ArrayList<>();
+        lista.add(getAreaEnvolvidaEntity());
+        when(areaEnvolvidaRepository.findAll()).thenReturn(lista);
+
+        //(ACT)
+        List<AreaEnvolvidaDTO> listaDto = areaEnvolvidaService.listarAreas();
+
+        // (ASSERT)
+        assertNotNull(listaDto);
+        assertTrue(listaDto.size() > 0);
+        assertEquals(1, lista.size());
+    }
+
     private static AreaEnvolvidaEntity getAreaEnvolvidaEntity() {
         AreaEnvolvidaEntity areaEnvolvidaEntity = new AreaEnvolvidaEntity();
         areaEnvolvidaEntity.setIdAreaEnvolvida(10);
@@ -125,5 +142,13 @@ public class AreaEnvolvidaServiceTest {
         AreaEnvolvidaCreateDTO areaEnvolvidaCreateDTO = new AreaEnvolvidaCreateDTO();
         areaEnvolvidaCreateDTO.setNome("area1");
         return areaEnvolvidaCreateDTO;
+    }
+
+    private static AreaEnvolvidaDTO getAreaEnvolvidaDTO() {
+        AreaEnvolvidaDTO areaEnvolvidaDTO = new AreaEnvolvidaDTO();
+        areaEnvolvidaDTO.setIdAreaEnvolvida(10);
+        areaEnvolvidaDTO.setNome("area1");
+        areaEnvolvidaDTO.setIdAreaEnvolvida(10);
+        return areaEnvolvidaDTO;
     }
 }

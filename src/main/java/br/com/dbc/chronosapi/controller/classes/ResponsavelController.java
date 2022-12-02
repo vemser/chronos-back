@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Validated
@@ -22,6 +23,11 @@ import javax.validation.Valid;
 public class ResponsavelController implements ResponsavelControllerInterface {
     private final ResponsavelService responsavelService;
 
+    @GetMapping
+    public ResponseEntity<List<ResponsavelDTO>> listResponsaveis() {
+        List<ResponsavelDTO> responsaveis = responsavelService.listarResponsaveis();
+        return new ResponseEntity<>(responsaveis, HttpStatus.OK);
+    }
     @PostMapping
     public ResponseEntity<ResponsavelDTO> create(@Valid @RequestBody ResponsavelCreateDTO responsavelCreateDTO) {
         return new ResponseEntity<>(responsavelService.create(responsavelCreateDTO), HttpStatus.OK);
