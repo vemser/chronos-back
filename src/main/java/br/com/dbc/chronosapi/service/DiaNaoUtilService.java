@@ -26,19 +26,7 @@ public class DiaNaoUtilService {
     public DiaNaoUtilDTO create(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) throws RegraDeNegocioException {
         DiaNaoUtilEntity diaNaoUtilEntity = objectMapper.convertValue(diaNaoUtilCreateDTO, DiaNaoUtilEntity.class);
         diaNaoUtilEntity.setDescricao(diaNaoUtilCreateDTO.getDescricao());
-        if (diaNaoUtilCreateDTO.getRepeticaoAnual() == Status.INATIVO) {
-            diaNaoUtilEntity.setRepeticaoAnual(Status.INATIVO);
-
-            if (diaNaoUtilCreateDTO.getDataFinal().isAfter(diaNaoUtilCreateDTO.getDataInicial())) {
-                diaNaoUtilEntity.setDataFinal(diaNaoUtilCreateDTO.getDataFinal());
-            } else if (diaNaoUtilCreateDTO.getDataFinal().isBefore(diaNaoUtilCreateDTO.getDataInicial())) {
-                throw new RegraDeNegocioException("A data final antecede a data inicial.");
-            }
-
-        } else {
-            diaNaoUtilEntity.setRepeticaoAnual(Status.ATIVO);
-            diaNaoUtilEntity.setDataFinal(null);
-        }
+        verify(diaNaoUtilCreateDTO, diaNaoUtilEntity);
         DiaNaoUtilEntity diaSaved = diaNaoUtilRepository.save(diaNaoUtilEntity);
         return objectMapper.convertValue(diaSaved, DiaNaoUtilDTO.class);
 
@@ -51,12 +39,18 @@ public class DiaNaoUtilService {
         diaNaoUtilRecover.setDataInicial(diaNaoUtilUpdate.getDataInicial());
         diaNaoUtilRecover.setDataFinal(diaNaoUtilUpdate.getDataFinal());
 
-        if (diaNaoUtilUpdate.getRepeticaoAnual() == Status.INATIVO) {
+        verify(diaNaoUtilUpdate, diaNaoUtilRecover);
+        return objectMapper.convertValue(diaNaoUtilRepository.save(diaNaoUtilRecover), DiaNaoUtilDTO.class);
+
+    }
+
+    private void verify(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO, DiaNaoUtilEntity diaNaoUtilRecover) throws RegraDeNegocioException {
+        if (diaNaoUtilCreateDTO.getRepeticaoAnual() == Status.INATIVO) {
             diaNaoUtilRecover.setRepeticaoAnual(Status.INATIVO);
 
-            if (diaNaoUtilUpdate.getDataFinal().isAfter(diaNaoUtilUpdate.getDataInicial())) {
-                diaNaoUtilRecover.setDataFinal(diaNaoUtilUpdate.getDataFinal());
-            } else if (diaNaoUtilUpdate.getDataFinal().isBefore(diaNaoUtilUpdate.getDataInicial())) {
+            if (diaNaoUtilCreateDTO.getDataFinal().isAfter(diaNaoUtilCreateDTO.getDataInicial())) {
+                diaNaoUtilRecover.setDataFinal(diaNaoUtilCreateDTO.getDataFinal());
+            } else if (diaNaoUtilCreateDTO.getDataFinal().isBefore(diaNaoUtilCreateDTO.getDataInicial())) {
                 throw new RegraDeNegocioException("A data final antecede a data inicial.");
             }
 
@@ -64,8 +58,6 @@ public class DiaNaoUtilService {
             diaNaoUtilRecover.setRepeticaoAnual(Status.ATIVO);
             diaNaoUtilRecover.setDataFinal(null);
         }
-        DiaNaoUtilDTO diaNaoUtilDTO = objectMapper.convertValue(diaNaoUtilRepository.save(diaNaoUtilRecover), DiaNaoUtilDTO.class);
-        return diaNaoUtilDTO;
     }
 
     public void delete(Integer idDiaNaoUtil) throws RegraDeNegocioException {
@@ -87,9 +79,9 @@ public class DiaNaoUtilService {
     }
 
     public DiaNaoUtilEntity findById(Integer id) throws RegraDeNegocioException {
-        DiaNaoUtilEntity diaNaoUtilEntity = diaNaoUtilRepository.findById(id)
+        return diaNaoUtilRepository.findById(id)
                 .orElseThrow(() -> new RegraDeNegocioException("Dia não util não encontrado"));
-        return diaNaoUtilEntity;
+
     }
 
 }
