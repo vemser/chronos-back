@@ -40,7 +40,7 @@ public class EtapaEntity {
     private EdicaoEntity edicao;
 
     @JsonIgnore
-    @OrderBy(value = "ordemExecucao asc")
+    @OrderBy(value = "ordemExecucao, nome asc")
     @OneToMany(mappedBy = "etapa", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<ProcessoEntity> processos;
 }

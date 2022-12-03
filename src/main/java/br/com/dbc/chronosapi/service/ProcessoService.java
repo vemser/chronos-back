@@ -54,7 +54,6 @@ public class ProcessoService {
         EtapaEntity etapaEntity = etapaService.findById(idEtapa);
         List<ProcessoDTO> processoDTOS = etapaEntity.getProcessos().stream()
                 .map(processoEntity -> {
-                    processoRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
                     ProcessoDTO processoDTO = objectMapper.convertValue(processoEntity, ProcessoDTO.class);
                     processoDTO.setAreasEnvolvidas(getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
                     processoDTO.setResponsaveis(getResponsavelDTO(processoEntity.getResponsaveis()));

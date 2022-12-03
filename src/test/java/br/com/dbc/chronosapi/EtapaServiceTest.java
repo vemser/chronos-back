@@ -27,7 +27,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -180,12 +179,6 @@ public class EtapaServiceTest {
 
         List<ProcessoEntity> listProcessos = new ArrayList<>();
         listProcessos.add(getProcessoEntity());
-
-        when(processoRepository.findAll(Sort.by("ordemExecucao")
-                .ascending().and(Sort.by("nome"))
-                .ascending())).thenReturn(listProcessos);
-
-
 
         // ACT
         PageDTO<EtapaDTO> paginaSolicitada = etapaService.list(pagina, quantidade);

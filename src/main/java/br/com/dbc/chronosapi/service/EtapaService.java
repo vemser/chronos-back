@@ -3,13 +3,16 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaCreateDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
+import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
+import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
+import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
+import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EtapaRepository;
-import br.com.dbc.chronosapi.repository.ProcessoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,7 +31,6 @@ public class EtapaService {
     private final ObjectMapper objectMapper;
     private final EtapaRepository etapaRepository;
     private final EdicaoService edicaoService;
-    private final ProcessoRepository processoRepository;
 
     public PageDTO<EtapaDTO> list(Integer pagina, Integer tamanho) {
         Sort ordenacao = Sort.by("ordemExecucao", "nome");
@@ -39,14 +41,10 @@ public class EtapaService {
                     EtapaDTO etapaDTO = objectMapper.convertValue(etapaEntity, EtapaDTO.class);
                     etapaDTO.setProcessos(etapaEntity.getProcessos().stream()
                             .map(processoEntity -> {
-                                List<ProcessoEntity> processos = processoRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
-                                processos.stream()
-                                        .map(processo -> {
-                                            processo.setAreasEnvolvidas(processoEntity.getAreasEnvolvidas());
-                                            processo.setResponsaveis(processoEntity.getResponsaveis());
-                                            return processo;
-                                        }).collect(Collectors.toSet());
-                                return objectMapper.convertValue(processoEntity, ProcessoDTO.class);
+                                ProcessoDTO processoDTO = objectMapper.convertValue(processoEntity, ProcessoDTO.class);
+                                processoDTO.setAreasEnvolvidas(this.getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
+                                processoDTO.setResponsaveis(this.getResponsavelDTO(processoEntity.getResponsaveis()));
+                                return processoDTO;
                             }).collect(Collectors.toList()));
                     return etapaDTO;
                 }).toList();
@@ -59,14 +57,17 @@ public class EtapaService {
     }
 
     public List<EtapaDTO> listEtapasDaEdicao(Integer idEdicao) throws RegraDeNegocioException {
-
         EdicaoEntity edicaoEntity = edicaoService.findById(idEdicao);
         return edicaoEntity.getEtapas().stream()
                 .map(etapaEntity -> {
-                    etapaRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
                     EtapaDTO etapaDTO = objectMapper.convertValue(etapaEntity, EtapaDTO.class);
-                    List<ProcessoDTO> processosDTO = getProcessosDTO(etapaEntity.getProcessos());
-                    etapaDTO.setProcessos(processosDTO);
+                    etapaDTO.setProcessos(etapaEntity.getProcessos().stream()
+                                    .map(processoEntity -> {
+                                        ProcessoDTO processoDTO = objectMapper.convertValue(processoEntity, ProcessoDTO.class);
+                                        processoDTO.setAreasEnvolvidas(this.getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
+                                        processoDTO.setResponsaveis(this.getResponsavelDTO(processoEntity.getResponsaveis()));
+                                        return processoDTO;
+                                    }).collect(Collectors.toList()));
                     return etapaDTO;
                 }).collect(Collectors.toList());
     }
@@ -107,5 +108,16 @@ public class EtapaService {
         return processos.stream()
                 .map(processoEntity -> objectMapper.convertValue(processoEntity, ProcessoDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    public Set<ResponsavelDTO> getResponsavelDTO(Set<ResponsavelEntity> responsaveis) {
+        return responsaveis.stream()
+                .map(responsavelEntity -> objectMapper.convertValue(responsavelEntity, ResponsavelDTO.class))
+                .collect(Collectors.toSet());
+    }
+    public Set<AreaEnvolvidaDTO> getAreaEnvolvidaDTO(Set<AreaEnvolvidaEntity> AreasEnvolvidas) {
+        return AreasEnvolvidas.stream()
+                .map(areaEnvolvidaEntity -> objectMapper.convertValue(areaEnvolvidaEntity, AreaEnvolvidaDTO.class))
+                .collect(Collectors.toSet());
     }
 }
