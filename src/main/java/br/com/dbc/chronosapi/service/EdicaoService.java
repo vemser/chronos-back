@@ -2,6 +2,7 @@ package br.com.dbc.chronosapi.service;
 
 import br.com.dbc.chronosapi.dto.DiaDTO;
 import br.com.dbc.chronosapi.dto.DiaUtilDTO;
+import br.com.dbc.chronosapi.dto.FeriadoDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -143,10 +145,11 @@ public class EdicaoService {
                             .map(processoEntity -> {
                                 Integer diasUteisProcesso = processoEntity.getDiasUteis();
                                 int contDiasUteis = 1;
+                                int diasCorridos;
                                 while(contDiasUteis <= diasUteisProcesso) {
                                     DayOfWeek diaDaSemana = dia.getDayOfWeek();
 
-
+                                    FeriadoDTO feriadoDTO = verificarDiasNaoUteis(dia, diasNaoUteis);
 
                                     if(diaDaSemana == DayOfWeek.SATURDAY || diaDaSemana == DayOfWeek.SUNDAY ) {
                                         DiaDTO diaDTO = new DiaDTO();
@@ -160,8 +163,22 @@ public class EdicaoService {
                                         diaDTO.setProcesso(null);
                                         dias.add(diaDTO);
                                         dia = dia.plusDays(1);
-//                                    }else if(){
-
+                                    }else if(feriadoDTO.getQtdDias() > 0){
+                                        diasCorridos = 1;
+                                        while (diasCorridos <= feriadoDTO.getQtdDias()){
+                                            DiaDTO diaDTO = new DiaDTO();
+                                            DiaUtilDTO diaUtilDTO = new DiaUtilDTO();
+                                            diaUtilDTO.setEhDiaUtil(false);
+                                            diaUtilDTO.setEhDiaNaoUtil(true);
+                                            diaUtilDTO.setDescricao(feriadoDTO.getDescricao());
+                                            diaDTO.setDiaUtil(diaUtilDTO);
+                                            diaDTO.setDia(dia);
+                                            diaDTO.setEtapa(null);
+                                            diaDTO.setProcesso(null);
+                                            dias.add(diaDTO);
+                                            dia = dia.plusDays(1);
+                                            diasCorridos++;
+                                        }
                                     }else {
                                         DiaDTO diaDTO = new DiaDTO();
                                         DiaUtilDTO diaUtilDTO = new DiaUtilDTO();
@@ -186,28 +203,23 @@ public class EdicaoService {
         return dias;
     }
 
-//    public FeriadoDTO verificarDiasNaoUteis(LocalDate dia, List<DiaNaoUtilEntity> diasNaoUteis) {
-//        LocalDate dataAtual = LocalDate.now();
-//        FeriadoDTO feriado = new FeriadoDTO();
-//        diasNaoUteis.stream()
-//                .forEach(diaNaoUtilEntity -> {
-//                    if(diaNaoUtilEntity.getRepeticaoAnual() == Status.ATIVO) {
-//                        diaNaoUtilEntity.setDataInicial(LocalDate.of(dataAtual.getYear(), diaNaoUtilEntity.getDataInicial().getMonthValue(), diaNaoUtilEntity.getDataInicial().getDayOfMonth()));
-//                        if(diaNaoUtilEntity.equals(dia)) {
-//                            feriado.setQtdDias(1);
-//                            feriado.setDescricao(diaNaoUtilEntity.getDescricao());
-//                        }
-//                    }else {
-//                        if(diaNaoUtilEntity.equals(dia)) {
-//                            Period between = Period.between(diaNaoUtilEntity.getDataInicial(), diaNaoUtilEntity.getDataFinal());
-//                            int qtdDias = between.getDays()+1;
-//                            feriado.setQtdDias(qtdDias);
-//                            feriado.setDescricao(diaNaoUtilEntity.getDescricao());
-//                        }
-//                    }
-//                });
-//        return feriado;
-//    }
+    public FeriadoDTO verificarDiasNaoUteis(LocalDate dia, List<DiaNaoUtilEntity> diasNaoUteis) {
+        FeriadoDTO feriado = new FeriadoDTO();
+        diasNaoUteis.stream()
+                .forEach(diaNaoUtilEntity -> {
+                    if(diaNaoUtilEntity.getRepeticaoAnual() == Status.ATIVO && diaNaoUtilEntity.getDataInicial().equals(dia)) {
+                        diaNaoUtilEntity.setDataInicial(LocalDate.of(dia.getYear(), diaNaoUtilEntity.getDataInicial().getMonthValue(), diaNaoUtilEntity.getDataInicial().getDayOfMonth()));
+                        feriado.setQtdDias(1);
+                        feriado.setDescricao(diaNaoUtilEntity.getDescricao());
+                    }else if(diaNaoUtilEntity.getDataInicial().equals(dia)){
+                        Period between = Period.between(diaNaoUtilEntity.getDataInicial(), diaNaoUtilEntity.getDataFinal());
+                        int qtdDias = between.getDays()+1;
+                        feriado.setQtdDias(qtdDias);
+                        feriado.setDescricao(diaNaoUtilEntity.getDescricao());
+                    }
+                });
+        return feriado;
+    }
 
     public PageDTO<EdicaoDTO> listComEtapa(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
