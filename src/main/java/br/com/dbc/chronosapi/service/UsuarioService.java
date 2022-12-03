@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -130,7 +131,28 @@ public class UsuarioService {
                 .map(cargo -> (cargoService.findByNome(cargo.getNome()))).collect(Collectors.toSet());
         usuarioRecover.setCargos(cargos);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioRecover), UsuarioDTO.class);
+
+        if (!cargoValido(cargos)){
+            throw new RegraDeNegocioException("Insira um cargo válido.");
+        }
+
         return getUsuarioDTO(usuarioRecover, usuarioDTO, cargos);
+    }
+
+    public boolean cargoValido (Set<CargoEntity> cargoEntities){
+
+        String admin = "ROLE_ADMIN";
+        String instrutor = "ROLE_INSTRUTOR";
+        String gestor = "ROLE_GESTAO_DE_PESSOAS";
+
+        for (CargoEntity cargo: cargoEntities) {
+            if (!Objects.equals(cargo.getNome(), admin) &&
+                    !Objects.equals(cargo.getNome(), instrutor) &&
+                        !Objects.equals(cargo.getNome(), gestor)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public UsuarioDTO enableOrDisable(Integer idUsuario) throws RegraDeNegocioException {
