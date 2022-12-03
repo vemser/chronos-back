@@ -1,7 +1,8 @@
 package br.com.dbc.chronosapi.controller.classes;
 
 import br.com.dbc.chronosapi.controller.interfaces.EdicaoControllerInterface;
-import br.com.dbc.chronosapi.dto.DiaDTO;
+import br.com.dbc.chronosapi.dto.DiaCalendarioEdicaoDTO;
+import br.com.dbc.chronosapi.dto.DiaCalendarioGeralDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
@@ -37,9 +38,14 @@ public class EdicaoController implements EdicaoControllerInterface {
         return new ResponseEntity<>(edicaoService.clone(idEdicao), HttpStatus.OK);
     }
 
-    @GetMapping("/calendario/{idEdicao}")
-    public ResponseEntity<List<DiaDTO>> generate(@PathVariable Integer idEdicao) throws RegraDeNegocioException {
-        return new ResponseEntity<>(edicaoService.generate(idEdicao), HttpStatus.OK);
+    @GetMapping("/calendario-geral")
+    public ResponseEntity <List<DiaCalendarioGeralDTO>> gerarCalendarioGeral() throws RegraDeNegocioException {
+        return new ResponseEntity<>(edicaoService.gerarCalendarioGeral(), HttpStatus.OK);
+    }
+
+    @GetMapping("/calendario-edicao/{idEdicao}")
+    public ResponseEntity<List<DiaCalendarioEdicaoDTO>> gerarCalendarioEdicao(@PathVariable Integer idEdicao) throws RegraDeNegocioException {
+        return new ResponseEntity<>(edicaoService.gerarCalendarioEdicao(idEdicao), HttpStatus.OK);
     }
 
     @PutMapping("/{idEdicao}")
