@@ -34,13 +34,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
@@ -251,25 +247,26 @@ public class ProcessoServiceTest {
         assertEquals(10, processoEntity.getIdProcesso());
 
     }
+    @Test
+    public void testListProcessoDaEtapa() throws RegraDeNegocioException {
+        EtapaEntity etapaEntity = getEtapaEntity();
 
-//    @Test
-//    public void testListComEtapaSucess(){
-//        // SETUP
-//        Integer pagina = 10;
-//        Integer quantidade = 5;
-//
-//        EdicaoEntity edicaoEntity = getEdicaoEntity();
-//        Page<EdicaoEntity> paginaMock = new PageImpl<>(List.of(edicaoEntity));
-//        when(edicaoRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
-//
-//        // ACT
-//        PageDTO<EdicaoDTO> paginaSolicitada = edicaoService.listComEtapa(pagina, quantidade);
-//
-//        // ASSERT
-//        assertNotNull(paginaSolicitada);
-//        assertNotNull(paginaSolicitada.getPagina());
-//        assertEquals(1, paginaSolicitada.getTotalElementos());
-//    }
+        Set<ProcessoEntity> processoEntitySet = new HashSet<>();
+        processoEntitySet.add(getProcessoEntity());
+
+        etapaEntity.setProcessos(processoEntitySet);
+
+        ProcessoEntity processoEntity1 = getProcessoEntity();
+        List<ProcessoEntity> listProcessos = new ArrayList<>();
+        listProcessos.add(processoEntity1);
+        when(etapaService.findById(any())).thenReturn(etapaEntity);
+
+        List<ProcessoDTO> processoDTOS = processoService.listProcessosDaEtapa(etapaEntity.getIdEtapa());
+
+        assertNotNull(processoDTOS);
+        assertTrue(processoDTOS.size()> 0);
+        assertEquals(1, processoDTOS.size());
+    }
 
     private static EdicaoEntity getEdicaoEntity() {
 
