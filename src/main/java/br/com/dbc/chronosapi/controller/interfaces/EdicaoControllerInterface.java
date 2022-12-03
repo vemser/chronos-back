@@ -1,7 +1,7 @@
 package br.com.dbc.chronosapi.controller.interfaces;
 
-import br.com.dbc.chronosapi.dto.DiaCalendarioEdicaoDTO;
-import br.com.dbc.chronosapi.dto.DiaCalendarioGeralDTO;
+import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioEdicaoDTO;
+import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioGeralDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;

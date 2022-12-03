@@ -1,6 +1,7 @@
 package br.com.dbc.chronosapi.service;
 
 import br.com.dbc.chronosapi.dto.*;
+import br.com.dbc.chronosapi.dto.calendario.*;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
@@ -129,7 +130,7 @@ public class EdicaoService {
     }
 
     public List<DiaCalendarioGeralDTO> gerarCalendarioGeral() throws RegraDeNegocioException{
-        List<EdicaoEntity> edicoes = edicaoRepository.findAll(Sort.by("dataInicial").ascending());
+        List<EdicaoEntity> edicoes = edicaoRepository.findByEdicoesAtivasOrderByDataInicial();
         List<DiaCalendarioGeralDTO> dias = new ArrayList<>();
         List<DiaCalendarioEdicaoDTO> diaCalendarioEdicaoDTOS;
 
@@ -147,8 +148,8 @@ public class EdicaoService {
                 juncaoEdicoesDTO.setEdicao(edicaoEntity.getNome());
                 juncaoEdicoesDTO.setEtapa(diaEdicaoBase.getEtapa());
                 juncaoEdicoesDTO.setProcesso(diaEdicaoBase.getProcesso());
+                diaCalendarioGeralDTO.getEdicoes().add(juncaoEdicoesDTO);
             }
-            diaCalendarioGeralDTO.getEdicoes().add(juncaoEdicoesDTO);
             dias.add(diaCalendarioGeralDTO);
         }
 
@@ -164,10 +165,10 @@ public class EdicaoService {
                     juncaoEdicoesDTO.setEdicao(edicao.getNome());
                     juncaoEdicoesDTO.setEtapa(diaEdicaoJuncao.getEtapa());
                     juncaoEdicoesDTO.setProcesso(diaEdicaoJuncao.getProcesso());
+                    diaCalendarioGeralDTO.getEdicoes().add(juncaoEdicoesDTO);
                 }
-                diaCalendarioGeralDTO.getEdicoes().add(juncaoEdicoesDTO);
                 for(var diaEdicaoBase : dias) {
-                    if(diaEdicaoBase.getDia().equals(diaEdicaoJuncao.getDia())) {
+                    if(diaEdicaoBase.getDia().equals(diaEdicaoJuncao.getDia()) && diaEdicaoBase.getDiaUtil().isEhDiaUtil()) {
                         diaEdicaoBase.getEdicoes().add(juncaoEdicoesDTO);
                     }
                 }
@@ -177,10 +178,10 @@ public class EdicaoService {
     }
 
     public List<DiaCalendarioEdicaoDTO> gerarCalendarioEdicao(Integer idEdicao) throws RegraDeNegocioException {
+        List<DiaNaoUtilEntity> diasNaoUteis = diaNaoUtilRepository.findAll(Sort.by("dataInicial").ascending());
         EdicaoEntity edicaoEntity = findById(idEdicao);
         Set<EtapaEntity> etapas = edicaoEntity.getEtapas();
         LocalDate dataInicial = edicaoEntity.getDataInicial();
-        List<DiaNaoUtilEntity> diasNaoUteis = diaNaoUtilRepository.findAll(Sort.by("dataInicial").ascending());
         List<DiaCalendarioEdicaoDTO> dias = new ArrayList<>();
         dia = dataInicial;
 
