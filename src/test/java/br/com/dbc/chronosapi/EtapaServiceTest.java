@@ -1,7 +1,6 @@
 package br.com.dbc.chronosapi;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaCreateDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
@@ -83,8 +82,15 @@ public class EtapaServiceTest {
     public void testListEtapasDaEdicaoSucess() throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = getEdicaoEntity();
         EtapaEntity etapaEntity = getEtapaEntity();
+
+        Set<ProcessoEntity> processoEntitySet = new HashSet<>();
+        processoEntitySet.add(getProcessoEntity());
+        processoEntitySet.add(getProcessoEntity2());
+
+        etapaEntity.setProcessos(processoEntitySet);
         Set<EtapaEntity> setEtapas = new HashSet<>();
         setEtapas.add(etapaEntity);
+
 
         ProcessoEntity processoEntity = getProcessoEntity();
         List<ProcessoEntity> listProcessos = new ArrayList<>();
