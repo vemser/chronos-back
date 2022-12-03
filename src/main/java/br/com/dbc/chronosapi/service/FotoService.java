@@ -27,17 +27,17 @@ public class FotoService {
 
     public UsuarioDTO uploadImage(Integer idUsuario, MultipartFile imagem) throws RegraDeNegocioException, IOException {
         UsuarioEntity usuario = usuarioService.findById(idUsuario);
-        return SalvarUsuarioComFotoDTO(imagem, usuario);
+        return salvarUsuarioComFotoDTO(imagem, usuario);
     }
 
     public UsuarioDTO uploadImagePerfil(MultipartFile imagem) throws RegraDeNegocioException, IOException {
         Integer idLoggedUser = loginService.getIdLoggedUser();
 
         UsuarioEntity usuario = usuarioService.findById(idLoggedUser);
-        return SalvarUsuarioComFotoDTO(imagem, usuario);
+        return salvarUsuarioComFotoDTO(imagem, usuario);
     }
 
-    public UsuarioDTO SalvarUsuarioComFotoDTO(MultipartFile imagem, UsuarioEntity usuario) throws IOException {
+    public UsuarioDTO salvarUsuarioComFotoDTO(MultipartFile imagem, UsuarioEntity usuario) throws IOException {
         FotoEntity fotoRecuperada = fotoRepository.findByUsuario(usuario);
         return getUsuarioDTO(imagem, usuario, fotoRecuperada != null ? fotoRecuperada : new FotoEntity());
     }

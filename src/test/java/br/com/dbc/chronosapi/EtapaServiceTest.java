@@ -4,6 +4,7 @@ import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaCreateDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
+import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
@@ -81,10 +82,19 @@ public class EtapaServiceTest {
     public void testListEtapasDaEdicaoSucess() throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = getEdicaoEntity();
         EtapaEntity etapaEntity = getEtapaEntity();
+
+        Set<ProcessoEntity> processoEntitySet = new HashSet<>();
+        processoEntitySet.add(getProcessoEntity());
+        processoEntitySet.add(getProcessoEntity2());
+
+        etapaEntity.setProcessos(processoEntitySet);
         Set<EtapaEntity> setEtapas = new HashSet<>();
         setEtapas.add(etapaEntity);
-        List<EtapaEntity> listEtapas = new ArrayList<>();
-        listEtapas.add(etapaEntity);
+
+
+        ProcessoEntity processoEntity = getProcessoEntity();
+        List<ProcessoEntity> listProcessos = new ArrayList<>();
+        listProcessos.add(processoEntity);
         edicaoEntity.setEtapas(setEtapas);
         when(edicaoService.findById(any())).thenReturn(edicaoEntity);
 
@@ -203,6 +213,16 @@ public class EtapaServiceTest {
 
     }
 
+    @Test
+    public void testProcessosDTO(){
+        Set<ProcessoEntity> processoEntitySet = new HashSet<>();
+        processoEntitySet.add(getProcessoEntity());
+
+        List<ProcessoDTO> processoDTOS = etapaService.getProcessosDTO(processoEntitySet);
+
+        assertNotNull(processoDTOS);
+    }
+
     private EdicaoCreateDTO getEdicaoCreateDTO() {
         EdicaoCreateDTO edicaoCreateDTO = new EdicaoCreateDTO();
         edicaoCreateDTO.setNome("Edicao1");
@@ -264,6 +284,18 @@ public class EtapaServiceTest {
         processoEntity.setResponsaveis(new HashSet<>());
 
         return processoEntity;
+    }
+
+    private static ProcessoDTO getProcessoDTO() {
+        ProcessoDTO processoDTO = new ProcessoDTO();
+        processoDTO.setIdProcesso(10);
+        processoDTO.setDuracaoProcesso("1dia");
+        processoDTO.setOrdemExecucao(1);
+        processoDTO.setDiasUteis(1);
+        processoDTO.setAreasEnvolvidas(new HashSet<>());
+        processoDTO.setResponsaveis(new HashSet<>());
+
+        return processoDTO;
     }
 
     private static ResponsavelEntity getResponsavelEntity() {

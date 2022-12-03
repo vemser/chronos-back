@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 public interface EtapaControllerInterface {
 
@@ -25,6 +26,16 @@ public interface EtapaControllerInterface {
     @PostMapping("/{idEdicao}")
     ResponseEntity<EtapaDTO> create(@PathVariable("idEdicao") Integer idEdicao,
                                     @Valid @RequestBody EtapaCreateDTO etapaCreateDTO) throws RegraDeNegocioException;
+
+    @Operation(summary = "Listar todas as etapas de uma edição", description = "Lista todas as etapas atreladas a uma edição presente no banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Listagem realizada com sucesso!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    ResponseEntity<List<EtapaDTO>> listEtapasPorEdicao(@PathVariable("idEdicao") Integer idEdicao) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualizar etapa", description = "Atualiza uma etapa do banco de dados")
     @ApiResponses(

@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 public interface ProcessoControllerInterface {
 
     @Operation(summary = "Listar todos os processos", description = "Lista todos os processos do banco de dados")
@@ -22,6 +24,16 @@ public interface ProcessoControllerInterface {
     )
     @GetMapping()
     ResponseEntity<PageDTO<ProcessoDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException;
+
+    @Operation(summary = "Listar todos os processos de uma etapa", description = "Lista todos os processos atrelados a uma etapa presente no banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Listagem realizada com sucesso!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    ResponseEntity<List<ProcessoDTO>> listProcessosPorEtapa(@PathVariable("idEtapa") Integer idEtapa) throws RegraDeNegocioException;
 
     @Operation(summary = "Criar um novo processo", description = "Cria um novo processo do banco de dados")
     @ApiResponses(
