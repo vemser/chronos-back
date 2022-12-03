@@ -32,6 +32,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((auth) -> auth.antMatchers("/", "/login", "/login-forgot-password").permitAll()
 //                .authorizeHttpRequests((auth) -> auth.antMatchers("/**").permitAll()
 //                                 permissões
+                                .antMatchers(HttpMethod.GET, "/**").hasRole("INSTRUTOR")
+
                                 .antMatchers(HttpMethod.PUT, "/foto/upload-image/**").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.PUT, "/foto/upload-image-perfil").hasAnyRole("INSTRUTOR", "GESTAO_DE_PESSOAS", "ADMIN")
                                 .antMatchers(HttpMethod.GET,"/usuario/logged-user").hasAnyRole("INSTRUTOR", "GESTAO_DE_PESSOAS", "ADMIN")
@@ -70,9 +72,6 @@ public class SecurityConfiguration {
                                 .antMatchers(HttpMethod.POST, "/dia-nao-util").hasRole("GESTAO_DE_PESSOAS")
                                 .antMatchers(HttpMethod.DELETE, "/dia-nao-util").hasRole("GESTAO_DE_PESSOAS")
                                 .antMatchers("/dia-nao-util/**").hasRole("GESTAO_DE_PESSOAS")
-
-
-                                .antMatchers(HttpMethod.GET, "/**").hasRole("INSTRUTOR")
 
                                 .anyRequest().authenticated()
                 );
