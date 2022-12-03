@@ -1,10 +1,7 @@
 package br.com.dbc.chronosapi;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.usuario.UAdminUpdateDTO;
-import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
-import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
-import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
+import br.com.dbc.chronosapi.dto.usuario.*;
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
 import br.com.dbc.chronosapi.entity.classes.FotoEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
@@ -336,11 +333,26 @@ public class UsuarioServiceTest {
         UAdminUpdateDTO uAdminUpdateDTO = getUAdminUpdateDTO();
         UsuarioEntity usuarioEntity = getUsuarioEntity();
 
-        when(usuarioRepository.findById(any())).thenReturn(Optional.of(usuarioEntity));
-        when(usuarioRepository.save(any())).thenReturn(getUsuarioEntity());
+        Set<CargoEntity> cargoEntitiesSet = new HashSet<>();
+        cargoEntitiesSet.add(getCargoEntityInstrutor());
+        cargoEntitiesSet.add(getCargoEntity());
 
+        CargoEntity cargo = getCargoEntity();
+
+        List<CargoCreateDTO> cargoCreateDTOS  = new ArrayList<>();
+
+        cargoCreateDTOS.add(getCargoCreateDTOAdmin());
+        cargoCreateDTOS.add(getCargoCreateDTOInstrutor());
+
+        uAdminUpdateDTO.setCargos(cargoCreateDTOS);
+
+        usuarioEntity.setCargos(cargoEntitiesSet);
+
+        when(usuarioRepository.findById(any())).thenReturn(Optional.of(usuarioEntity));
+        when(cargoService.findByNome(any())).thenReturn(cargo);
+        when(usuarioRepository.save(any())).thenReturn(usuarioEntity);
         // ACT
-        UsuarioDTO usuarioDTO = usuarioService.updateAdmin(idUsuario, uAdminUpdateDTO);
+        UsuarioDTO usuarioDTO = usuarioService.updateAdmin(usuarioEntity.getIdUsuario(), uAdminUpdateDTO);
 
         // ASSERT
         assertNotNull(usuarioDTO);
@@ -503,4 +515,35 @@ public class UsuarioServiceTest {
         cargoEntity.setNome("ROLE_ADMIN");
         return cargoEntity;
     }
+
+    private static CargoEntity getCargoEntityInstrutor() {
+        CargoEntity cargoEntity = new CargoEntity();
+        cargoEntity.setNome("ROLE_INSTRUTOR");
+        return cargoEntity;
+    }
+
+    private static CargoEntity getCargoEntityFalse() {
+        CargoEntity cargoEntity = new CargoEntity();
+        cargoEntity.setNome("ROLE_HIHIHI");
+        return cargoEntity;
+    }
+
+    private static CargoCreateDTO getCargoCreateDTOFalse() {
+        CargoCreateDTO cargoCreateDTO = new CargoCreateDTO();
+        cargoCreateDTO.setNome("ROLE_HAHA");
+        return cargoCreateDTO;
+    }
+
+    private static CargoCreateDTO getCargoCreateDTOAdmin() {
+        CargoCreateDTO cargoCreateDTO = new CargoCreateDTO();
+        cargoCreateDTO.setNome("ROLE_ADMIN");
+        return cargoCreateDTO;
+    }
+
+    private static CargoCreateDTO getCargoCreateDTOInstrutor() {
+        CargoCreateDTO cargoCreateDTO = new CargoCreateDTO();
+        cargoCreateDTO.setNome("ROLE_INSTRUTOR");
+        return cargoCreateDTO;
+    }
+
 }
