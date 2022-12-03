@@ -223,6 +223,7 @@ public class ProcessoServiceTest {
         assertEquals(3, processoDTO.getOrdemExecucao());
     }
 
+
     @Test
     public void testEdicaoDeleteSuccess() throws RegraDeNegocioException {
         // SETUP
