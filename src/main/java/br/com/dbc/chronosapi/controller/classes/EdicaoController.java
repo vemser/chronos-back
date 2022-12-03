@@ -1,7 +1,6 @@
 package br.com.dbc.chronosapi.controller.classes;
 
 import br.com.dbc.chronosapi.controller.interfaces.EdicaoControllerInterface;
-import br.com.dbc.chronosapi.dto.DiaDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
@@ -15,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Validated
@@ -37,10 +35,10 @@ public class EdicaoController implements EdicaoControllerInterface {
         return new ResponseEntity<>(edicaoService.clone(idEdicao), HttpStatus.OK);
     }
 
-    @GetMapping("/calendario/{idEdicao}")
-    public ResponseEntity<List<DiaDTO>> generate(@PathVariable Integer idEdicao) throws RegraDeNegocioException {
-        return new ResponseEntity<>(edicaoService.generate(idEdicao), HttpStatus.OK);
-    }
+//    @GetMapping("/calendario/{idEdicao}")
+//    public ResponseEntity<List<DiaDTO>> generate(@PathVariable Integer idEdicao) throws RegraDeNegocioException {
+//        return new ResponseEntity<>(edicaoService.generate(idEdicao), HttpStatus.OK);
+//    }
 
     @PutMapping("/{idEdicao}")
     public ResponseEntity<EdicaoDTO> update(@Valid @PathVariable ("idEdicao") Integer idEdicao,

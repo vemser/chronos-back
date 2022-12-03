@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -84,4 +85,9 @@ public class DiaNaoUtilService {
 
     }
 
+    public List<DiaNaoUtilDTO> getDiasNaoUteis() {
+       return diaNaoUtilRepository.findAll().stream()
+                .map(dia -> objectMapper.convertValue(dia, DiaNaoUtilDTO.class))
+                .collect(Collectors.toList());
+    }
 }

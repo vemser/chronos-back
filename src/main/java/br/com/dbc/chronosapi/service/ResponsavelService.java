@@ -34,14 +34,9 @@ public class ResponsavelService {
                 .orElseThrow(() -> new RegraDeNegocioException("Responsavel não encontrado!"));
     }
 
-    public ResponsavelEntity findByNome(String nome) {
-        return responsavelRepository.findByNome(nome);
+    public ResponsavelEntity findByNomeResponsavel(String nome) {
+        return responsavelRepository.findByNomeResponsavel(nome);
     }
-
-    public ResponsavelEntity findByNomeContainingIgnoreCase(String nome) {
-        return responsavelRepository.findByNomeContainingIgnoreCase(nome);
-    }
-
     public List<ResponsavelDTO> listarResponsaveis(){
 
         return responsavelRepository.findAll().stream()

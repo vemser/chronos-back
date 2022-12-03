@@ -36,8 +36,8 @@ public class AreaEnvolvidaService {
                 .orElseThrow(() -> new RegraDeNegocioException("Área envolvida não encontrada!"));
     }
 
-    public AreaEnvolvidaEntity findByNomeContainingIgnoreCase(String nome) {
-        return areaEnvolvidaRepository.findByNomeContainingIgnoreCase(nome);
+    public AreaEnvolvidaEntity findByNomeArea(String nome) {
+        return areaEnvolvidaRepository.findByNomeArea(nome);
     }
 
     public List<AreaEnvolvidaDTO> listarAreas(){

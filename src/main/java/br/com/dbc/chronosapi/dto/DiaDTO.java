@@ -9,8 +9,7 @@ import java.time.LocalDate;
 @Data
 public class DiaDTO {
     private LocalDate dia;
-    private boolean diaUtil;
-    private boolean diaNaoUtil;
+    private DiaUtilDTO diaUtil;
     private EtapaDTO etapa;
     private ProcessoDTO processo;
 }

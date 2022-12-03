@@ -1,6 +1,5 @@
 package br.com.dbc.chronosapi.controller.interfaces;
 
-import br.com.dbc.chronosapi.dto.DiaDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 public interface EdicaoControllerInterface {
 
@@ -72,16 +70,16 @@ public interface EdicaoControllerInterface {
     @PostMapping("/clone/{idEdicao}")
     ResponseEntity<EdicaoDTO> clone(@Valid @PathVariable("idEdicao") Integer idEdicao) throws RegraDeNegocioException;
 
-    @Operation(summary = "Gerar calendário", description = "Gerar calendário a partir do id da edição.")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Calendário gerado com sucesso!"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @GetMapping("/calendario/{idEdicao}")
-    ResponseEntity<List<DiaDTO>> generate(@PathVariable Integer idEdicao) throws RegraDeNegocioException;
+//    @Operation(summary = "Gerar calendário", description = "Gerar calendário a partir do id da edição.")
+//    @ApiResponses(
+//            value = {
+//                    @ApiResponse(responseCode = "200", description = "Calendário gerado com sucesso!"),
+//                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+//                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+//            }
+//    )
+//    @GetMapping("/calendario/{idEdicao}")
+//    ResponseEntity<List<DiaDTO>> generate(@PathVariable Integer idEdicao) throws RegraDeNegocioException;
 
     @Operation(summary = "Alterar status de uma edição", description = "Desabilita uma edição se ela estiver habilitada e caso ela esteja desabilitada ocorre o inverso.")
     @ApiResponses(
