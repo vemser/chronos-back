@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class UAdminUpdateDTO {
@@ -17,5 +18,5 @@ public class UAdminUpdateDTO {
 
     @NotEmpty
     @Schema(description = "Cargos do usuário")
-    private List<CargoCreateDTO> cargos;
+    private Set<CargoCreateDTO> cargos;
 }

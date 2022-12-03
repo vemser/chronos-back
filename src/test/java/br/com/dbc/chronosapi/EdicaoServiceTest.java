@@ -3,6 +3,8 @@ package br.com.dbc.chronosapi;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
+import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaDTO;
+import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
@@ -302,9 +304,30 @@ public class EdicaoServiceTest {
         //ASSERT
         assertEquals(10, edicaoDTO.getIdEdicao());
     }
+    @Test
+    public void testGetResponsavelDTOSuccess(){
 
+        Set<ResponsavelEntity> responsavelEntities = new HashSet<>();
+        ResponsavelEntity responsavelEntity = getResponsavelEntity();
+        responsavelEntities.add(responsavelEntity);
 
+        Set<ResponsavelDTO> responsavelDTOS = edicaoService.getResponsavelDTO(responsavelEntities);
 
+        assertNotNull(responsavelDTOS);
+
+    }
+    @Test
+    public void testGetAreaEnvolvidaDTOSuccess(){
+
+        Set<AreaEnvolvidaEntity> areaEnvolvidaEntities = new HashSet<>();
+        AreaEnvolvidaEntity areaEnvolvidaEntity = getAreaEnvolvida();
+        areaEnvolvidaEntities.add(areaEnvolvidaEntity);
+
+        Set<AreaEnvolvidaDTO> areaEnvolvidaDTOS = edicaoService.getAreaEnvolvidaDTO(areaEnvolvidaEntities);
+
+        assertNotNull(areaEnvolvidaDTOS);
+
+    }
     private EdicaoCreateDTO getEdicaoCreateDTO() {
         EdicaoCreateDTO edicaoCreateDTO = new EdicaoCreateDTO();
         edicaoCreateDTO.setNome("Edicao1");
