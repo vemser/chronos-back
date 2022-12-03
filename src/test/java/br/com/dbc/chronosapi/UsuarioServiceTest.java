@@ -167,44 +167,6 @@ public class UsuarioServiceTest {
         verify(usuarioRepository, times(1)).save(any());
     }
 
-//    @Test
-//    public void deveTestarUploadImageComSucesso() throws RegraDeNegocioException, IOException {
-//        // SETUP
-//        UsuarioEntity usuario = getUsuarioEntity();
-//        Integer idUsuario = 1;
-//        byte[] imagemBytes = new byte[5*1024];
-//        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
-//
-//        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuario));
-//        when(usuarioRepository.save(any())).thenReturn(getUsuarioEntity());
-//
-//        // ACT
-//        UsuarioDTO usuarioDTO = usuarioService.upl(idUsuario, imagem);
-//
-//        // ASSERT
-//        assertNotEquals(usuario.getImagem(), usuarioDTO.getImagem());
-//        assertNotNull(usuarioDTO);
-//    }
-
-//    @Test
-//    public void deveTestarUploadImageComSucessoPerfil() throws RegraDeNegocioException, IOException {
-//        // SETUP
-//        UsuarioEntity usuario = getUsuarioEntity();
-//        byte[] imagemBytes = new byte[5*1024];
-//        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
-//
-//        when(loginService.getIdLoggedUser()).thenReturn(usuario.getIdUsuario());
-//        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuario));
-//        when(usuarioRepository.save(any())).thenReturn(getUsuarioEntity());
-//
-//        // ACT
-//        UsuarioDTO usuarioDTO = usuarioService.uploadImagePerfil(imagem);
-//
-//        // ASSERT
-//        assertNotEquals(usuario.getImagem(), usuarioDTO.getImagem());
-//        assertNotNull(usuarioDTO);
-//    }
-
     @Test
     public void deveTestarCreateComSucesso() throws RegraDeNegocioException, IOException {
         // SETUP
@@ -339,7 +301,7 @@ public class UsuarioServiceTest {
 
         CargoEntity cargo = getCargoEntity();
 
-        List<CargoCreateDTO> cargoCreateDTOS  = new ArrayList<>();
+        Set<CargoCreateDTO> cargoCreateDTOS  = new HashSet<>();
 
         cargoCreateDTOS.add(getCargoCreateDTOAdmin());
         cargoCreateDTOS.add(getCargoCreateDTOInstrutor());
@@ -361,6 +323,36 @@ public class UsuarioServiceTest {
         verify(usuarioRepository, times(1)).save(any());
     }
 
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarCreateFalha() throws RegraDeNegocioException, IOException {
+        // SETUP
+        Integer idUsuario = 1;
+        UsuarioCreateDTO usuarioCreateDTO = getUsuarioCreateDTO();
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+
+        Set<CargoEntity> cargoEntitiesSet = new HashSet<>();
+        cargoEntitiesSet.add(getCargoEntityInstrutor());
+        cargoEntitiesSet.add(getCargoEntity());
+
+        Set<CargoCreateDTO> cargoCreateDTOS  = new HashSet<>();
+
+        cargoCreateDTOS.add(getCargoCreateDTOFalse());
+
+        usuarioCreateDTO.setCargos(cargoCreateDTOS);
+
+        usuarioEntity.setCargos(cargoEntitiesSet);
+
+        // ACT
+        UsuarioDTO usuarioDTO = usuarioService.create(usuarioCreateDTO);
+
+        // ASSERT
+        assertNotNull(usuarioDTO);
+        assertEquals(1, usuarioDTO.getIdUsuario());
+        assertEquals("Luiz Martins", usuarioDTO.getNome());
+        verify(usuarioRepository, times(1)).save(any());
+    }
+
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarUpdateAdminComFalha() throws RegraDeNegocioException {
         // SETUP
@@ -372,21 +364,14 @@ public class UsuarioServiceTest {
         cargoEntitiesSet.add(getCargoEntityInstrutor());
         cargoEntitiesSet.add(getCargoEntity());
 
-        CargoEntity cargo = getCargoEntity();
-        cargo.setNome("cargo erradao ai");
+        Set<CargoCreateDTO> cargoCreateDTOS  = new HashSet<>();
 
-        List<CargoCreateDTO> cargoCreateDTOS  = new ArrayList<>();
-
-        cargoCreateDTOS.add(getCargoCreateDTOAdmin());
-        cargoCreateDTOS.add(getCargoCreateDTOInstrutor());
+        cargoCreateDTOS.add(getCargoCreateDTOFalse());
 
         uAdminUpdateDTO.setCargos(cargoCreateDTOS);
 
         usuarioEntity.setCargos(cargoEntitiesSet);
 
-        when(usuarioRepository.findById(any())).thenReturn(Optional.of(usuarioEntity));
-        when(cargoService.findByNome(any())).thenReturn(cargo);
-        when(usuarioRepository.save(any())).thenReturn(usuarioEntity);
         // ACT
         UsuarioDTO usuarioDTO = usuarioService.updateAdmin(usuarioEntity.getIdUsuario(), uAdminUpdateDTO);
 
@@ -541,7 +526,7 @@ public class UsuarioServiceTest {
     private static UAdminUpdateDTO getUAdminUpdateDTO() {
         UAdminUpdateDTO uAdminUpdateDTO = new UAdminUpdateDTO();
         uAdminUpdateDTO.setNome("Luiz Martins");
-        uAdminUpdateDTO.setCargos(new ArrayList<>());
+        uAdminUpdateDTO.setCargos(new HashSet<>());
 
         return uAdminUpdateDTO;
     }

@@ -74,6 +74,11 @@ public class UsuarioService {
     }
 
     public UsuarioDTO create(UsuarioCreateDTO usuarioCreateDTO) throws IOException, RegraDeNegocioException {
+
+        if (!cargoValido(usuarioCreateDTO.getCargos())){
+            throw new RegraDeNegocioException("Insira um cargo válido.");
+        }
+
         UsuarioEntity usuarioEntity = new UsuarioEntity();
         Faker faker = new Faker();
         String senha = faker.internet().password(10, 11, true, true, true);
@@ -125,6 +130,11 @@ public class UsuarioService {
     }
 
     public UsuarioDTO updateAdmin(Integer id, UAdminUpdateDTO usuarioUpdate) throws RegraDeNegocioException {
+
+        if (!cargoValido(usuarioUpdate.getCargos())){
+            throw new RegraDeNegocioException("Insira um cargo válido.");
+        }
+
         UsuarioEntity usuarioRecover = findById(id);
         usuarioRecover.setNome(usuarioUpdate.getNome());
         Set<CargoEntity> cargos = usuarioUpdate.getCargos().stream()
@@ -132,20 +142,16 @@ public class UsuarioService {
         usuarioRecover.setCargos(cargos);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioRecover), UsuarioDTO.class);
 
-        if (!cargoValido(cargos)){
-            throw new RegraDeNegocioException("Insira um cargo válido.");
-        }
-
         return getUsuarioDTO(usuarioRecover, usuarioDTO, cargos);
     }
 
-    public boolean cargoValido (Set<CargoEntity> cargoEntities){
+    public boolean cargoValido (Set<CargoCreateDTO> cargoEntities){
 
         String admin = "ROLE_ADMIN";
         String instrutor = "ROLE_INSTRUTOR";
         String gestor = "ROLE_GESTAO_DE_PESSOAS";
 
-        for (CargoEntity cargo: cargoEntities) {
+        for (CargoCreateDTO cargo: cargoEntities) {
             if (!Objects.equals(cargo.getNome(), admin) &&
                     !Objects.equals(cargo.getNome(), instrutor) &&
                         !Objects.equals(cargo.getNome(), gestor)) {
