@@ -361,6 +361,42 @@ public class UsuarioServiceTest {
         verify(usuarioRepository, times(1)).save(any());
     }
 
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarUpdateAdminComFalha() throws RegraDeNegocioException {
+        // SETUP
+        Integer idUsuario = 1;
+        UAdminUpdateDTO uAdminUpdateDTO = getUAdminUpdateDTO();
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+
+        Set<CargoEntity> cargoEntitiesSet = new HashSet<>();
+        cargoEntitiesSet.add(getCargoEntityInstrutor());
+        cargoEntitiesSet.add(getCargoEntity());
+
+        CargoEntity cargo = getCargoEntity();
+        cargo.setNome("cargo erradao ai");
+
+        List<CargoCreateDTO> cargoCreateDTOS  = new ArrayList<>();
+
+        cargoCreateDTOS.add(getCargoCreateDTOAdmin());
+        cargoCreateDTOS.add(getCargoCreateDTOInstrutor());
+
+        uAdminUpdateDTO.setCargos(cargoCreateDTOS);
+
+        usuarioEntity.setCargos(cargoEntitiesSet);
+
+        when(usuarioRepository.findById(any())).thenReturn(Optional.of(usuarioEntity));
+        when(cargoService.findByNome(any())).thenReturn(cargo);
+        when(usuarioRepository.save(any())).thenReturn(usuarioEntity);
+        // ACT
+        UsuarioDTO usuarioDTO = usuarioService.updateAdmin(usuarioEntity.getIdUsuario(), uAdminUpdateDTO);
+
+        // ASSERT
+        assertNotNull(usuarioDTO);
+        assertEquals(1, usuarioDTO.getIdUsuario());
+        assertEquals("Luiz Martins", usuarioDTO.getNome());
+        verify(usuarioRepository, times(1)).save(any());
+    }
+
     @Test
     public void deveTestarEnableOrDisableComSucesso() throws RegraDeNegocioException{
         // SETUP
