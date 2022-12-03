@@ -128,14 +128,12 @@ public class EdicaoService {
         return objectMapper.convertValue(edicaoEntityCloneSaved, EdicaoDTO.class);
     }
 
-    public DadosCalendarioDTO generate(Integer idEdicao) throws RegraDeNegocioException {
+    public List<DiaDTO> generate(Integer idEdicao) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = findById(idEdicao);
         Set<EtapaEntity> etapas = edicaoEntity.getEtapas();
         LocalDate dataInicial = edicaoEntity.getDataInicial();
-        LocalDate dataFinal = edicaoEntity.getDataFinal();
         List<DiaNaoUtilEntity> diasNaoUteis = diaNaoUtilRepository.findAll(Sort.by("dataInicial").ascending());
-        DadosCalendarioDTO dados = new DadosCalendarioDTO();
-        dados.setDias(new ArrayList<>());
+        List<DiaDTO> dias = new ArrayList<>();
         dia = dataInicial;
 
         etapas.stream()
@@ -160,7 +158,7 @@ public class EdicaoService {
                                         diaDTO.setDia(dia);
                                         diaDTO.setEtapa(null);
                                         diaDTO.setProcesso(null);
-                                        dados.getDias().add(diaDTO);
+                                        dias.add(diaDTO);
                                         dia = dia.plusDays(UM_DIA);
                                     }else if(feriadoDTO.getQtdDias() > 0){
                                         diasCorridos = UM_DIA;
@@ -174,7 +172,7 @@ public class EdicaoService {
                                             diaDTO.setDia(dia);
                                             diaDTO.setEtapa(null);
                                             diaDTO.setProcesso(null);
-                                            dados.getDias().add(diaDTO);
+                                            dias.add(diaDTO);
                                             dia = dia.plusDays(UM_DIA);
                                             diasCorridos++;
                                         }
@@ -191,7 +189,7 @@ public class EdicaoService {
                                         processoDTO.setAreasEnvolvidas(this.getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
                                         processoDTO.setResponsaveis((this.getResponsavelDTO(processoEntity.getResponsaveis())));
                                         diaDTO.setProcesso(processoDTO);
-                                        dados.getDias().add(diaDTO);
+                                        dias.add(diaDTO);
                                         dia = dia.plusDays(UM_DIA);
                                         contDiasUteis++;
                                     }
@@ -199,9 +197,7 @@ public class EdicaoService {
                                 return processoEntity;
                             }).toList();
                 }).toList();
-        dados.setDescricao("Fluxo " + edicaoEntity.getNome() + " - " + dataInicial + " até " + dataFinal);
-        dados.setPrevisaoEncerramento("Previsão de encerramento: " + dia.minusDays(UM_DIA));
-        return dados;
+        return dias;
     }
 
     public FeriadoDTO verificarDiasNaoUteis(LocalDate dia, List<DiaNaoUtilEntity> diasNaoUteis) {

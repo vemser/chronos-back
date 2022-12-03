@@ -1,6 +1,6 @@
 package br.com.dbc.chronosapi.controller.interfaces;
 
-import br.com.dbc.chronosapi.dto.DadosCalendarioDTO;
+import br.com.dbc.chronosapi.dto.DiaDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 public interface EdicaoControllerInterface {
 
@@ -80,7 +81,7 @@ public interface EdicaoControllerInterface {
             }
     )
     @GetMapping("/calendario/{idEdicao}")
-    ResponseEntity<DadosCalendarioDTO> generate(@PathVariable Integer idEdicao) throws RegraDeNegocioException;
+    ResponseEntity<List<DiaDTO>> generate(@PathVariable Integer idEdicao) throws RegraDeNegocioException;
 
     @Operation(summary = "Alterar status de uma edição", description = "Desabilita uma edição se ela estiver habilitada e caso ela esteja desabilitada ocorre o inverso.")
     @ApiResponses(
