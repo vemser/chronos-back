@@ -168,6 +168,15 @@ public class DiaNaoUtilServiceTest {
         assertEquals(1, paginaSolicitada.getTotalElementos());
     }
 
+    @Test
+    public void testGetDiasNaoUteis(){
+        DiaNaoUtilDTO diaNaoUtilDTO = getDiaNaoUtilDTO();
+
+        List<DiaNaoUtilDTO> diaNaoUtilDTOList = diaNaoUtilService.getDiasNaoUteis();
+
+        assertNotNull(diaNaoUtilDTOList);
+    }
+
     private static DiaNaoUtilCreateDTO getDiaNaoUtilCreateDTO() {
         DiaNaoUtilCreateDTO diaNaoUtilCreateDTO = new DiaNaoUtilCreateDTO();
         diaNaoUtilCreateDTO.setDescricao("natal");
@@ -186,6 +195,17 @@ public class DiaNaoUtilServiceTest {
         diaNaoUtilEntity.setIdDiaNaoUtil(10);
 
         return diaNaoUtilEntity;
+    }
+
+    private static DiaNaoUtilDTO getDiaNaoUtilDTO() {
+        DiaNaoUtilDTO diaNaoUtilDTO = new DiaNaoUtilDTO();
+        diaNaoUtilDTO.setRepeticaoAnual(Status.INATIVO);
+        diaNaoUtilDTO.setDescricao("natal");
+        diaNaoUtilDTO.setDataInicial(LocalDate.parse("1900-12-25"));
+        diaNaoUtilDTO.setDataFinal(LocalDate.parse("2022-12-25"));
+        diaNaoUtilDTO.setIdDiaNaoUtil(10);
+
+        return diaNaoUtilDTO;
     }
 
 }

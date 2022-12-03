@@ -104,7 +104,7 @@ public class EtapaService {
         return objectMapper.convertValue(etapaEntity, EtapaDTO.class);
     }
 
-    private List<ProcessoDTO> getProcessosDTO(Set<ProcessoEntity> processos) {
+    public List<ProcessoDTO> getProcessosDTO(Set<ProcessoEntity> processos) {
         return processos.stream()
                 .map(processoEntity -> objectMapper.convertValue(processoEntity, ProcessoDTO.class))
                 .collect(Collectors.toList());
