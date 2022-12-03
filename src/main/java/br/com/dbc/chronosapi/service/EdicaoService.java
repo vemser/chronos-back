@@ -1,11 +1,15 @@
 package br.com.dbc.chronosapi.service;
 
+import br.com.dbc.chronosapi.dto.DiaDTO;
+import br.com.dbc.chronosapi.dto.DiaUtilDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaDTO;
+import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
 import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
+import br.com.dbc.chronosapi.entity.classes.DiaNaoUtilEntity;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
@@ -21,9 +25,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -121,63 +128,63 @@ public class EdicaoService {
         return objectMapper.convertValue(edicaoEntityCloneSaved, EdicaoDTO.class);
     }
 
-//    public List<DiaDTO> generate(Integer idEdicao) throws RegraDeNegocioException {
-//        EdicaoEntity edicaoEntity = findById(idEdicao);
-//        Set<EtapaEntity> etapas = edicaoEntity.getEtapas();
-//        LocalDate dataInicial = edicaoEntity.getDataInicial();
-//        LocalDate dataFinal = edicaoEntity.getDataFinal().plusDays(1);
-//        List<DiaNaoUtilEntity> diasNaoUteis = diaNaoUtilRepository.findAll(Sort.by("dataInicial").ascending());
-//        List<DiaDTO> dias = new ArrayList<>();
-//        dia = dataInicial;
-//
-//        etapas.stream()
-//                .map(etapaEntity -> {
-//                    return etapaEntity.getProcessos().stream()
-//                            .map(processoEntity -> {
-//                                Integer diasUteisProcesso = processoEntity.getDiasUteis();
-//                                int contDiasUteis = 1;
-//                                while(contDiasUteis <= diasUteisProcesso && dia.isBefore(dataFinal)) {
-//                                    DayOfWeek diaDaSemana = dia.getDayOfWeek();
-//
-//
-//
-//                                    if(diaDaSemana == DayOfWeek.SATURDAY || diaDaSemana == DayOfWeek.SUNDAY ) {
-//                                        DiaDTO diaDTO = new DiaDTO();
-//                                        DiaUtilDTO diaUtilDTO = new DiaUtilDTO();
-//                                        diaUtilDTO.setEhDiaUtil(false);
-//                                        diaUtilDTO.setEhDiaNaoUtil(true);
-//                                        diaUtilDTO.setDescricao(null);
-//                                        diaDTO.setDiaUtil(diaUtilDTO);
-//                                        diaDTO.setDia(dia);
-//                                        diaDTO.setEtapa(null);
-//                                        diaDTO.setProcesso(null);
-//                                        dias.add(diaDTO);
-//                                        dia = dia.plusDays(1);
-////                                    }else if(){
-//
-//                                    }else {
-//                                        DiaDTO diaDTO = new DiaDTO();
-//                                        DiaUtilDTO diaUtilDTO = new DiaUtilDTO();
-//                                        diaUtilDTO.setEhDiaUtil(true);
-//                                        diaUtilDTO.setEhDiaNaoUtil(false);
-//                                        diaUtilDTO.setDescricao(null);
-//                                        diaDTO.setDiaUtil(diaUtilDTO);
-//                                        diaDTO.setDia(dia);
-//                                        diaDTO.setEtapa(objectMapper.convertValue(etapaEntity, EtapaDTO.class));
-//                                        ProcessoDTO processoDTO = objectMapper.convertValue(processoEntity, ProcessoDTO.class);
-//                                        processoDTO.setAreasEnvolvidas(this.getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
-//                                        processoDTO.setResponsaveis((this.getResponsavelDTO(processoEntity.getResponsaveis())));
-//                                        diaDTO.setProcesso(processoDTO);
-//                                        dias.add(diaDTO);
-//                                        dia = dia.plusDays(1);
-//                                        contDiasUteis++;
-//                                    }
-//                                }
-//                                return processoEntity;
-//                            }).toList();
-//                }).toList();
-//        return dias;
-//    }
+    public List<DiaDTO> generate(Integer idEdicao) throws RegraDeNegocioException {
+        EdicaoEntity edicaoEntity = findById(idEdicao);
+        Set<EtapaEntity> etapas = edicaoEntity.getEtapas();
+        LocalDate dataInicial = edicaoEntity.getDataInicial();
+        LocalDate dataFinal = edicaoEntity.getDataFinal().plusDays(1);
+        List<DiaNaoUtilEntity> diasNaoUteis = diaNaoUtilRepository.findAll(Sort.by("dataInicial").ascending());
+        List<DiaDTO> dias = new ArrayList<>();
+        dia = dataInicial;
+
+        etapas.stream()
+                .map(etapaEntity -> {
+                    return etapaEntity.getProcessos().stream()
+                            .map(processoEntity -> {
+                                Integer diasUteisProcesso = processoEntity.getDiasUteis();
+                                int contDiasUteis = 1;
+                                while(contDiasUteis <= diasUteisProcesso) {
+                                    DayOfWeek diaDaSemana = dia.getDayOfWeek();
+
+
+
+                                    if(diaDaSemana == DayOfWeek.SATURDAY || diaDaSemana == DayOfWeek.SUNDAY ) {
+                                        DiaDTO diaDTO = new DiaDTO();
+                                        DiaUtilDTO diaUtilDTO = new DiaUtilDTO();
+                                        diaUtilDTO.setEhDiaUtil(false);
+                                        diaUtilDTO.setEhDiaNaoUtil(true);
+                                        diaUtilDTO.setDescricao(null);
+                                        diaDTO.setDiaUtil(diaUtilDTO);
+                                        diaDTO.setDia(dia);
+                                        diaDTO.setEtapa(null);
+                                        diaDTO.setProcesso(null);
+                                        dias.add(diaDTO);
+                                        dia = dia.plusDays(1);
+//                                    }else if(){
+
+                                    }else {
+                                        DiaDTO diaDTO = new DiaDTO();
+                                        DiaUtilDTO diaUtilDTO = new DiaUtilDTO();
+                                        diaUtilDTO.setEhDiaUtil(true);
+                                        diaUtilDTO.setEhDiaNaoUtil(false);
+                                        diaUtilDTO.setDescricao(null);
+                                        diaDTO.setDiaUtil(diaUtilDTO);
+                                        diaDTO.setDia(dia);
+                                        diaDTO.setEtapa(objectMapper.convertValue(etapaEntity, EtapaDTO.class));
+                                        ProcessoDTO processoDTO = objectMapper.convertValue(processoEntity, ProcessoDTO.class);
+                                        processoDTO.setAreasEnvolvidas(this.getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
+                                        processoDTO.setResponsaveis((this.getResponsavelDTO(processoEntity.getResponsaveis())));
+                                        diaDTO.setProcesso(processoDTO);
+                                        dias.add(diaDTO);
+                                        dia = dia.plusDays(1);
+                                        contDiasUteis++;
+                                    }
+                                }
+                                return processoEntity;
+                            }).toList();
+                }).toList();
+        return dias;
+    }
 
 //    public FeriadoDTO verificarDiasNaoUteis(LocalDate dia, List<DiaNaoUtilEntity> diasNaoUteis) {
 //        LocalDate dataAtual = LocalDate.now();
@@ -192,8 +199,9 @@ public class EdicaoService {
 //                        }
 //                    }else {
 //                        if(diaNaoUtilEntity.equals(dia)) {
-//                            Duration duration = Duration.between(diaNaoUtilEntity.getDataInicial(), diaNaoUtilEntity.getDataFinal());
-//                            feriado.setQtdDias(diasNaoUteis);
+//                            Period between = Period.between(diaNaoUtilEntity.getDataInicial(), diaNaoUtilEntity.getDataFinal());
+//                            int qtdDias = between.getDays()+1;
+//                            feriado.setQtdDias(qtdDias);
 //                            feriado.setDescricao(diaNaoUtilEntity.getDescricao());
 //                        }
 //                    }
