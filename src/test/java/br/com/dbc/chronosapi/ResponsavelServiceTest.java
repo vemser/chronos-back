@@ -109,10 +109,10 @@ public class ResponsavelServiceTest {
     public void testFindByNome() throws RegraDeNegocioException {
         // SETUP
         ResponsavelEntity responsavelEntity = getResponsavelEntity();
-        when(responsavelRepository.findByNome(anyString())).thenReturn(responsavelEntity);
+        when(responsavelRepository.findByNomeResponsavel(anyString())).thenReturn(responsavelEntity);
 
         // ACT
-        ResponsavelEntity responsavelEntity1 = responsavelService.findByNome(responsavelEntity.getNome());
+        ResponsavelEntity responsavelEntity1 = responsavelService.findByNomeResponsavel(responsavelEntity.getNome());
 
         // ASSERT
         assertNotNull(responsavelEntity1);
@@ -124,10 +124,10 @@ public class ResponsavelServiceTest {
     public void testFindByNomeContainingIgnoreCase() throws RegraDeNegocioException {
         // SETUP
         ResponsavelEntity responsavelEntity = getResponsavelEntity();
-        when(responsavelRepository.findByNomeContainingIgnoreCase(anyString())).thenReturn(responsavelEntity);
+        when(responsavelRepository.findByNomeResponsavel(anyString())).thenReturn(responsavelEntity);
 
         // ACT
-        ResponsavelEntity responsavelEntity1 = responsavelService.findByNomeContainingIgnoreCase(responsavelEntity.getNome());
+        ResponsavelEntity responsavelEntity1 = responsavelService.findByNomeResponsavel(responsavelEntity.getNome());
 
         // ASSERT
         assertNotNull(responsavelEntity1);

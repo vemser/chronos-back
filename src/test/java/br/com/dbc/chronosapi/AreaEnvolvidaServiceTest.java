@@ -103,10 +103,10 @@ public class AreaEnvolvidaServiceTest {
     public void testFindByNome() throws RegraDeNegocioException {
         // SETUP
         AreaEnvolvidaEntity areaEnvolvidaEntity = getAreaEnvolvidaEntity();
-        when(areaEnvolvidaRepository.findByNomeContainingIgnoreCase(anyString())).thenReturn(areaEnvolvidaEntity);
+        when(areaEnvolvidaRepository.findByNomeArea(anyString())).thenReturn(areaEnvolvidaEntity);
 
         // ACT
-        AreaEnvolvidaEntity areaEnvolvidaEntity1 = areaEnvolvidaService.findByNomeContainingIgnoreCase(areaEnvolvidaEntity.getNome());
+        AreaEnvolvidaEntity areaEnvolvidaEntity1 = areaEnvolvidaService.findByNomeArea(areaEnvolvidaEntity.getNome());
 
         // ASSERT
         assertNotNull(areaEnvolvidaEntity1);

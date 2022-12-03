@@ -1,6 +1,7 @@
 package br.com.dbc.chronosapi;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
+import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
@@ -162,15 +163,17 @@ public class ProcessoServiceTest {
     }
 
 //    @Test
-//    public void testListSucess(){
+//    public void testListComEtapaSucess(){
 //        // SETUP
+//        Integer pagina = 10;
+//        Integer quantidade = 5;
 //
-//        EtapaEntity etapaEntity = getEtapaEntity();
-//
-//        when(etapaRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//        Page<EdicaoEntity> paginaMock = new PageImpl<>(List.of(edicaoEntity));
+//        when(edicaoRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
 //
 //        // ACT
-//        PageDTO<EtapaDTO> paginaSolicitada = etapaService.list(pagina, quantidade);
+//        PageDTO<EdicaoDTO> paginaSolicitada = edicaoService.listComEtapa(pagina, quantidade);
 //
 //        // ASSERT
 //        assertNotNull(paginaSolicitada);
