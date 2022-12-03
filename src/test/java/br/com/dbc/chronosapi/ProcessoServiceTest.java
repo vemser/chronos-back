@@ -1,10 +1,12 @@
 package br.com.dbc.chronosapi;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
+import br.com.dbc.chronosapi.dto.etapa.EtapaCreateDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
+import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
+import br.com.dbc.chronosapi.dto.processo.ResponsavelCreateDTO;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
@@ -29,7 +31,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -73,7 +74,7 @@ public class ProcessoServiceTest {
     }
 
     @Test
-    public void testListSucess(){
+    public void testListSucess() {
         // SETUP
         Integer pagina = 10;
         Integer quantidade = 5;
@@ -90,6 +91,7 @@ public class ProcessoServiceTest {
         assertNotNull(paginaSolicitada.getPagina());
         assertEquals(1, paginaSolicitada.getTotalElementos());
     }
+
     @Test
     public void testProcessoCreateSuccess() throws RegraDeNegocioException {
         //SETUP
@@ -97,8 +99,67 @@ public class ProcessoServiceTest {
         ProcessoEntity processoEntity = getProcessoEntity();
         EtapaEntity etapaEntity = getEtapaEntity();
 
+        EtapaDTO etapaDTO = new EtapaDTO();
+
+        Set<ProcessoEntity> processoEntities = new HashSet<>();
+        processoEntities.add(processoEntity);
+
+        processoEntity.setEtapa(etapaEntity);
+        etapaEntity.setProcessos(processoEntities);
+
+        Set<AreaEnvolvidaCreateDTO> areaEnvolvidaCreateDTOS = new HashSet<>();
+        areaEnvolvidaCreateDTOS.add(getAreaEnvolvidaCreateDTO());
+        areaEnvolvidaCreateDTOS.add(getAreaEnvolvidaCreateDTOExiste());
+        processoCreateDTO.setAreasEnvolvidas(areaEnvolvidaCreateDTOS);
+
+        Set<ResponsavelCreateDTO> responsavelCreateDTOS = new HashSet<>();
+        responsavelCreateDTOS.add(getResponsavelCreateDTO());
+        responsavelCreateDTOS.add(getResponsavelCreateDTOExiste());
+        processoCreateDTO.setResponsaveis(responsavelCreateDTOS);
+
+        when(etapaService.findById(anyInt())).thenReturn(etapaEntity);
+        when(etapaService.save(etapaEntity)).thenReturn(etapaDTO);
         when(processoRepository.save(any(ProcessoEntity.class))).thenReturn(processoEntity);
-        when(etapaService.findById(anyInt())).thenReturn(getEtapaEntity());
+
+        //ACT
+        ProcessoDTO processoDTO = processoService.create(10, processoCreateDTO);
+        processoDTO.setIdProcesso(10);
+
+        //ASSERT
+        assertNotNull(processoDTO);
+        assertEquals(10, processoDTO.getIdProcesso());
+    }
+
+    @Test
+    public void testProcessoCreateSuccessButWithAreaAndResponsavelCompleted() throws RegraDeNegocioException {
+        //SETUP
+        ProcessoCreateDTO processoCreateDTO = getProcessoCreateDTO();
+        ProcessoEntity processoEntity = getProcessoEntity();
+        EtapaEntity etapaEntity = getEtapaEntity();
+
+        EtapaDTO etapaDTO = new EtapaDTO();
+
+        Set<ProcessoEntity> processoEntities = new HashSet<>();
+        processoEntities.add(processoEntity);
+
+        processoEntity.setEtapa(etapaEntity);
+        etapaEntity.setProcessos(processoEntities);
+
+        Set<AreaEnvolvidaCreateDTO> areaEnvolvidaCreateDTOS = new HashSet<>();
+        areaEnvolvidaCreateDTOS.add(getAreaEnvolvidaCreateDTO());
+        areaEnvolvidaCreateDTOS.add(getAreaEnvolvidaCreateDTOExiste());
+        processoCreateDTO.setAreasEnvolvidas(areaEnvolvidaCreateDTOS);
+
+        Set<ResponsavelCreateDTO> responsavelCreateDTOS = new HashSet<>();
+        responsavelCreateDTOS.add(getResponsavelCreateDTO());
+        responsavelCreateDTOS.add(getResponsavelCreateDTOExiste());
+        processoCreateDTO.setResponsaveis(responsavelCreateDTOS);
+
+        when(etapaService.findById(anyInt())).thenReturn(etapaEntity);
+        when(etapaService.save(etapaEntity)).thenReturn(etapaDTO);
+        when(areaEnvolvidaService.findByNomeArea(any())).thenReturn(getAreaEnvolvida());
+        when(responsavelService.findByNomeResponsavel(any())).thenReturn(getResponsavelEntity());
+        when(processoRepository.save(any(ProcessoEntity.class))).thenReturn(processoEntity);
 
         //ACT
         ProcessoDTO processoDTO = processoService.create(10, processoCreateDTO);
@@ -123,6 +184,34 @@ public class ProcessoServiceTest {
         areaEnvolvidaEntities.add(getAreaEnvolvida());
 
         when(processoRepository.findById(anyInt())).thenReturn(Optional.of(processoEntity));
+        when(processoRepository.save(any())).thenReturn(processoEntity1);
+
+        // ACT
+
+        ProcessoDTO processoDTO = processoService.update(processoEntity.getIdProcesso(), processoCreateDTO);
+
+        // ASSERT
+        assertNotNull(processoDTO);
+        assertEquals(3, processoDTO.getOrdemExecucao());
+    }
+
+    @Test
+    public void testProcessoUpdateSucessButWithAreaAndResponsavelCompleted() throws RegraDeNegocioException {
+        // SETUP
+        ProcessoCreateDTO processoCreateDTO = getProcessoCreateDTO();
+
+        ProcessoEntity processoEntity = getProcessoEntity();
+        ProcessoEntity processoEntity1 = getProcessoEntity();
+        processoEntity1.setOrdemExecucao(3);
+        Set<ResponsavelEntity> responsavelEntities = new HashSet<>();
+        responsavelEntities.add(getResponsavelEntity());
+        Set<AreaEnvolvidaEntity> areaEnvolvidaEntities = new HashSet<>();
+        areaEnvolvidaEntities.add(getAreaEnvolvida());
+
+        when(processoRepository.findById(anyInt())).thenReturn(Optional.of(processoEntity));
+        when(areaEnvolvidaService.findByNomeArea(any())).thenReturn(getAreaEnvolvida());
+        when(responsavelService.findByNomeResponsavel(any())).thenReturn(getResponsavelEntity());
+
         when(processoRepository.save(any())).thenReturn(processoEntity1);
 
         // ACT
@@ -213,6 +302,14 @@ public class ProcessoServiceTest {
         processoCreateDTO.setDuracaoProcesso("1 dia");
         processoCreateDTO.setDiasUteis(2);
 
+        Set<AreaEnvolvidaCreateDTO> areaEnvolvidaCreateDTOS = new HashSet<>();
+        areaEnvolvidaCreateDTOS.add(getAreaEnvolvidaCreateDTOExiste());
+        processoCreateDTO.setAreasEnvolvidas(areaEnvolvidaCreateDTOS);
+
+        Set<ResponsavelCreateDTO> responsavelCreateDTOS = new HashSet<>();
+        responsavelCreateDTOS.add(getResponsavelCreateDTOExiste());
+        processoCreateDTO.setResponsaveis(responsavelCreateDTOS);
+
         return processoCreateDTO;
     }
     private static ProcessoEntity getProcessoEntity() {
@@ -226,6 +323,13 @@ public class ProcessoServiceTest {
         processoEntity.setResponsaveis(new HashSet<>());
 
         return processoEntity;
+    }
+
+    private EtapaCreateDTO getEtapaCreateDTO() {
+        EtapaCreateDTO etapaCreateDTO = new EtapaCreateDTO();
+        etapaCreateDTO.setNome("Etapa1");
+
+        return etapaCreateDTO;
     }
 
     private static ResponsavelEntity getResponsavelEntity() {
@@ -245,6 +349,30 @@ public class ProcessoServiceTest {
         areaEnvolvidaEntity.setProcessos(new HashSet<>());
 
         return areaEnvolvidaEntity;
+    }
+
+    private static AreaEnvolvidaCreateDTO getAreaEnvolvidaCreateDTO() {
+        AreaEnvolvidaCreateDTO areaEnvolvidaCreateDTO = new AreaEnvolvidaCreateDTO();
+        areaEnvolvidaCreateDTO.setNome("area1");
+        return areaEnvolvidaCreateDTO;
+    }
+
+    private static AreaEnvolvidaCreateDTO getAreaEnvolvidaCreateDTOExiste() {
+        AreaEnvolvidaCreateDTO areaEnvolvidaCreateDTO = new AreaEnvolvidaCreateDTO();
+        areaEnvolvidaCreateDTO.setNome("area1Diferente");
+        return areaEnvolvidaCreateDTO;
+    }
+
+    private static ResponsavelCreateDTO getResponsavelCreateDTO() {
+        ResponsavelCreateDTO responsavelCreateDTO = new ResponsavelCreateDTO();
+        responsavelCreateDTO.setNome("Fulano");
+        return responsavelCreateDTO;
+    }
+
+    private static ResponsavelCreateDTO getResponsavelCreateDTOExiste() {
+        ResponsavelCreateDTO responsavelCreateDTO = new ResponsavelCreateDTO();
+        responsavelCreateDTO.setNome("FulanoDiferente");
+        return responsavelCreateDTO;
     }
 
 }
