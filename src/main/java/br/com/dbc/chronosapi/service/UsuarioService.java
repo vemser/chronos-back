@@ -74,6 +74,10 @@ public class UsuarioService {
     }
 
     public UsuarioDTO create(UsuarioCreateDTO usuarioCreateDTO) throws IOException, RegraDeNegocioException {
+        UsuarioEntity byEmail = findByEmail(usuarioCreateDTO.getEmail());
+        if (byEmail != null) {
+            throw new RegraDeNegocioException("E-mail cadastrado já existe!");
+        }
         UsuarioEntity usuarioEntity = new UsuarioEntity();
         Faker faker = new Faker();
         String senha = faker.internet().password(10, 11, true, true, true);
