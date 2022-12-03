@@ -11,6 +11,7 @@ import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.EtapaRepository;
+import br.com.dbc.chronosapi.repository.ProcessoRepository;
 import br.com.dbc.chronosapi.service.EdicaoService;
 import br.com.dbc.chronosapi.service.EtapaService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -26,13 +27,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,6 +47,10 @@ public class EtapaServiceTest {
     private EtapaRepository etapaRepository;
     @Mock
     private EdicaoService edicaoService;
+
+    @Mock
+    private ProcessoRepository processoRepository;
+
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
@@ -73,6 +76,25 @@ public class EtapaServiceTest {
         //ASSERT
         assertNotNull(etapaDTO);
         assertEquals(10, etapaDTO.getIdEtapa());
+    }
+
+    @Test
+    public void testListEtapasDaEdicaoSucess() throws RegraDeNegocioException {
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        EtapaEntity etapaEntity = getEtapaEntity();
+        Set<EtapaEntity> setEtapas = new HashSet<>();
+        setEtapas.add(etapaEntity);
+        List<EtapaEntity> listEtapas = new ArrayList<>();
+        listEtapas.add(etapaEntity);
+        edicaoEntity.setEtapas(setEtapas);
+        when(edicaoService.findById(any())).thenReturn(edicaoEntity);
+
+
+        List<EtapaDTO> etapaDTO = etapaService.listEtapasDaEdicao(edicaoEntity.getIdEdicao());
+
+        assertNotNull(etapaDTO);
+        assertTrue(etapaDTO.size()> 0);
+        assertEquals(1, etapaDTO.size());
     }
 
     @Test
@@ -150,8 +172,20 @@ public class EtapaServiceTest {
         Integer quantidade = 5;
 
         EtapaEntity etapaEntity = getEtapaEntity();
+        Set<ProcessoEntity> processoEntities = new HashSet<>();
+        processoEntities.add(getProcessoEntity2());
+        etapaEntity.setProcessos(processoEntities);
         Page<EtapaEntity> paginaMock = new PageImpl<>(List.of(etapaEntity));
         when(etapaRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
+
+        List<ProcessoEntity> listProcessos = new ArrayList<>();
+        listProcessos.add(getProcessoEntity());
+
+        when(processoRepository.findAll(Sort.by("ordemExecucao")
+                .ascending().and(Sort.by("nome"))
+                .ascending())).thenReturn(listProcessos);
+
+
 
         // ACT
         PageDTO<EtapaDTO> paginaSolicitada = etapaService.list(pagina, quantidade);
@@ -201,6 +235,18 @@ public class EtapaServiceTest {
         edicaoEntity.setEtapas(new HashSet<>());
 
         return edicaoEntity;
+    }
+
+    private static ProcessoEntity getProcessoEntity2() {
+        ProcessoEntity processoEntity = new ProcessoEntity();
+        processoEntity.setIdProcesso(9);
+        processoEntity.setDuracaoProcesso("2dia");
+        processoEntity.setOrdemExecucao(1);
+        processoEntity.setDiasUteis(1);
+        processoEntity.setAreasEnvolvidas(new HashSet<>());
+        processoEntity.setResponsaveis(new HashSet<>());
+
+        return processoEntity;
     }
 
     private static EtapaEntity getEtapaEntity() {

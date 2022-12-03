@@ -208,10 +208,8 @@ public class EdicaoService {
                 .map(edicao -> {
                     EdicaoDTO edicaoDTO = objectMapper.convertValue(edicao, EdicaoDTO.class);
                     edicaoDTO.setEtapas(edicao.getEtapas().stream()
-                            .map(etapaEntity -> {
-//                                etapaRepository.findAll(Sort.by("ordemExecucao").ascending().and(Sort.by("nome")).ascending());
-                                return objectMapper.convertValue(etapaEntity, EtapaDTO.class);
-                            }).collect(Collectors.toList()));
+                            .map(etapaEntity -> objectMapper.convertValue(etapaEntity, EtapaDTO.class)
+                            ).collect(Collectors.toList()));
                     return edicaoDTO;
                 }).toList();
 

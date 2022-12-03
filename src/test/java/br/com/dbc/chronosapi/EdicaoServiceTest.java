@@ -1,10 +1,8 @@
 package br.com.dbc.chronosapi;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
-import br.com.dbc.chronosapi.entity.classes.DiaNaoUtilEntity;
 import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
@@ -137,32 +135,40 @@ public class EdicaoServiceTest {
         assertNotNull(edicaoDTO);
         assertNotEquals("nomeDiferente", edicaoDTO.getNome());
     }
-//    @Test
-//    public void testClone() throws RegraDeNegocioException {
-//        EdicaoEntity edicaoEntity = getEdicaoEntity();
-//        EdicaoEntity edicaoEntityClone = getEdicaoEntity();
-//        EtapaEntity etapaEntity = getEtapaEntity();
-//        EtapaEntity etapaEntityClone = getEtapaEntity();
-//        ProcessoEntity processoEntity = getProcessoEntity();
-//        ProcessoEntity processoEntityClone = getProcessoEntity();
-//
-//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-//        when(edicaoRepository.save(any(EdicaoEntity.class))).thenReturn(edicaoEntityClone);
-//        when(etapaRepository.save(any(EtapaEntity.class))).thenReturn(etapaEntityClone);
-//        when(processoRepository.save(any(ProcessoEntity.class))).thenReturn(processoEntityClone);
-//
-//        EdicaoDTO edicaoDTO = edicaoService.clone(edicaoEntity.getIdEdicao());
-//
-//        assertNotNull(edicaoDTO);
-//    }
+    @Test
+    public void testCloneSucess() throws RegraDeNegocioException {
+        // teste edicao
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
 
-//    @Test
-//    public void testGenerate(){
-//        EdicaoEntity edicaoEntity = getEdicaoEntity();
-//
-//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-//
-//    }
+        Set<EtapaEntity> etapaEntities = new HashSet<>();
+        etapaEntities.add(getEtapaEntity());
+        etapaEntities.add(getEtapaEntity2());
+
+        edicaoEntity.setEtapas(etapaEntities);
+        EdicaoEntity edicaoEntityClone = new EdicaoEntity();
+        edicaoEntityClone.setNome(edicaoEntity.getNome() + " - Clone");
+        edicaoEntityClone.setIdEdicao(12);
+        edicaoEntityClone.setStatus(Status.INATIVO);
+        edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
+        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+        when(edicaoRepository.save(any())).thenReturn(edicaoEntityClone);
+
+        Set<EtapaEntity> etapaEntity = edicaoEntityClone.getEtapas();
+        EtapaEntity etapaEntityClone = new EtapaEntity();
+        when(etapaRepository.save(any())).thenReturn(etapaEntityClone);
+
+        Set<ProcessoEntity> processoEntity = etapaEntityClone.getProcessos();
+        ProcessoEntity processoEntityClone = new ProcessoEntity();
+
+        when(processoRepository.save(any())).thenReturn(processoEntityClone);
+
+        EdicaoDTO edicaoDTO = edicaoService.clone(edicaoEntity.getIdEdicao());
+
+
+        assertNotNull(edicaoDTO);
+        assertEquals(12, edicaoDTO.getIdEdicao());
+    }
 
     @Test
     public void testListComEtapaSucess(){
@@ -322,8 +328,19 @@ public class EdicaoServiceTest {
     private static EtapaEntity getEtapaEntity() {
         EtapaEntity etapaEntity = new EtapaEntity();
         etapaEntity.setIdEtapa(2);
-        etapaEntity.setEdicao(getEdicaoEntity());
         etapaEntity.setNome("Etapa1");
+
+        Set<ProcessoEntity> processoEntities = new HashSet<>();
+        processoEntities.add(getProcessoEntity());
+        etapaEntity.setProcessos(processoEntities);
+
+        return etapaEntity;
+    }
+
+    private static EtapaEntity getEtapaEntity2() {
+        EtapaEntity etapaEntity = new EtapaEntity();
+        etapaEntity.setIdEtapa(3);
+        etapaEntity.setNome("Etapa2");
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();
         processoEntities.add(getProcessoEntity());
@@ -335,7 +352,6 @@ public class EdicaoServiceTest {
         ProcessoEntity processoEntity = new ProcessoEntity();
         processoEntity.setIdProcesso(10);
         processoEntity.setDuracaoProcesso("1dia");
-        processoEntity.setEtapa(getEtapaEntity());
         processoEntity.setOrdemExecucao(1);
         processoEntity.setDiasUteis(1);
         processoEntity.setAreasEnvolvidas(new HashSet<>());
@@ -343,6 +359,19 @@ public class EdicaoServiceTest {
 
         return processoEntity;
     }
+
+    private static ProcessoEntity getProcessoEntity2() {
+        ProcessoEntity processoEntity = new ProcessoEntity();
+        processoEntity.setIdProcesso(9);
+        processoEntity.setDuracaoProcesso("2dia");
+        processoEntity.setOrdemExecucao(1);
+        processoEntity.setDiasUteis(1);
+        processoEntity.setAreasEnvolvidas(new HashSet<>());
+        processoEntity.setResponsaveis(new HashSet<>());
+
+        return processoEntity;
+    }
+
     private static ResponsavelEntity getResponsavelEntity() {
         ResponsavelEntity responsavelEntity = new ResponsavelEntity();
         responsavelEntity.setIdResponsavel(10);

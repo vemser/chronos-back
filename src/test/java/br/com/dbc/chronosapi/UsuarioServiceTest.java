@@ -6,6 +6,7 @@ import br.com.dbc.chronosapi.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioDTO;
 import br.com.dbc.chronosapi.dto.usuario.UsuarioUpdateDTO;
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
+import br.com.dbc.chronosapi.entity.classes.FotoEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -27,10 +28,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
@@ -92,6 +96,30 @@ public class UsuarioServiceTest {
     }
 
     @Test
+    public void deveTestarListComUsuarioComFotoSucess() throws IOException {
+        // SETUP
+        Integer pagina = 5;
+        Integer quantidade = 3;
+
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+        FotoEntity fotoEntity = getFotoEntity();
+        usuarioEntity.setFoto(fotoEntity);
+        fotoEntity.setUsuario(usuarioEntity);
+        Page<UsuarioEntity> paginaMock = new PageImpl<>(List.of(usuarioEntity));
+        when(usuarioRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
+
+        // ACT
+        PageDTO<UsuarioDTO> usuarioDTO = usuarioService.list(pagina, quantidade);
+
+        // ASSERT
+        assertNotNull(usuarioDTO);
+        assertEquals(1, usuarioDTO.getQuantidadePaginas());
+        assertEquals(1, usuarioDTO.getTotalElementos());
+    }
+
+
+
+    @Test
     public void deveTestarBuscarUsuarioLogado() throws RegraDeNegocioException {
 
         // SETUP
@@ -108,6 +136,38 @@ public class UsuarioServiceTest {
         assertNotNull(usuarioDTO);
         assertEquals(usuarioEntity.getEmail(), usuarioDTO.getEmail());
 
+    }
+
+    @Test
+    public void deveTestarBuscarUsuarioComFotoLogado() throws RegraDeNegocioException, IOException {
+
+        // SETUP
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+        UsuarioDTO usuarioDTO = getUsuarioDTO();
+        FotoEntity fotoEntity = getFotoEntity();
+        usuarioDTO.setEmail("luiz@gemail.com");
+        usuarioEntity.setFoto(fotoEntity);
+        fotoEntity.setUsuario(usuarioEntity);
+        usuarioDTO.setImagem(fotoEntity.getArquivo());
+        when(usuarioRepository.findById(any())).thenReturn(Optional.of(usuarioEntity));
+        when(loginService.getLoggedUser()).thenReturn(usuarioDTO);
+
+        // ACT
+        UsuarioDTO usuarioDTO1 = usuarioService.buscarUsuarioLogado();
+
+        assertNotNull(usuarioDTO);
+        assertEquals(usuarioEntity.getEmail(), usuarioDTO.getEmail());
+
+    }
+
+    @Test
+    public void testSalvarUsuarioSucess() {
+        UsuarioEntity usuario = getUsuarioEntity();
+        when(usuarioRepository.save(any())).thenReturn(usuario);
+
+        UsuarioDTO usuarioDTO = usuarioService.salvarUsuario(usuario);
+
+        verify(usuarioRepository, times(1)).save(any());
     }
 
 //    @Test
@@ -174,6 +234,35 @@ public class UsuarioServiceTest {
                 = new UsernamePasswordAuthenticationToken(1, null, Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(dto);
         UsuarioEntity usuarioEntity = getUsuarioEntity();
+
+        String senhaCriptografada = "$oieufr9873he4j809fy43";
+        UsuarioUpdateDTO usuarioUpdateDTO = getUsuarioUpdateDTO();
+
+        when(passwordEncoder.encode(anyString())).thenReturn(senhaCriptografada);
+        when(usuarioRepository.save(any())).thenReturn(getUsuarioEntity());
+        when(usuarioRepository.findById(any())).thenReturn(Optional.of(usuarioEntity));
+        when(passwordEncoder.matches(any(), any())).thenReturn(true);
+
+        // ACT
+        UsuarioDTO usuarioDTO = usuarioService.updatePerfil(usuarioUpdateDTO);
+
+        // ASSERT
+        assertNotNull(usuarioDTO);
+        assertEquals(1, usuarioDTO.getIdUsuario());
+        assertEquals("Luiz Martins", usuarioDTO.getNome());
+        verify(usuarioRepository, times(1)).save(any());
+    }
+
+    @Test
+    public void deveTestarUpdatePerfilComFotoSucesso() throws RegraDeNegocioException, IOException {
+        // SETUP
+        UsernamePasswordAuthenticationToken dto
+                = new UsernamePasswordAuthenticationToken(1, null, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(dto);
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+        FotoEntity fotoEntity = getFotoEntity();
+        usuarioEntity.setFoto(fotoEntity);
+        fotoEntity.setUsuario(usuarioEntity);
 
         String senhaCriptografada = "$oieufr9873he4j809fy43";
         UsuarioUpdateDTO usuarioUpdateDTO = getUsuarioUpdateDTO();
@@ -279,6 +368,25 @@ public class UsuarioServiceTest {
     }
 
     @Test
+    public void deveTestarEnableOrDisableComUsuarioComFotoSucess() throws RegraDeNegocioException, IOException {
+        // SETUP
+        Integer idUsuario = 1;
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+        FotoEntity fotoEntity = getFotoEntity();
+        usuarioEntity.setFoto(fotoEntity);
+        fotoEntity.setUsuario(usuarioEntity);
+        when(usuarioRepository.findById(any())).thenReturn(Optional.of(usuarioEntity));
+        when(usuarioRepository.save(any())).thenReturn(usuarioEntity);
+
+        // ACT
+        UsuarioDTO usuarioDTO = usuarioService.enableOrDisable(idUsuario);
+
+        // ASSERT
+        assertNotNull(usuarioDTO);
+        assertEquals(Status.INATIVO, usuarioDTO.getStatus());
+        verify(usuarioRepository, times(1)).save(any());
+    }
+    @Test
     public void deveTestarEnableOrDisableComErro() throws RegraDeNegocioException {
         // SETUP
         Integer idUsuario = 1;
@@ -368,6 +476,18 @@ public class UsuarioServiceTest {
         usuarioUpdateDTO.setConfirmacaoNovaSenha("123");
 
         return usuarioUpdateDTO;
+    }
+
+    private static FotoEntity getFotoEntity() throws IOException {
+        FotoEntity fotoEntity = new FotoEntity();
+        byte[] imagemBytes = new byte[5*1024];
+        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
+        String nomeFoto = StringUtils.cleanPath((imagem.getOriginalFilename()));
+        fotoEntity.setIdFoto(1);
+        fotoEntity.setTipo(imagem.getContentType());
+        fotoEntity.setArquivo(imagem.getBytes());
+        fotoEntity.setNome(nomeFoto);
+        return fotoEntity;
     }
 
     private static UAdminUpdateDTO getUAdminUpdateDTO() {
