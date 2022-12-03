@@ -45,19 +45,19 @@ public class DiaNaoUtilService {
 
     }
 
-    private void verify(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO, DiaNaoUtilEntity diaNaoUtilRecover) throws RegraDeNegocioException {
+    private void verify(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO, DiaNaoUtilEntity diaNaoUtilEntity) throws RegraDeNegocioException {
         if (diaNaoUtilCreateDTO.getRepeticaoAnual() == Status.INATIVO) {
-            diaNaoUtilRecover.setRepeticaoAnual(Status.INATIVO);
+            diaNaoUtilEntity.setRepeticaoAnual(Status.INATIVO);
 
             if (diaNaoUtilCreateDTO.getDataFinal().isAfter(diaNaoUtilCreateDTO.getDataInicial())) {
-                diaNaoUtilRecover.setDataFinal(diaNaoUtilCreateDTO.getDataFinal());
+                diaNaoUtilEntity.setDataFinal(diaNaoUtilCreateDTO.getDataFinal());
             } else if (diaNaoUtilCreateDTO.getDataFinal().isBefore(diaNaoUtilCreateDTO.getDataInicial())) {
                 throw new RegraDeNegocioException("A data final antecede a data inicial.");
             }
 
         } else {
-            diaNaoUtilRecover.setRepeticaoAnual(Status.ATIVO);
-            diaNaoUtilRecover.setDataFinal(null);
+            diaNaoUtilEntity.setRepeticaoAnual(Status.ATIVO);
+            diaNaoUtilEntity.setDataFinal(null);
         }
     }
 

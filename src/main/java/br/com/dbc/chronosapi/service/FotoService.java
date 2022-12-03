@@ -39,15 +39,7 @@ public class FotoService {
 
     public UsuarioDTO SalvarUsuarioComFotoDTO(MultipartFile imagem, UsuarioEntity usuario) throws IOException {
         FotoEntity fotoRecuperada = fotoRepository.findByUsuario(usuario);
-        UsuarioDTO usuarioDTO;
-        if(fotoRecuperada == null) {
-            FotoEntity fotoEntity = new FotoEntity();
-            usuarioDTO = getUsuarioDTO(imagem, usuario, fotoEntity);
-
-        }else {
-             usuarioDTO = getUsuarioDTO(imagem, usuario, fotoRecuperada);
-        }
-        return usuarioDTO;
+        return getUsuarioDTO(imagem, usuario, fotoRecuperada != null ? fotoRecuperada : new FotoEntity());
     }
 
     private UsuarioDTO getUsuarioDTO(MultipartFile imagem, UsuarioEntity usuario, FotoEntity fotoEntity) throws IOException {
