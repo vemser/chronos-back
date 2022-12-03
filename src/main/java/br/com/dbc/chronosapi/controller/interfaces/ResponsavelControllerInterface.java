@@ -11,8 +11,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
+import java.util.List;
 
 public interface ResponsavelControllerInterface {
+
+    @Operation(summary = "Listar todos os responsáveis", description = "Lista todos os responsáveis presentes no banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Listagem realizada com sucesso!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    ResponseEntity<List<ResponsavelDTO>> listResponsaveis();
 
     @Operation(summary = "Criar um novo responsável", description = "Cria um novo responsável(campo de processo) no banco de dados")
     @ApiResponses(

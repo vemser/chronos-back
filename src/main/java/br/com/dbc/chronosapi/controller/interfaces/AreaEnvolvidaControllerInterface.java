@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
+import java.util.List;
 
 public interface AreaEnvolvidaControllerInterface {
 
@@ -24,6 +25,15 @@ public interface AreaEnvolvidaControllerInterface {
     )
     ResponseEntity<AreaEnvolvidaDTO> create(@Valid @RequestBody AreaEnvolvidaCreateDTO areaEnvolvidaCreateDTO);
 
+    @Operation(summary = "Listar todas as áreas envolvidas", description = "Lista todas as áreas envolvidas presentes no banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Listagem realizada com sucesso!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    ResponseEntity<List<AreaEnvolvidaDTO>> listaAreas();
     @Operation(summary = "Deletar uma área envolvida", description = "Deleta uma area envolvida(campo de processo) no banco de dados")
     @ApiResponses(
             value = {

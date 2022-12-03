@@ -50,7 +50,17 @@ public interface EdicaoControllerInterface {
     @DeleteMapping("/{idEdicao}")
      ResponseEntity<Void> delete(@Valid @PathVariable ("idEdicao") Integer idEdicao) throws RegraDeNegocioException;
 
-    @Operation(summary = "Listar todas as edições", description = "Lista todos as edições presentes no banco de dados")
+    @Operation(summary = "Listar todas as etapas de uma edição", description = "Lista todas as etapas atreladas a uma edição presente no banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Listagem realizada com sucesso!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    ResponseEntity<PageDTO<EdicaoDTO>> listComEtapa(Integer pagina, Integer tamanho) throws RegraDeNegocioException;
+
+    @Operation(summary = "Listar todas as edições", description = "Lista todas as edições presentes no banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Listagem realizada com sucesso!"),
