@@ -335,8 +335,10 @@ public class EdicaoServiceTest {
     }
     @Test
     public void testGerarCalendarioGeral() throws RegraDeNegocioException {
+        final int UM_DIA = 1;
         List<EdicaoEntity> edicaoEntityList = new ArrayList<>();
         edicaoEntityList.add(getEdicaoEntity());
+        edicaoEntityList.add(getEdicaoEntity2());
 
         when(edicaoRepository.findByEdicoesAtivasOrderByDataInicial()).thenReturn(edicaoEntityList);
 
@@ -357,14 +359,18 @@ public class EdicaoServiceTest {
         edicaoEntity.setEtapas(etapaEntities);
 
         FeriadoDTO feriadoDTO = getFeriadoDTO();
+        feriadoDTO.setQtdDias(13);
 
         LocalDate dia = LocalDate.parse("2022-03-03");
+
+        dia = dia.plusDays(UM_DIA);
 
         List<DiaNaoUtilEntity> diaNaoUtilEntityList2 = new ArrayList<>();
         diaNaoUtilEntityList2.add(getDiaNaoUtilEntity());
         diaNaoUtilEntityList2.add(getDiaNaoUtilEntityInativo());
 
-        FeriadoDTO feriadoDTO1 = edicaoService.verificarDiasNaoUteis(dia, diaNaoUtilEntityList2);
+        List<DiaCalendarioEdicaoDTO> diaCalendarioEdicaoDTOS = edicaoService.gerarCalendarioEdicao(edicaoEntityList.get(1).getIdEdicao());
+        feriadoDTO = edicaoService.verificarDiasNaoUteis(dia, diaNaoUtilEntityList2);
         List<DiaCalendarioGeralDTO> diaCalendarioGeralDTOS = edicaoService.gerarCalendarioGeral();
 
     }
@@ -372,7 +378,7 @@ public class EdicaoServiceTest {
     private static FeriadoDTO getFeriadoDTO(){
         FeriadoDTO feriadoDTO = new FeriadoDTO();
         feriadoDTO.setDescricao("Dia do saci");
-        feriadoDTO.setQtdDias(1);
+        feriadoDTO.setQtdDias(4);
 
         return feriadoDTO;
     }
@@ -504,6 +510,18 @@ public class EdicaoServiceTest {
         edicaoEntity.setIdEdicao(10);
         edicaoEntity.setNome("Edicao1");
         edicaoEntity.setDataInicial(LocalDate.of(2022, 10, 11));
+        edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));
+        edicaoEntity.setEtapas(new HashSet<>());
+
+        return edicaoEntity;
+    }
+
+    private static EdicaoEntity getEdicaoEntity2() {
+
+        EdicaoEntity edicaoEntity = new EdicaoEntity();
+        edicaoEntity.setIdEdicao(11);
+        edicaoEntity.setNome("Edicao2");
+        edicaoEntity.setDataInicial(LocalDate.of(2022, 11, 11));
         edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));
         edicaoEntity.setEtapas(new HashSet<>());
 
