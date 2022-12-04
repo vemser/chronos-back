@@ -184,6 +184,9 @@ public class EdicaoService {
         List<DiaNaoUtilEntity> diasNaoUteis = diaNaoUtilRepository.findAll(Sort.by("dataInicial").ascending());
         EdicaoEntity edicaoEntity = findById(idEdicao);
         Set<EtapaEntity> etapas = edicaoEntity.getEtapas();
+        if(etapas.isEmpty()) {
+            throw new RegraDeNegocioException("A edição selecionada não possui etapas e processos!");
+        }
         LocalDate dataInicial = edicaoEntity.getDataInicial();
         List<DiaCalendarioEdicaoDTO> dias = new ArrayList<>();
         dia = dataInicial;
