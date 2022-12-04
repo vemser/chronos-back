@@ -1,584 +1,584 @@
-package br.com.dbc.chronosapi;
-
-import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.calendario.*;
-import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
-import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
-import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
-import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaDTO;
-import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
-import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
-import br.com.dbc.chronosapi.entity.classes.DiaNaoUtilEntity;
-import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
-import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
-import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
-import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
-import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
-import br.com.dbc.chronosapi.entity.enums.Status;
-import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
-import br.com.dbc.chronosapi.repository.DiaNaoUtilRepository;
-import br.com.dbc.chronosapi.repository.EdicaoRepository;
-import br.com.dbc.chronosapi.repository.EtapaRepository;
-import br.com.dbc.chronosapi.repository.ProcessoRepository;
-import br.com.dbc.chronosapi.service.EdicaoService;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.time.LocalDate;
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
-
-@RunWith(MockitoJUnitRunner.class)
-public class EdicaoServiceTest {
-
-    @InjectMocks
-    private EdicaoService edicaoService;
-    @Mock
-    private EdicaoRepository edicaoRepository;
-    @Mock
-    private EtapaRepository etapaRepository;
-    @Mock
-    private ProcessoRepository processoRepository;
-    @Mock
-    private DiaNaoUtilRepository diaNaoUtilRepository;
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    @Before
-    public void init() {
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        ReflectionTestUtils.setField(edicaoService, "objectMapper", objectMapper);
-    }
-
-    @Test
-    public void testCreateEdicaoSuccess() throws RegraDeNegocioException {
-        //SETUP
-        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-
-        when(edicaoRepository.save(any(EdicaoEntity.class))).thenReturn(edicaoEntity);
-
-        //ACT
-        EdicaoDTO edicaoDTO = edicaoService.create(edicaoCreateDTO);
-
-        //ASSERT
-        assertNotNull(edicaoDTO);
-        assertEquals(10, edicaoDTO.getIdEdicao());
-    }
-
-    @Test(expected = RegraDeNegocioException.class)
-    public void testCreateEdicaoFail() throws RegraDeNegocioException {
-        //SETUP
-        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-        edicaoCreateDTO.setDataInicial(LocalDate.parse("2022-12-25"));
-        edicaoCreateDTO.setDataFinal(LocalDate.parse("1900-12-25"));
-
-        //ACT
-        EdicaoDTO edicaoDTO = edicaoService.create(edicaoCreateDTO);
-
-        //ASSERT
-        assertNotNull(edicaoDTO);
-        assertEquals(10, edicaoDTO.getIdEdicao());
-    }
-
-    @Test
-    public void testEdicaoUpdateSuccess() throws RegraDeNegocioException {
-
-        // SETUP
-        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
-
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-        EdicaoEntity edicaoEntity1 = getEdicaoEntity();
-        edicaoEntity1.setNome("nomeDiferente");
-
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-        when(edicaoRepository.save(any())).thenReturn(edicaoEntity1);
-
-        // ACT
-        EdicaoDTO edicaoDTO = edicaoService.update(edicaoEntity.getIdEdicao(), edicaoCreateDTO);
-
-        // ASSERT
-        assertNotNull(edicaoDTO);
-        assertNotEquals("nomeDiferente", edicaoDTO.getNome());
-    }
-
-    @Test(expected = RegraDeNegocioException.class)
-    public void testEdicaoUpdateFail() throws RegraDeNegocioException {
-
-        // SETUP
-        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
-
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-        EdicaoEntity edicaoEntity1 = getEdicaoEntity();
-        edicaoCreateDTO.setDataInicial(LocalDate.parse("2022-12-25"));
-        edicaoCreateDTO.setDataFinal(LocalDate.parse("1900-12-25"));
-        edicaoEntity1.setNome("nomeDiferente");
-
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-
-        // ACT
-        EdicaoDTO edicaoDTO = edicaoService.update(edicaoEntity.getIdEdicao(), edicaoCreateDTO);
-
-        // ASSERT
-        assertNotNull(edicaoDTO);
-        assertNotEquals("nomeDiferente", edicaoDTO.getNome());
-    }
-    @Test
-    public void testCloneSucess() throws RegraDeNegocioException {
-        // teste edicao
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-
-        Set<EtapaEntity> etapaEntities = new HashSet<>();
-        etapaEntities.add(getEtapaEntity());
-        etapaEntities.add(getEtapaEntity2());
-
-        edicaoEntity.setEtapas(etapaEntities);
-        EdicaoEntity edicaoEntityClone = new EdicaoEntity();
-        edicaoEntityClone.setNome(edicaoEntity.getNome() + " - Clone");
-        edicaoEntityClone.setIdEdicao(12);
-        edicaoEntityClone.setStatus(Status.INATIVO);
-        edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
-        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-        when(edicaoRepository.save(any())).thenReturn(edicaoEntityClone);
-
-        Set<EtapaEntity> etapaEntity = edicaoEntityClone.getEtapas();
-        EtapaEntity etapaEntityClone = new EtapaEntity();
-        when(etapaRepository.save(any())).thenReturn(etapaEntityClone);
-
-        Set<ProcessoEntity> processoEntity = etapaEntityClone.getProcessos();
-        ProcessoEntity processoEntityClone = new ProcessoEntity();
-
-        when(processoRepository.save(any())).thenReturn(processoEntityClone);
-
-        EdicaoDTO edicaoDTO = edicaoService.clone(edicaoEntity.getIdEdicao());
-
-
-        assertNotNull(edicaoDTO);
-        assertEquals(12, edicaoDTO.getIdEdicao());
-    }
-
-    @Test
-    public void testListComEtapaSucess(){
-        // SETUP
-        Integer pagina = 10;
-        Integer quantidade = 5;
-
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-        Page<EdicaoEntity> paginaMock = new PageImpl<>(List.of(edicaoEntity));
-        when(edicaoRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
-
-        // ACT
-        PageDTO<EdicaoDTO> paginaSolicitada = edicaoService.listComEtapa(pagina, quantidade);
-
-        // ASSERT
-        assertNotNull(paginaSolicitada);
-        assertNotNull(paginaSolicitada.getPagina());
-        assertEquals(1, paginaSolicitada.getTotalElementos());
-    }
-
-    @Test
-    public void testEdicaoDeleteSuccess() throws RegraDeNegocioException {
-        // SETUP
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-
-        // ACT
-        edicaoService.delete(edicaoEntity.getIdEdicao());
-
-        // ASSERT
-        verify(edicaoRepository, times(1)).delete(any());
-    }
-    @Test(expected = RegraDeNegocioException.class)
-    public void testEdicaoDeleteFail() throws RegraDeNegocioException {
-        // SETUP
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.empty());
-
-        // ACT
-        edicaoService.delete(5);
-
-        // ASSERT
-        verify(edicaoRepository, times(1)).delete(any());
-    }
-
-    @Test
-    public void testEnableOrDisableWhenInativo() throws RegraDeNegocioException {
-
-        //SET
-        Integer idEdicao = 10;
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-        // ACT
-        edicaoService.enableOrDisable(edicaoEntity.getIdEdicao());
-
-        //ASSERT
-        verify(edicaoRepository, times(1)).save(any());
-    }
-    @Test
-    public void testEnableOrDisableWhenAtivo() throws RegraDeNegocioException {
-
-        //SET
-        Integer idEdicao = 10;
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-        edicaoEntity.setStatus(Status.ATIVO);
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-        // ACT
-        edicaoService.enableOrDisable(edicaoEntity.getIdEdicao());
-
-        //ASSERT
-        verify(edicaoRepository, times(1)).save(any());
-    }
-
-    @Test
-    public void testListSucess(){
-        // SETUP
-        Integer pagina = 10;
-        Integer quantidade = 5;
-
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-        Page<EdicaoEntity> paginaMock = new PageImpl<>(List.of(edicaoEntity));
-        when(edicaoRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
-
-        // ACT
-        PageDTO<EdicaoDTO> paginaSolicitada = edicaoService.list(pagina, quantidade);
-
-        // ASSERT
-        assertNotNull(paginaSolicitada);
-        assertNotNull(paginaSolicitada.getPagina());
-        assertEquals(1, paginaSolicitada.getTotalElementos());
-    }
-
-    @Test
-    public void testFindByIdWithSuccess() throws RegraDeNegocioException {
-        // SETUP
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-
-        // ACT
-        EdicaoEntity edicao = edicaoService.findById(edicaoEntity.getIdEdicao());
-
-        // ASSERT
-        assertNotNull(edicao);
-        assertEquals(10, edicaoEntity.getIdEdicao());
-
-    }
-
-    @Test(expected = RegraDeNegocioException.class)
-    public void testFindByIdFail() throws RegraDeNegocioException {
-        // SETUP
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.empty());
-
-        // ACT
-        edicaoService.findById(5);
-
-        // ASSERT
-        verify(edicaoRepository, times(1)).findById(any());
-
-    }
-
-    @Test
-    public void testSaveSuccess(){
-
-        //SETUP
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-
-        //ACT
-        EdicaoDTO edicaoDTO = edicaoService.save(edicaoEntity);
-
-        //ASSERT
-        assertEquals(10, edicaoDTO.getIdEdicao());
-    }
-
-    @Test
-    public void testGetResponsavelDTOSuccess(){
-
-        Set<ResponsavelEntity> responsavelEntities = new HashSet<>();
-        ResponsavelEntity responsavelEntity = getResponsavelEntity();
-        responsavelEntities.add(responsavelEntity);
-
-        Set<ResponsavelDTO> responsavelDTOS = edicaoService.getResponsavelDTO(responsavelEntities);
-
-        assertNotNull(responsavelDTOS);
-
-    }
-    @Test
-    public void testGetAreaEnvolvidaDTOSuccess(){
-
-        Set<AreaEnvolvidaEntity> areaEnvolvidaEntities = new HashSet<>();
-        AreaEnvolvidaEntity areaEnvolvidaEntity = getAreaEnvolvida();
-        areaEnvolvidaEntities.add(areaEnvolvidaEntity);
-
-        Set<AreaEnvolvidaDTO> areaEnvolvidaDTOS = edicaoService.getAreaEnvolvidaDTO(areaEnvolvidaEntities);
-
-        assertNotNull(areaEnvolvidaDTOS);
-
-    }
-    @Test
-    public void testGerarCalendarioGeral() throws RegraDeNegocioException {
-        List<EdicaoEntity> edicaoEntityList = new ArrayList<>();
-        edicaoEntityList.add(getEdicaoEntity());
-
-        when(edicaoRepository.findByEdicoesAtivasOrderByDataInicial()).thenReturn(edicaoEntityList);
-
-        List<DiaCalendarioEdicaoDTO> diaCalendarioEdicaoDTOList = new ArrayList<>();
-        diaCalendarioEdicaoDTOList.add(getDiaCalendarioEdicaoDTO());
-
-        List<DiaNaoUtilEntity> diaNaoUtilEntityList = new ArrayList<>();
-        diaNaoUtilEntityList.add(getDiaNaoUtilEntity());
-
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
-        when(diaNaoUtilRepository.findAll()).thenReturn(diaNaoUtilEntityList);
-        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
-
-        Set<EtapaEntity> etapaEntities = new HashSet<>();
-        etapaEntities.add(getEtapaEntity());
-        etapaEntities.add(getEtapaEntity2());
-
-        edicaoEntity.setEtapas(etapaEntities);
-
-        FeriadoDTO feriadoDTO = getFeriadoDTO();
-
-        LocalDate dia = LocalDate.parse("2022-03-03");
-
-        List<DiaNaoUtilEntity> diaNaoUtilEntityList2 = new ArrayList<>();
-        diaNaoUtilEntityList2.add(getDiaNaoUtilEntity());
-        diaNaoUtilEntityList2.add(getDiaNaoUtilEntityInativo());
-
-        FeriadoDTO feriadoDTO1 = edicaoService.verificarDiasNaoUteis(dia, diaNaoUtilEntityList2);
-        List<DiaCalendarioGeralDTO> diaCalendarioGeralDTOS = edicaoService.gerarCalendarioGeral();
-
-    }
-
-    private static FeriadoDTO getFeriadoDTO(){
-        FeriadoDTO feriadoDTO = new FeriadoDTO();
-        feriadoDTO.setDescricao("Dia do saci");
-        feriadoDTO.setQtdDias(1);
-
-        return feriadoDTO;
-    }
-
-    private static DiaNaoUtilEntity getDiaNaoUtilEntityInativo() {
-        DiaNaoUtilEntity diaNaoUtilEntity = new DiaNaoUtilEntity();
-        diaNaoUtilEntity.setRepeticaoAnual(Status.INATIVO);
-        diaNaoUtilEntity.setIdDiaNaoUtil(3);
-        diaNaoUtilEntity.setDataInicial(LocalDate.parse("2022-03-03"));
-        diaNaoUtilEntity.setDataFinal(LocalDate.parse("2022-05-05"));
-        diaNaoUtilEntity.setDescricao("Diazinho de cria tlg");
-
-        return diaNaoUtilEntity;
-    }
-
-    private static DiaNaoUtilEntity getDiaNaoUtilEntity() {
-        DiaNaoUtilEntity diaNaoUtilEntity = new DiaNaoUtilEntity();
-        diaNaoUtilEntity.setRepeticaoAnual(Status.ATIVO);
-        diaNaoUtilEntity.setIdDiaNaoUtil(3);
-        diaNaoUtilEntity.setDataInicial(LocalDate.parse("2022-03-03"));
-        diaNaoUtilEntity.setDataFinal(null);
-        diaNaoUtilEntity.setDescricao("Diazinho de cria tlg");
-
-        return diaNaoUtilEntity;
-    }
-
-    private static DiaCalendarioEdicaoDTO getDiaCalendarioEdicaoDTO() {
-        DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
-        diaCalendarioEdicaoDTO.setDia(LocalDate.parse("2022-03-03"));
-        diaCalendarioEdicaoDTO.setDiaUtil(getDiaUtilDTO());
-        diaCalendarioEdicaoDTO.setEtapa(getEtapaDTO());
-        diaCalendarioEdicaoDTO.setProcesso(getprocessoDTO());
-        return diaCalendarioEdicaoDTO;
-    }
-
-    private static DiaCalendarioGeralDTO getDiaCalendarioGeralDTO() {
-        List<EdicaoEntity> edicaoEntities = new ArrayList<>();
-        edicaoEntities.add(getEdicaoEntity());
-
-        List<JuncaoEdicoesDTO> juncaoEdicoesDTOS = new ArrayList<>();
-        juncaoEdicoesDTOS.add(getJuncaoEdicoesDTO());
-
-        DiaCalendarioGeralDTO diaCalendarioGeralDTO = new DiaCalendarioGeralDTO();
-        diaCalendarioGeralDTO.setDiaUtil(getDiaUtilDTO());
-        diaCalendarioGeralDTO.setEdicoes(juncaoEdicoesDTOS);
-        diaCalendarioGeralDTO.setDia(LocalDate.parse("2022-03-03"));
-
-        return diaCalendarioGeralDTO;
-    }
-
-    private static JuncaoEdicoesDTO getJuncaoEdicoesDTO() {
-
-        JuncaoEdicoesDTO juncaoEdicoesDTO = new JuncaoEdicoesDTO();
-        juncaoEdicoesDTO.setProcesso(getprocessoDTO());
-        juncaoEdicoesDTO.setEdicao("Edicao 3");
-        juncaoEdicoesDTO.setEtapa(getEtapaDTO());
-
-        return juncaoEdicoesDTO;
-    }
-
-    private static EtapaDTO getEtapaDTO() {
-
-        List<ProcessoDTO> processoDTOS = new ArrayList<>();
-        processoDTOS.add(getprocessoDTO());
-
-        EtapaDTO etapaDTO = new EtapaDTO();
-        etapaDTO.setNome("Etapa1");
-        etapaDTO.setIdEtapa(3);
-        etapaDTO.setOrdemExecucao(3);
-        etapaDTO.setProcessos(processoDTOS);
-
-        return etapaDTO;
-    }
-
-    private static ProcessoDTO getprocessoDTO() {
-        Set<ResponsavelDTO> responsavelDTOS = new HashSet<>();
-        responsavelDTOS.add(getResponsavelDTO());
-
-        Set<AreaEnvolvidaDTO> areaEnvolvidaDTOS = new HashSet<>();
-        areaEnvolvidaDTOS.add(getAreaEnvolvidaDTO());
-
-        ProcessoDTO processoDTO = new ProcessoDTO();
-        processoDTO.setDiasUteis(3);
-        processoDTO.setDuracaoProcesso("3 dias");
-        processoDTO.setIdProcesso(3);
-        processoDTO.setOrdemExecucao(3);
-        processoDTO.setResponsaveis(responsavelDTOS);
-        processoDTO.setAreasEnvolvidas(areaEnvolvidaDTOS);
-        processoDTO.setNome("processo 3");
-
-        return processoDTO;
-    }
-
-    private static DiaUtilDTO getDiaUtilDTO() {
-        DiaUtilDTO diaUtilDTO = new DiaUtilDTO();
-        diaUtilDTO.setEhDiaUtil(true);
-        diaUtilDTO.setEhDiaNaoUtil(false);
-        diaUtilDTO.setDescricao(null);
-        return diaUtilDTO;
-    }
-
-    private static AreaEnvolvidaDTO getAreaEnvolvidaDTO() {
-        AreaEnvolvidaDTO areaEnvolvidaDTO = new AreaEnvolvidaDTO();
-        areaEnvolvidaDTO.setIdAreaEnvolvida(10);
-        areaEnvolvidaDTO.setNome("area1");
-        areaEnvolvidaDTO.setIdAreaEnvolvida(10);
-        return areaEnvolvidaDTO;
-    }
-
-    private static ResponsavelDTO getResponsavelDTO() {
-        ResponsavelDTO responsavelDTO = new ResponsavelDTO();
-        responsavelDTO.setIdResponsavel(10);
-        responsavelDTO.setNome("Fulano");
-
-        return responsavelDTO;
-    }
-
-    private static EdicaoCreateDTO getEdicaoCreateDTO() {
-        EdicaoCreateDTO edicaoCreateDTO = new EdicaoCreateDTO();
-        edicaoCreateDTO.setNome("Edicao1");
-        edicaoCreateDTO.setDataInicial(LocalDate.of(2022,8,1));
-        edicaoCreateDTO.setDataFinal(LocalDate.of(2022,8,10));
-
-        return edicaoCreateDTO;
-    }
-    private static EdicaoEntity getEdicaoEntity() {
-
-        EdicaoEntity edicaoEntity = new EdicaoEntity();
-        edicaoEntity.setIdEdicao(10);
-        edicaoEntity.setNome("Edicao1");
-        edicaoEntity.setDataInicial(LocalDate.of(2022, 10, 11));
-        edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));
-        edicaoEntity.setEtapas(new HashSet<>());
-
-        return edicaoEntity;
-    }
-
-    private static EtapaEntity getEtapaEntity() {
-        EtapaEntity etapaEntity = new EtapaEntity();
-        etapaEntity.setIdEtapa(2);
-        etapaEntity.setNome("Etapa1");
-
-        Set<ProcessoEntity> processoEntities = new HashSet<>();
-        processoEntities.add(getProcessoEntity());
-        etapaEntity.setProcessos(processoEntities);
-
-        return etapaEntity;
-    }
-
-    private static EtapaEntity getEtapaEntity2() {
-        EtapaEntity etapaEntity = new EtapaEntity();
-        etapaEntity.setIdEtapa(3);
-        etapaEntity.setNome("Etapa2");
-
-        Set<ProcessoEntity> processoEntities = new HashSet<>();
-        processoEntities.add(getProcessoEntity());
-        etapaEntity.setProcessos(processoEntities);
-
-        return etapaEntity;
-    }
-    private static ProcessoEntity getProcessoEntity() {
-        ProcessoEntity processoEntity = new ProcessoEntity();
-        processoEntity.setIdProcesso(10);
-        processoEntity.setDuracaoProcesso("1dia");
-        processoEntity.setOrdemExecucao(1);
-        processoEntity.setDiasUteis(7);
-        processoEntity.setAreasEnvolvidas(new HashSet<>());
-        processoEntity.setResponsaveis(new HashSet<>());
-
-        return processoEntity;
-    }
-
-    private static ProcessoEntity getProcessoEntity2() {
-        ProcessoEntity processoEntity = new ProcessoEntity();
-        processoEntity.setIdProcesso(9);
-        processoEntity.setDuracaoProcesso("2dia");
-        processoEntity.setOrdemExecucao(1);
-        processoEntity.setDiasUteis(1);
-        processoEntity.setAreasEnvolvidas(new HashSet<>());
-        processoEntity.setResponsaveis(new HashSet<>());
-
-        return processoEntity;
-    }
-
-    private static ResponsavelEntity getResponsavelEntity() {
-        ResponsavelEntity responsavelEntity = new ResponsavelEntity();
-        responsavelEntity.setIdResponsavel(10);
-        responsavelEntity.setNome("Fulano");
-
-        Set<ProcessoEntity> processoEntities = new HashSet<>();
-        processoEntities.add(getProcessoEntity());
-        responsavelEntity.setProcessos(processoEntities);
-
-        return responsavelEntity;
-    }
-
-    private static AreaEnvolvidaEntity getAreaEnvolvida() {
-        AreaEnvolvidaEntity areaEnvolvidaEntity = new AreaEnvolvidaEntity();
-        areaEnvolvidaEntity.setNome("Area1");
-        areaEnvolvidaEntity.setIdAreaEnvolvida(10);
-
-        Set<ProcessoEntity> processoEntities = new HashSet<>();
-        processoEntities.add(getProcessoEntity());
-        areaEnvolvidaEntity.setProcessos(processoEntities);
-
-        return areaEnvolvidaEntity;
-    }
-
-}
+//package br.com.dbc.chronosapi;
+//
+//import br.com.dbc.chronosapi.dto.PageDTO;
+//import br.com.dbc.chronosapi.dto.calendario.*;
+//import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
+//import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
+//import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
+//import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaDTO;
+//import br.com.dbc.chronosapi.dto.processo.ProcessoDTO;
+//import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
+//import br.com.dbc.chronosapi.entity.classes.DiaNaoUtilEntity;
+//import br.com.dbc.chronosapi.entity.classes.EdicaoEntity;
+//import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
+//import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
+//import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
+//import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
+//import br.com.dbc.chronosapi.entity.enums.Status;
+//import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
+//import br.com.dbc.chronosapi.repository.DiaNaoUtilRepository;
+//import br.com.dbc.chronosapi.repository.EdicaoRepository;
+//import br.com.dbc.chronosapi.repository.EtapaRepository;
+//import br.com.dbc.chronosapi.repository.ProcessoRepository;
+//import br.com.dbc.chronosapi.service.EdicaoService;
+//import com.fasterxml.jackson.databind.DeserializationFeature;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.SerializationFeature;
+//import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+//import org.junit.Before;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//import org.mockito.InjectMocks;
+//import org.mockito.Mock;
+//import org.mockito.junit.MockitoJUnitRunner;
+//import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.PageImpl;
+//import org.springframework.data.domain.Pageable;
+//import org.springframework.test.util.ReflectionTestUtils;
+//
+//import java.time.LocalDate;
+//import java.util.*;
+//
+//import static org.junit.jupiter.api.Assertions.*;
+//import static org.mockito.ArgumentMatchers.any;
+//import static org.mockito.ArgumentMatchers.anyInt;
+//import static org.mockito.Mockito.*;
+//
+//@RunWith(MockitoJUnitRunner.class)
+//public class EdicaoServiceTest {
+//
+//    @InjectMocks
+//    private EdicaoService edicaoService;
+//    @Mock
+//    private EdicaoRepository edicaoRepository;
+//    @Mock
+//    private EtapaRepository etapaRepository;
+//    @Mock
+//    private ProcessoRepository processoRepository;
+//    @Mock
+//    private DiaNaoUtilRepository diaNaoUtilRepository;
+//    private ObjectMapper objectMapper = new ObjectMapper();
+//
+//    @Before
+//    public void init() {
+//        objectMapper.registerModule(new JavaTimeModule());
+//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//        ReflectionTestUtils.setField(edicaoService, "objectMapper", objectMapper);
+//    }
+//
+//    @Test
+//    public void testCreateEdicaoSuccess() throws RegraDeNegocioException {
+//        //SETUP
+//        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//
+//        when(edicaoRepository.save(any(EdicaoEntity.class))).thenReturn(edicaoEntity);
+//
+//        //ACT
+//        EdicaoDTO edicaoDTO = edicaoService.create(edicaoCreateDTO);
+//
+//        //ASSERT
+//        assertNotNull(edicaoDTO);
+//        assertEquals(10, edicaoDTO.getIdEdicao());
+//    }
+//
+//    @Test(expected = RegraDeNegocioException.class)
+//    public void testCreateEdicaoFail() throws RegraDeNegocioException {
+//        //SETUP
+//        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//        edicaoCreateDTO.setDataInicial(LocalDate.parse("2022-12-25"));
+//        edicaoCreateDTO.setDataFinal(LocalDate.parse("1900-12-25"));
+//
+//        //ACT
+//        EdicaoDTO edicaoDTO = edicaoService.create(edicaoCreateDTO);
+//
+//        //ASSERT
+//        assertNotNull(edicaoDTO);
+//        assertEquals(10, edicaoDTO.getIdEdicao());
+//    }
+//
+//    @Test
+//    public void testEdicaoUpdateSuccess() throws RegraDeNegocioException {
+//
+//        // SETUP
+//        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
+//
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//        EdicaoEntity edicaoEntity1 = getEdicaoEntity();
+//        edicaoEntity1.setNome("nomeDiferente");
+//
+//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+//        when(edicaoRepository.save(any())).thenReturn(edicaoEntity1);
+//
+//        // ACT
+//        EdicaoDTO edicaoDTO = edicaoService.update(edicaoEntity.getIdEdicao(), edicaoCreateDTO);
+//
+//        // ASSERT
+//        assertNotNull(edicaoDTO);
+//        assertNotEquals("nomeDiferente", edicaoDTO.getNome());
+//    }
+//
+//    @Test(expected = RegraDeNegocioException.class)
+//    public void testEdicaoUpdateFail() throws RegraDeNegocioException {
+//
+//        // SETUP
+//        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
+//
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//        EdicaoEntity edicaoEntity1 = getEdicaoEntity();
+//        edicaoCreateDTO.setDataInicial(LocalDate.parse("2022-12-25"));
+//        edicaoCreateDTO.setDataFinal(LocalDate.parse("1900-12-25"));
+//        edicaoEntity1.setNome("nomeDiferente");
+//
+//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+//
+//        // ACT
+//        EdicaoDTO edicaoDTO = edicaoService.update(edicaoEntity.getIdEdicao(), edicaoCreateDTO);
+//
+//        // ASSERT
+//        assertNotNull(edicaoDTO);
+//        assertNotEquals("nomeDiferente", edicaoDTO.getNome());
+//    }
+//    @Test
+//    public void testCloneSucess() throws RegraDeNegocioException {
+//        // teste edicao
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//
+//        Set<EtapaEntity> etapaEntities = new HashSet<>();
+//        etapaEntities.add(getEtapaEntity());
+//        etapaEntities.add(getEtapaEntity2());
+//
+//        edicaoEntity.setEtapas(etapaEntities);
+//        EdicaoEntity edicaoEntityClone = new EdicaoEntity();
+//        edicaoEntityClone.setNome(edicaoEntity.getNome() + " - Clone");
+//        edicaoEntityClone.setIdEdicao(12);
+//        edicaoEntityClone.setStatus(Status.INATIVO);
+//        edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
+//        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
+//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+//        when(edicaoRepository.save(any())).thenReturn(edicaoEntityClone);
+//
+//        Set<EtapaEntity> etapaEntity = edicaoEntityClone.getEtapas();
+//        EtapaEntity etapaEntityClone = new EtapaEntity();
+//        when(etapaRepository.save(any())).thenReturn(etapaEntityClone);
+//
+//        Set<ProcessoEntity> processoEntity = etapaEntityClone.getProcessos();
+//        ProcessoEntity processoEntityClone = new ProcessoEntity();
+//
+//        when(processoRepository.save(any())).thenReturn(processoEntityClone);
+//
+//        EdicaoDTO edicaoDTO = edicaoService.clone(edicaoEntity.getIdEdicao());
+//
+//
+//        assertNotNull(edicaoDTO);
+//        assertEquals(12, edicaoDTO.getIdEdicao());
+//    }
+//
+//    @Test
+//    public void testListComEtapaSucess(){
+//        // SETUP
+//        Integer pagina = 10;
+//        Integer quantidade = 5;
+//
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//        Page<EdicaoEntity> paginaMock = new PageImpl<>(List.of(edicaoEntity));
+//        when(edicaoRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
+//
+//        // ACT
+//        PageDTO<EdicaoDTO> paginaSolicitada = edicaoService.listComEtapa(pagina, quantidade);
+//
+//        // ASSERT
+//        assertNotNull(paginaSolicitada);
+//        assertNotNull(paginaSolicitada.getPagina());
+//        assertEquals(1, paginaSolicitada.getTotalElementos());
+//    }
+//
+//    @Test
+//    public void testEdicaoDeleteSuccess() throws RegraDeNegocioException {
+//        // SETUP
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//
+//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+//
+//        // ACT
+//        edicaoService.delete(edicaoEntity.getIdEdicao());
+//
+//        // ASSERT
+//        verify(edicaoRepository, times(1)).delete(any());
+//    }
+//    @Test(expected = RegraDeNegocioException.class)
+//    public void testEdicaoDeleteFail() throws RegraDeNegocioException {
+//        // SETUP
+//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.empty());
+//
+//        // ACT
+//        edicaoService.delete(5);
+//
+//        // ASSERT
+//        verify(edicaoRepository, times(1)).delete(any());
+//    }
+//
+//    @Test
+//    public void testEnableOrDisableWhenInativo() throws RegraDeNegocioException {
+//
+//        //SET
+//        Integer idEdicao = 10;
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//
+//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+//        // ACT
+//        edicaoService.enableOrDisable(edicaoEntity.getIdEdicao());
+//
+//        //ASSERT
+//        verify(edicaoRepository, times(1)).save(any());
+//    }
+//    @Test
+//    public void testEnableOrDisableWhenAtivo() throws RegraDeNegocioException {
+//
+//        //SET
+//        Integer idEdicao = 10;
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//        edicaoEntity.setStatus(Status.ATIVO);
+//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+//        // ACT
+//        edicaoService.enableOrDisable(edicaoEntity.getIdEdicao());
+//
+//        //ASSERT
+//        verify(edicaoRepository, times(1)).save(any());
+//    }
+//
+//    @Test
+//    public void testListSucess(){
+//        // SETUP
+//        Integer pagina = 10;
+//        Integer quantidade = 5;
+//
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//        Page<EdicaoEntity> paginaMock = new PageImpl<>(List.of(edicaoEntity));
+//        when(edicaoRepository.findAll(any(Pageable.class))).thenReturn(paginaMock);
+//
+//        // ACT
+//        PageDTO<EdicaoDTO> paginaSolicitada = edicaoService.list(pagina, quantidade);
+//
+//        // ASSERT
+//        assertNotNull(paginaSolicitada);
+//        assertNotNull(paginaSolicitada.getPagina());
+//        assertEquals(1, paginaSolicitada.getTotalElementos());
+//    }
+//
+//    @Test
+//    public void testFindByIdWithSuccess() throws RegraDeNegocioException {
+//        // SETUP
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+//
+//        // ACT
+//        EdicaoEntity edicao = edicaoService.findById(edicaoEntity.getIdEdicao());
+//
+//        // ASSERT
+//        assertNotNull(edicao);
+//        assertEquals(10, edicaoEntity.getIdEdicao());
+//
+//    }
+//
+//    @Test(expected = RegraDeNegocioException.class)
+//    public void testFindByIdFail() throws RegraDeNegocioException {
+//        // SETUP
+//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.empty());
+//
+//        // ACT
+//        edicaoService.findById(5);
+//
+//        // ASSERT
+//        verify(edicaoRepository, times(1)).findById(any());
+//
+//    }
+//
+//    @Test
+//    public void testSaveSuccess(){
+//
+//        //SETUP
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//
+//        //ACT
+//        EdicaoDTO edicaoDTO = edicaoService.save(edicaoEntity);
+//
+//        //ASSERT
+//        assertEquals(10, edicaoDTO.getIdEdicao());
+//    }
+//
+//    @Test
+//    public void testGetResponsavelDTOSuccess(){
+//
+//        Set<ResponsavelEntity> responsavelEntities = new HashSet<>();
+//        ResponsavelEntity responsavelEntity = getResponsavelEntity();
+//        responsavelEntities.add(responsavelEntity);
+//
+//        Set<ResponsavelDTO> responsavelDTOS = edicaoService.getResponsavelDTO(responsavelEntities);
+//
+//        assertNotNull(responsavelDTOS);
+//
+//    }
+//    @Test
+//    public void testGetAreaEnvolvidaDTOSuccess(){
+//
+//        Set<AreaEnvolvidaEntity> areaEnvolvidaEntities = new HashSet<>();
+//        AreaEnvolvidaEntity areaEnvolvidaEntity = getAreaEnvolvida();
+//        areaEnvolvidaEntities.add(areaEnvolvidaEntity);
+//
+//        Set<AreaEnvolvidaDTO> areaEnvolvidaDTOS = edicaoService.getAreaEnvolvidaDTO(areaEnvolvidaEntities);
+//
+//        assertNotNull(areaEnvolvidaDTOS);
+//
+//    }
+//    @Test
+//    public void testGerarCalendarioGeral() throws RegraDeNegocioException {
+//        List<EdicaoEntity> edicaoEntityList = new ArrayList<>();
+//        edicaoEntityList.add(getEdicaoEntity());
+//
+//        when(edicaoRepository.findByEdicoesAtivasOrderByDataInicial()).thenReturn(edicaoEntityList);
+//
+//        List<DiaCalendarioEdicaoDTO> diaCalendarioEdicaoDTOList = new ArrayList<>();
+//        diaCalendarioEdicaoDTOList.add(getDiaCalendarioEdicaoDTO());
+//
+//        List<DiaNaoUtilEntity> diaNaoUtilEntityList = new ArrayList<>();
+//        diaNaoUtilEntityList.add(getDiaNaoUtilEntity());
+//
+//        EdicaoEntity edicaoEntity = getEdicaoEntity();
+//        when(diaNaoUtilRepository.findAll()).thenReturn(diaNaoUtilEntityList);
+//        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+//
+//        Set<EtapaEntity> etapaEntities = new HashSet<>();
+//        etapaEntities.add(getEtapaEntity());
+//        etapaEntities.add(getEtapaEntity2());
+//
+//        edicaoEntity.setEtapas(etapaEntities);
+//
+//        FeriadoDTO feriadoDTO = getFeriadoDTO();
+//
+//        LocalDate dia = LocalDate.parse("2022-03-03");
+//
+//        List<DiaNaoUtilEntity> diaNaoUtilEntityList2 = new ArrayList<>();
+//        diaNaoUtilEntityList2.add(getDiaNaoUtilEntity());
+//        diaNaoUtilEntityList2.add(getDiaNaoUtilEntityInativo());
+//
+//        FeriadoDTO feriadoDTO1 = edicaoService.verificarDiasNaoUteis(dia, diaNaoUtilEntityList2);
+//        List<DiaCalendarioGeralDTO> diaCalendarioGeralDTOS = edicaoService.gerarCalendarioGeral();
+//
+//    }
+//
+//    private static FeriadoDTO getFeriadoDTO(){
+//        FeriadoDTO feriadoDTO = new FeriadoDTO();
+//        feriadoDTO.setDescricao("Dia do saci");
+//        feriadoDTO.setQtdDias(1);
+//
+//        return feriadoDTO;
+//    }
+//
+//    private static DiaNaoUtilEntity getDiaNaoUtilEntityInativo() {
+//        DiaNaoUtilEntity diaNaoUtilEntity = new DiaNaoUtilEntity();
+//        diaNaoUtilEntity.setRepeticaoAnual(Status.INATIVO);
+//        diaNaoUtilEntity.setIdDiaNaoUtil(3);
+//        diaNaoUtilEntity.setDataInicial(LocalDate.parse("2022-03-03"));
+//        diaNaoUtilEntity.setDataFinal(LocalDate.parse("2022-05-05"));
+//        diaNaoUtilEntity.setDescricao("Diazinho de cria tlg");
+//
+//        return diaNaoUtilEntity;
+//    }
+//
+//    private static DiaNaoUtilEntity getDiaNaoUtilEntity() {
+//        DiaNaoUtilEntity diaNaoUtilEntity = new DiaNaoUtilEntity();
+//        diaNaoUtilEntity.setRepeticaoAnual(Status.ATIVO);
+//        diaNaoUtilEntity.setIdDiaNaoUtil(3);
+//        diaNaoUtilEntity.setDataInicial(LocalDate.parse("2022-03-03"));
+//        diaNaoUtilEntity.setDataFinal(null);
+//        diaNaoUtilEntity.setDescricao("Diazinho de cria tlg");
+//
+//        return diaNaoUtilEntity;
+//    }
+//
+//    private static DiaCalendarioEdicaoDTO getDiaCalendarioEdicaoDTO() {
+//        DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
+//        diaCalendarioEdicaoDTO.setDia(LocalDate.parse("2022-03-03"));
+//        diaCalendarioEdicaoDTO.setDiaUtil(getDiaUtilDTO());
+//        diaCalendarioEdicaoDTO.setEtapa(getEtapaDTO());
+//        diaCalendarioEdicaoDTO.setProcesso(getprocessoDTO());
+//        return diaCalendarioEdicaoDTO;
+//    }
+//
+//    private static DiaCalendarioGeralDTO getDiaCalendarioGeralDTO() {
+//        List<EdicaoEntity> edicaoEntities = new ArrayList<>();
+//        edicaoEntities.add(getEdicaoEntity());
+//
+//        List<JuncaoEdicoesDTO> juncaoEdicoesDTOS = new ArrayList<>();
+//        juncaoEdicoesDTOS.add(getJuncaoEdicoesDTO());
+//
+//        DiaCalendarioGeralDTO diaCalendarioGeralDTO = new DiaCalendarioGeralDTO();
+//        diaCalendarioGeralDTO.setDiaUtil(getDiaUtilDTO());
+//        diaCalendarioGeralDTO.setEdicoes(juncaoEdicoesDTOS);
+//        diaCalendarioGeralDTO.setDia(LocalDate.parse("2022-03-03"));
+//
+//        return diaCalendarioGeralDTO;
+//    }
+//
+//    private static JuncaoEdicoesDTO getJuncaoEdicoesDTO() {
+//
+//        JuncaoEdicoesDTO juncaoEdicoesDTO = new JuncaoEdicoesDTO();
+//        juncaoEdicoesDTO.setProcesso(getprocessoDTO());
+//        juncaoEdicoesDTO.setEdicao("Edicao 3");
+//        juncaoEdicoesDTO.setEtapa(getEtapaDTO());
+//
+//        return juncaoEdicoesDTO;
+//    }
+//
+//    private static EtapaDTO getEtapaDTO() {
+//
+//        List<ProcessoDTO> processoDTOS = new ArrayList<>();
+//        processoDTOS.add(getprocessoDTO());
+//
+//        EtapaDTO etapaDTO = new EtapaDTO();
+//        etapaDTO.setNome("Etapa1");
+//        etapaDTO.setIdEtapa(3);
+//        etapaDTO.setOrdemExecucao(3);
+//        etapaDTO.setProcessos(processoDTOS);
+//
+//        return etapaDTO;
+//    }
+//
+//    private static ProcessoDTO getprocessoDTO() {
+//        Set<ResponsavelDTO> responsavelDTOS = new HashSet<>();
+//        responsavelDTOS.add(getResponsavelDTO());
+//
+//        Set<AreaEnvolvidaDTO> areaEnvolvidaDTOS = new HashSet<>();
+//        areaEnvolvidaDTOS.add(getAreaEnvolvidaDTO());
+//
+//        ProcessoDTO processoDTO = new ProcessoDTO();
+//        processoDTO.setDiasUteis(3);
+//        processoDTO.setDuracaoProcesso("3 dias");
+//        processoDTO.setIdProcesso(3);
+//        processoDTO.setOrdemExecucao(3);
+//        processoDTO.setResponsaveis(responsavelDTOS);
+//        processoDTO.setAreasEnvolvidas(areaEnvolvidaDTOS);
+//        processoDTO.setNome("processo 3");
+//
+//        return processoDTO;
+//    }
+//
+//    private static DiaUtilDTO getDiaUtilDTO() {
+//        DiaUtilDTO diaUtilDTO = new DiaUtilDTO();
+//        diaUtilDTO.setEhDiaUtil(true);
+//        diaUtilDTO.setEhDiaNaoUtil(false);
+//        diaUtilDTO.setDescricao(null);
+//        return diaUtilDTO;
+//    }
+//
+//    private static AreaEnvolvidaDTO getAreaEnvolvidaDTO() {
+//        AreaEnvolvidaDTO areaEnvolvidaDTO = new AreaEnvolvidaDTO();
+//        areaEnvolvidaDTO.setIdAreaEnvolvida(10);
+//        areaEnvolvidaDTO.setNome("area1");
+//        areaEnvolvidaDTO.setIdAreaEnvolvida(10);
+//        return areaEnvolvidaDTO;
+//    }
+//
+//    private static ResponsavelDTO getResponsavelDTO() {
+//        ResponsavelDTO responsavelDTO = new ResponsavelDTO();
+//        responsavelDTO.setIdResponsavel(10);
+//        responsavelDTO.setNome("Fulano");
+//
+//        return responsavelDTO;
+//    }
+//
+//    private static EdicaoCreateDTO getEdicaoCreateDTO() {
+//        EdicaoCreateDTO edicaoCreateDTO = new EdicaoCreateDTO();
+//        edicaoCreateDTO.setNome("Edicao1");
+//        edicaoCreateDTO.setDataInicial(LocalDate.of(2022,8,1));
+//        edicaoCreateDTO.setDataFinal(LocalDate.of(2022,8,10));
+//
+//        return edicaoCreateDTO;
+//    }
+//    private static EdicaoEntity getEdicaoEntity() {
+//
+//        EdicaoEntity edicaoEntity = new EdicaoEntity();
+//        edicaoEntity.setIdEdicao(10);
+//        edicaoEntity.setNome("Edicao1");
+//        edicaoEntity.setDataInicial(LocalDate.of(2022, 10, 11));
+//        edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));
+//        edicaoEntity.setEtapas(new HashSet<>());
+//
+//        return edicaoEntity;
+//    }
+//
+//    private static EtapaEntity getEtapaEntity() {
+//        EtapaEntity etapaEntity = new EtapaEntity();
+//        etapaEntity.setIdEtapa(2);
+//        etapaEntity.setNome("Etapa1");
+//
+//        Set<ProcessoEntity> processoEntities = new HashSet<>();
+//        processoEntities.add(getProcessoEntity());
+//        etapaEntity.setProcessos(processoEntities);
+//
+//        return etapaEntity;
+//    }
+//
+//    private static EtapaEntity getEtapaEntity2() {
+//        EtapaEntity etapaEntity = new EtapaEntity();
+//        etapaEntity.setIdEtapa(3);
+//        etapaEntity.setNome("Etapa2");
+//
+//        Set<ProcessoEntity> processoEntities = new HashSet<>();
+//        processoEntities.add(getProcessoEntity());
+//        etapaEntity.setProcessos(processoEntities);
+//
+//        return etapaEntity;
+//    }
+//    private static ProcessoEntity getProcessoEntity() {
+//        ProcessoEntity processoEntity = new ProcessoEntity();
+//        processoEntity.setIdProcesso(10);
+//        processoEntity.setDuracaoProcesso("1dia");
+//        processoEntity.setOrdemExecucao(1);
+//        processoEntity.setDiasUteis(7);
+//        processoEntity.setAreasEnvolvidas(new HashSet<>());
+//        processoEntity.setResponsaveis(new HashSet<>());
+//
+//        return processoEntity;
+//    }
+//
+//    private static ProcessoEntity getProcessoEntity2() {
+//        ProcessoEntity processoEntity = new ProcessoEntity();
+//        processoEntity.setIdProcesso(9);
+//        processoEntity.setDuracaoProcesso("2dia");
+//        processoEntity.setOrdemExecucao(1);
+//        processoEntity.setDiasUteis(1);
+//        processoEntity.setAreasEnvolvidas(new HashSet<>());
+//        processoEntity.setResponsaveis(new HashSet<>());
+//
+//        return processoEntity;
+//    }
+//
+//    private static ResponsavelEntity getResponsavelEntity() {
+//        ResponsavelEntity responsavelEntity = new ResponsavelEntity();
+//        responsavelEntity.setIdResponsavel(10);
+//        responsavelEntity.setNome("Fulano");
+//
+//        Set<ProcessoEntity> processoEntities = new HashSet<>();
+//        processoEntities.add(getProcessoEntity());
+//        responsavelEntity.setProcessos(processoEntities);
+//
+//        return responsavelEntity;
+//    }
+//
+//    private static AreaEnvolvidaEntity getAreaEnvolvida() {
+//        AreaEnvolvidaEntity areaEnvolvidaEntity = new AreaEnvolvidaEntity();
+//        areaEnvolvidaEntity.setNome("Area1");
+//        areaEnvolvidaEntity.setIdAreaEnvolvida(10);
+//
+//        Set<ProcessoEntity> processoEntities = new HashSet<>();
+//        processoEntities.add(getProcessoEntity());
+//        areaEnvolvidaEntity.setProcessos(processoEntities);
+//
+//        return areaEnvolvidaEntity;
+//    }
+//
+//}
