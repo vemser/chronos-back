@@ -2,6 +2,7 @@ package br.com.dbc.chronosapi.service;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioEdicaoDTO;
+import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioGeralDTO;
 import br.com.dbc.chronosapi.dto.calendario.FeriadoDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
@@ -129,18 +130,18 @@ public class EdicaoService {
         return objectMapper.convertValue(edicaoEntityCloneSaved, EdicaoDTO.class);
     }
 
-//    public List<DiaCalendarioGeralDTO> gerarCalendarioGeral() throws RegraDeNegocioException{
-//        List<EdicaoEntity> edicoes = edicaoRepository.findByEdicoesAtivasOrderByDataInicial();
-//        if (edicoes.isEmpty()) {
-//            throw new RegraDeNegocioException("Não existem edições cadastradas!");
-//        }
-//        List<DiaCalendarioGeralDTO> dias = new ArrayList<>();
-//        List<DiaCalendarioEdicaoDTO> diaCalendarioEdicaoDTOS;
-//
+    public List<DiaCalendarioGeralDTO> gerarCalendarioGeral() throws RegraDeNegocioException{
+        List<EdicaoEntity> edicoes = edicaoRepository.findByEdicoesAtivasOrderByDataInicial();
+        if (edicoes.isEmpty()) {
+            throw new RegraDeNegocioException("Não existem edições cadastradas!");
+        }
+        List<DiaCalendarioGeralDTO> dias = new ArrayList<>();
+        List<DiaCalendarioEdicaoDTO> diaCalendarioEdicaoDTOS;
+
 //        diaCalendarioEdicaoDTOS = gerarCalendarioEdicao(edicoes.get(0).getIdEdicao());
 //        EdicaoEntity edicaoEntity = edicoes.get(0);
 //        edicoes.remove(edicaoEntity);
-//
+
 //        for(var diaEdicaoBase : diaCalendarioEdicaoDTOS) {
 //            DiaCalendarioGeralDTO diaCalendarioGeralDTO = new DiaCalendarioGeralDTO();
 //            diaCalendarioGeralDTO.setEdicoes(new ArrayList<>());
@@ -155,15 +156,19 @@ public class EdicaoService {
 //            }
 //            dias.add(diaCalendarioGeralDTO);
 //        }
-//
-//        for(var edicao : edicoes) {
-//            List<DiaCalendarioEdicaoDTO> diasCalendarioEdicao = gerarCalendarioEdicao(edicao.getIdEdicao());
-//            for(var diaEdicaoJuncao : diasCalendarioEdicao) {
-//                DiaCalendarioGeralDTO diaCalendarioGeralDTO = new DiaCalendarioGeralDTO();
+
+        for(var edicao : edicoes) {
+            List<DiaCalendarioEdicaoDTO> diasCalendarioEdicao = gerarCalendarioEdicao(edicao.getIdEdicao());
+            for(var diaEdicaoJuncao : diasCalendarioEdicao) {
+                DiaCalendarioGeralDTO diaCalendarioGeralDTO = new DiaCalendarioGeralDTO();
 //                diaCalendarioGeralDTO.setEdicoes(new ArrayList<>());
 //                JuncaoEdicoesDTO juncaoEdicoesDTO = new JuncaoEdicoesDTO();
-//                diaCalendarioGeralDTO.setDia(diaEdicaoJuncao.getDia());
 //                diaCalendarioGeralDTO.setDiaUtil(diaEdicaoJuncao.getDiaUtil());
+                diaCalendarioGeralDTO.setDia(diaEdicaoJuncao.getDia());
+                diaCalendarioGeralDTO.setEdicao(edicao.getNome());
+                diaCalendarioGeralDTO.setEtapa(diaEdicaoJuncao.getEtapa());
+                diaCalendarioGeralDTO.setFeriado(diaEdicaoJuncao.getFeriado());
+                dias.add(diaCalendarioGeralDTO);
 //                if(diaEdicaoJuncao.getDiaUtil().isEhDiaUtil()){
 //                    juncaoEdicoesDTO.setEdicao(edicao.getNome());
 //                    juncaoEdicoesDTO.setEtapa(diaEdicaoJuncao.getEtapa());
@@ -175,10 +180,10 @@ public class EdicaoService {
 //                        diaEdicaoBase.getEdicoes().add(juncaoEdicoesDTO);
 //                    }
 //                }
-//            }
-//        }
-//        return dias;
-//    }
+            }
+        }
+        return dias;
+    }
 
     public List<DiaCalendarioEdicaoDTO> gerarCalendarioEdicao(Integer idEdicao) throws RegraDeNegocioException {
         List<DiaNaoUtilEntity> diasNaoUteis = diaNaoUtilRepository.findAll(Sort.by("dataInicial").ascending());

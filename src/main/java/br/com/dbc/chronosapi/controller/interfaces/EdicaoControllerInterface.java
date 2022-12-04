@@ -2,6 +2,7 @@ package br.com.dbc.chronosapi.controller.interfaces;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioEdicaoDTO;
+import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioGeralDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
@@ -82,16 +83,16 @@ public interface EdicaoControllerInterface {
     @PostMapping("/clone/{idEdicao}")
     ResponseEntity<EdicaoDTO> clone(@Valid @PathVariable("idEdicao") Integer idEdicao) throws RegraDeNegocioException;
 
-//    @Operation(summary = "Gerar calendário geral", description = "Gerar calendário geral")
-//    @ApiResponses(
-//            value = {
-//                    @ApiResponse(responseCode = "200", description = "Calendário gerado com sucesso!"),
-//                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-//                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-//            }
-//    )
-//    @GetMapping("/calendario-geral")
-//    ResponseEntity<List<DiaCalendarioGeralDTO>> gerarCalendarioGeral() throws RegraDeNegocioException;
+    @Operation(summary = "Gerar calendário geral", description = "Gerar calendário geral")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Calendário gerado com sucesso!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/calendario-geral")
+    ResponseEntity<List<DiaCalendarioGeralDTO>> gerarCalendarioGeral() throws RegraDeNegocioException;
 
     @Operation(summary = "Gerar calendário da edição", description = "Gerar calendário a partir do id da edição.")
     @ApiResponses(
