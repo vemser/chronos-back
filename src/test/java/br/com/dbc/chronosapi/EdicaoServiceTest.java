@@ -1,7 +1,9 @@
 package br.com.dbc.chronosapi;
 
 import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.calendario.*;
+import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioEdicaoDTO;
+import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioGeralDTO;
+import br.com.dbc.chronosapi.dto.calendario.FeriadoDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
@@ -34,6 +36,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -372,9 +375,7 @@ public class EdicaoServiceTest {
         FeriadoDTO feriadoDTO = getFeriadoDTO();
         feriadoDTO.setQtdDias(13);
 
-        LocalDate dia = LocalDate.parse("2022-03-03");
 
-        dia = dia.plusDays(UM_DIA);
 
         List<DiaNaoUtilEntity> diaNaoUtilEntityList2 = new ArrayList<>();
         diaNaoUtilEntityList2.add(getDiaNaoUtilEntity());
@@ -397,32 +398,33 @@ public class EdicaoServiceTest {
         List<DiaCalendarioEdicaoDTO> diaCalendarioEdicaoDTOList = new ArrayList<>();
         diaCalendarioEdicaoDTOList.add(getDiaCalendarioEdicaoDTO());
 
-        List<DiaNaoUtilEntity> diaNaoUtilEntityList = new ArrayList<>();
-        diaNaoUtilEntityList.add(getDiaNaoUtilEntity());
-
         EdicaoEntity edicaoEntity = getEdicaoEntity();
         when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
 
+
         Set<EtapaEntity> etapaEntities = new HashSet<>();
-        etapaEntities.add(getEtapaEntity());
+        etapaEntities.add(getEtapaEntityComProcessoComAreas());
         etapaEntities.add(getEtapaEntity2());
 
         edicaoEntity.setEtapas(etapaEntities);
 
         FeriadoDTO feriadoDTO = getFeriadoDTO();
-        feriadoDTO.setQtdDias(13);
+
 
         LocalDate dia = LocalDate.parse("2022-03-03");
 
-        dia = dia.plusDays(UM_DIA);
 
-        List<DiaNaoUtilEntity> diaNaoUtilEntityList2 = new ArrayList<>();
-        diaNaoUtilEntityList2.add(getDiaNaoUtilEntity());
-        diaNaoUtilEntityList2.add(getDiaNaoUtilEntityInativo());
+        List<DiaNaoUtilEntity> diaNaoUtilEntityList = new ArrayList<>();
+        DiaNaoUtilEntity diaNaoUtilEntity = getDiaNaoUtilEntity();
+        diaNaoUtilEntity.setDataInicial(LocalDate.parse("2022-10-11"));
+        diaNaoUtilEntityList.add(diaNaoUtilEntity);
+        diaNaoUtilEntityList.add(getDiaNaoUtilEntityInativo());
+        when(diaNaoUtilRepository.findAll(any(Sort.class))).thenReturn(diaNaoUtilEntityList);
 
-        List<DiaCalendarioEdicaoDTO> diaCalendarioEdicaoDTOS = edicaoService.gerarCalendarioEdicao(edicaoEntityList.get(1).getIdEdicao());
-        feriadoDTO = edicaoService.verificarDiasNaoUteis(dia, diaNaoUtilEntityList2);
+
         List<DiaCalendarioGeralDTO> diaCalendarioGeralDTOS = edicaoService.gerarCalendarioGeral();
+
+        assertNotNull(diaCalendarioGeralDTOS);
 
     }
 
@@ -453,8 +455,7 @@ public class EdicaoServiceTest {
     private static FeriadoDTO getFeriadoDTO(){
         FeriadoDTO feriadoDTO = new FeriadoDTO();
         feriadoDTO.setDescricao("Dia do saci");
-        feriadoDTO.setQtdDias(4);
-
+        feriadoDTO.setQtdDias(3);
         return feriadoDTO;
     }
 
@@ -462,9 +463,9 @@ public class EdicaoServiceTest {
         DiaNaoUtilEntity diaNaoUtilEntity = new DiaNaoUtilEntity();
         diaNaoUtilEntity.setRepeticaoAnual(Status.INATIVO);
         diaNaoUtilEntity.setIdDiaNaoUtil(3);
-        diaNaoUtilEntity.setDataInicial(LocalDate.parse("2022-03-03"));
-        diaNaoUtilEntity.setDataFinal(LocalDate.parse("2022-05-05"));
-        diaNaoUtilEntity.setDescricao("Diazinho de cria tlg");
+        diaNaoUtilEntity.setDataInicial(LocalDate.parse("2022-10-12"));
+        diaNaoUtilEntity.setDataFinal(LocalDate.parse("2022-12-08"));
+        diaNaoUtilEntity.setDescricao("Diazinho de cria tlg HIHIHI");
 
         return diaNaoUtilEntity;
     }
@@ -588,6 +589,20 @@ public class EdicaoServiceTest {
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();
         processoEntities.add(getProcessoEntity());
+        processoEntities.add(getProcessoEntity2());
+        etapaEntity.setProcessos(processoEntities);
+
+        return etapaEntity;
+    }
+
+    private static EtapaEntity getEtapaEntityComProcessoComAreas() {
+        EtapaEntity etapaEntity = new EtapaEntity();
+        etapaEntity.setIdEtapa(2);
+        etapaEntity.setNome("Etapa1");
+
+        Set<ProcessoEntity> processoEntities = new HashSet<>();
+        processoEntities.add(getProcessoEntityComAreas());
+        processoEntities.add(getProcessoEntity2());
         etapaEntity.setProcessos(processoEntities);
 
         return etapaEntity;
@@ -600,6 +615,7 @@ public class EdicaoServiceTest {
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();
         processoEntities.add(getProcessoEntity());
+        processoEntities.add(getProcessoEntity2());
         etapaEntity.setProcessos(processoEntities);
 
         return etapaEntity;
@@ -611,6 +627,22 @@ public class EdicaoServiceTest {
         processoEntity.setOrdemExecucao(1);
         processoEntity.setDiasUteis(7);
         processoEntity.setAreasEnvolvidas(new HashSet<>());
+
+        processoEntity.setResponsaveis(new HashSet<>());
+
+        return processoEntity;
+    }
+
+    private static ProcessoEntity getProcessoEntityComAreas() {
+        ProcessoEntity processoEntity = new ProcessoEntity();
+        processoEntity.setIdProcesso(10);
+        processoEntity.setDuracaoProcesso("1dia");
+        processoEntity.setOrdemExecucao(1);
+        processoEntity.setDiasUteis(7);
+        Set<AreaEnvolvidaEntity> areaEnvolvidaEntities = new HashSet<>();
+        areaEnvolvidaEntities.add(getAreaEnvolvida());
+        processoEntity.setAreasEnvolvidas(areaEnvolvidaEntities);
+
         processoEntity.setResponsaveis(new HashSet<>());
 
         return processoEntity;
