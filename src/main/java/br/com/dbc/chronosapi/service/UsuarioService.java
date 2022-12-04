@@ -77,10 +77,10 @@ public class UsuarioService {
         UsuarioEntity byEmail = findByEmail(usuarioCreateDTO.getEmail());
         if (byEmail != null) {
             throw new RegraDeNegocioException("E-mail cadastrado já existe!");
-        }
-
-        if (!cargoValido(usuarioCreateDTO.getCargos())){
-            throw new RegraDeNegocioException("Insira um cargo válido.");
+        }else if (!cargoValido(usuarioCreateDTO.getCargos())){
+            throw new RegraDeNegocioException("Insira um cargo válido!");
+        }else if(!usuarioCreateDTO.getEmail().trim().endsWith("@dbccompany.com.br")) {
+            throw new RegraDeNegocioException("E-mail cadastrado não segue o padrão @dbccompany.com.br");
         }
 
         UsuarioEntity usuarioEntity = new UsuarioEntity();
@@ -97,7 +97,7 @@ public class UsuarioService {
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
         Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
         usuarioDTO.setCargos(cargosDTO);
-        emailService.sendEmailEnvioSenha(usuarioDTO.getEmail(), senha);
+        emailService.sendEmailEnvioSenha(usuarioDTO, senha);
         return usuarioDTO;
     }
 
@@ -136,7 +136,7 @@ public class UsuarioService {
     public UsuarioDTO updateAdmin(Integer id, UAdminUpdateDTO usuarioUpdate) throws RegraDeNegocioException {
 
         if (!cargoValido(usuarioUpdate.getCargos())){
-            throw new RegraDeNegocioException("Insira um cargo válido.");
+            throw new RegraDeNegocioException("Insira um cargo válido!");
         }
 
         UsuarioEntity usuarioRecover = findById(id);

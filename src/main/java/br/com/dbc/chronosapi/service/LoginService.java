@@ -41,14 +41,14 @@ public class LoginService {
         throw new RegraDeNegocioException("Usuario não encontrado!");
     }
 
-    public String sendRecoverPasswordEmail(String email) {
-        UsuarioEntity usuario = usuarioRepository.findByEmail(email);
+//    public String sendRecoverPasswordEmail(String email) {
+//        UsuarioDTO usuario = objectMapper.convertValue(usuarioRepository.findByEmail(email), UsuarioDTO.class);
 
 //        String token = tokenService.getToken(usuario, true);
-        emailService.sendEmailRecuperacaoSenha(usuario.getEmail(), usuario.getSenha());
-
-        return "Verifique seu email para trocar a senha.";
-    }
+//        emailService.sendEmailRecuperacaoSenha(usuario, usuario.getSenha());
+//
+//        return "Verifique seu email para trocar a senha.";
+//    }
 
     public Optional<UsuarioEntity> findByEmailAndSenha(String login, String senha) {
         return usuarioRepository.findByEmailAndSenha(login, senha);

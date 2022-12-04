@@ -24,16 +24,16 @@ public interface LoginControllerInterface {
     @PostMapping
      ResponseEntity<String> login(@RequestBody @Valid LoginDTO loginDTO);
 
-    @Operation(summary = "Esquecer senha", description = "Envia um email para redefinição da senha presente no banco de dados.")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Email enviado com sucesso"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @PostMapping("/forgot-password")
-     ResponseEntity<String> sendRecoverPasswordEmail(String email) throws RegraDeNegocioException;
+//    @Operation(summary = "Esquecer senha", description = "Envia um email para redefinição da senha presente no banco de dados.")
+//    @ApiResponses(
+//            value = {
+//                    @ApiResponse(responseCode = "200", description = "Email enviado com sucesso"),
+//                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+//                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+//            }
+//    )
+//    @PostMapping("/forgot-password")
+//     ResponseEntity<String> sendRecoverPasswordEmail(String email) throws RegraDeNegocioException;
 
     @Operation(summary = "Trocar senha", description = "EndPoint para a atualização da senha presente no banco de dados.")
     @ApiResponses(
