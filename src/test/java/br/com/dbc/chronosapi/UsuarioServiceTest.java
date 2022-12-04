@@ -185,7 +185,21 @@ public class UsuarioServiceTest {
         verify(usuarioRepository, times(1)).save(any());
         verify(emailService, times(1)).sendEmailEnvioSenha(any(), any());
     }
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarCreateFail() throws RegraDeNegocioException, IOException {
 
+        // SETUP
+        String senhaCriptografada = "$oieufr9873he4j809fy43";
+        UsuarioCreateDTO usuarioCreate = getUsuarioCreateDTO();
+        UsuarioEntity usuarioEntity = getUsuarioEntity();
+        usuarioCreate.setEmail("luiz@gemail.com");
+
+        when(usuarioService.findByEmail(anyString())).thenReturn(usuarioEntity);
+
+        // ACT
+        usuarioService.create(usuarioCreate);
+
+    }
     @Test
     public void deveTestarUpdatePerfilComSucesso() throws RegraDeNegocioException {
         // SETUP

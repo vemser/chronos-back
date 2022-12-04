@@ -175,6 +175,17 @@ public class EdicaoServiceTest {
         assertNotNull(edicaoDTO);
         assertEquals(12, edicaoDTO.getIdEdicao());
     }
+    @Test(expected = RegraDeNegocioException.class)
+    public void testGerarCalendarioEdicaoIfEtapasEmpty() throws RegraDeNegocioException {
+        List<DiaNaoUtilEntity> diaNaoUtilEntityList = new ArrayList<>();
+        diaNaoUtilEntityList.add(getDiaNaoUtilEntity());
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        Set<EtapaEntity> etapaEntities = new HashSet<>();
+
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+
+        edicaoService.gerarCalendarioEdicao(edicaoEntity.getIdEdicao());
+    }
 
     @Test
     public void testListComEtapaSucess(){
@@ -334,6 +345,47 @@ public class EdicaoServiceTest {
 
     }
     @Test
+    public void testGerarCalendarioEdicaoElse() throws RegraDeNegocioException {
+
+        final int UM_DIA = 1;
+        List<EdicaoEntity> edicaoEntityList = new ArrayList<>();
+        edicaoEntityList.add(getEdicaoEntity());
+        edicaoEntityList.add(getEdicaoEntity2());
+
+        when(edicaoRepository.findByEdicoesAtivasOrderByDataInicial()).thenReturn(edicaoEntityList);
+
+        List<DiaCalendarioEdicaoDTO> diaCalendarioEdicaoDTOList = new ArrayList<>();
+        diaCalendarioEdicaoDTOList.add(getDiaCalendarioEdicaoDTO());
+
+        List<DiaNaoUtilEntity> diaNaoUtilEntityList = new ArrayList<>();
+        diaNaoUtilEntityList.add(getDiaNaoUtilEntity());
+
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
+
+        Set<EtapaEntity> etapaEntities = new HashSet<>();
+        etapaEntities.add(getEtapaEntity());
+        etapaEntities.add(getEtapaEntity2());
+
+        edicaoEntity.setEtapas(etapaEntities);
+
+        FeriadoDTO feriadoDTO = getFeriadoDTO();
+        feriadoDTO.setQtdDias(13);
+
+        LocalDate dia = LocalDate.parse("2022-03-03");
+
+        dia = dia.plusDays(UM_DIA);
+
+        List<DiaNaoUtilEntity> diaNaoUtilEntityList2 = new ArrayList<>();
+        diaNaoUtilEntityList2.add(getDiaNaoUtilEntity());
+        diaNaoUtilEntityList2.add(getDiaNaoUtilEntityInativo());
+
+        feriadoDTO.setQtdDias(10);
+
+        List<DiaCalendarioGeralDTO> diaCalendarioGeralDTOS = edicaoService.gerarCalendarioGeral();
+
+    }
+    @Test
     public void testGerarCalendarioGeral() throws RegraDeNegocioException {
         final int UM_DIA = 1;
         List<EdicaoEntity> edicaoEntityList = new ArrayList<>();
@@ -349,7 +401,6 @@ public class EdicaoServiceTest {
         diaNaoUtilEntityList.add(getDiaNaoUtilEntity());
 
         EdicaoEntity edicaoEntity = getEdicaoEntity();
-        when(diaNaoUtilRepository.findAll()).thenReturn(diaNaoUtilEntityList);
         when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
 
         Set<EtapaEntity> etapaEntities = new HashSet<>();
@@ -372,6 +423,30 @@ public class EdicaoServiceTest {
         List<DiaCalendarioEdicaoDTO> diaCalendarioEdicaoDTOS = edicaoService.gerarCalendarioEdicao(edicaoEntityList.get(1).getIdEdicao());
         feriadoDTO = edicaoService.verificarDiasNaoUteis(dia, diaNaoUtilEntityList2);
         List<DiaCalendarioGeralDTO> diaCalendarioGeralDTOS = edicaoService.gerarCalendarioGeral();
+
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void testGerarCalendarioGeralFail() throws RegraDeNegocioException {
+        List<EdicaoEntity> edicaoEntityList = new ArrayList<>();
+
+        when(edicaoRepository.findByEdicoesAtivasOrderByDataInicial()).thenReturn(edicaoEntityList);
+
+        edicaoService.gerarCalendarioGeral();
+
+    }
+    @Test
+    public void testVerificarDiasNaoUteisElseIf() {
+        FeriadoDTO feriado = new FeriadoDTO();
+        LocalDate dia = LocalDate.parse("2012-11-11");
+        List<DiaNaoUtilEntity> diaNaoUtilEntityList = new ArrayList<>();
+        DiaNaoUtilEntity diaNaoUtilEntity = getDiaNaoUtilEntity();
+        diaNaoUtilEntity.setRepeticaoAnual(Status.ATIVO);
+        diaNaoUtilEntity.setDataInicial(dia);
+
+        FeriadoDTO feriadoReturn = edicaoService.verificarDiasNaoUteis(dia, diaNaoUtilEntityList);
+
+        assertNotNull(feriadoReturn);
 
     }
 
@@ -408,9 +483,9 @@ public class EdicaoServiceTest {
     private static DiaCalendarioEdicaoDTO getDiaCalendarioEdicaoDTO() {
         DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
         diaCalendarioEdicaoDTO.setDia(LocalDate.parse("2022-03-03"));
-        diaCalendarioEdicaoDTO.setDiaUtil(getDiaUtilDTO());
-        diaCalendarioEdicaoDTO.setEtapa(getEtapaDTO());
-        diaCalendarioEdicaoDTO.setProcesso(getprocessoDTO());
+//        diaCalendarioEdicaoDTO.setDiaUtil(getDiaUtilDTO());
+//        diaCalendarioEdicaoDTO.setEtapa(getEtapaDTO());
+//        diaCalendarioEdicaoDTO.setProcesso(getprocessoDTO());
         return diaCalendarioEdicaoDTO;
     }
 
@@ -418,25 +493,12 @@ public class EdicaoServiceTest {
         List<EdicaoEntity> edicaoEntities = new ArrayList<>();
         edicaoEntities.add(getEdicaoEntity());
 
-        List<JuncaoEdicoesDTO> juncaoEdicoesDTOS = new ArrayList<>();
-        juncaoEdicoesDTOS.add(getJuncaoEdicoesDTO());
-
         DiaCalendarioGeralDTO diaCalendarioGeralDTO = new DiaCalendarioGeralDTO();
-        diaCalendarioGeralDTO.setDiaUtil(getDiaUtilDTO());
-        diaCalendarioGeralDTO.setEdicoes(juncaoEdicoesDTOS);
+//        diaCalendarioGeralDTO.setDiaUtil(getDiaUtilDTO());
+//        diaCalendarioGeralDTO.setEdicoes(juncaoEdicoesDTOS);
         diaCalendarioGeralDTO.setDia(LocalDate.parse("2022-03-03"));
 
         return diaCalendarioGeralDTO;
-    }
-
-    private static JuncaoEdicoesDTO getJuncaoEdicoesDTO() {
-
-        JuncaoEdicoesDTO juncaoEdicoesDTO = new JuncaoEdicoesDTO();
-        juncaoEdicoesDTO.setProcesso(getprocessoDTO());
-        juncaoEdicoesDTO.setEdicao("Edicao 3");
-        juncaoEdicoesDTO.setEtapa(getEtapaDTO());
-
-        return juncaoEdicoesDTO;
     }
 
     private static EtapaDTO getEtapaDTO() {
@@ -471,15 +533,6 @@ public class EdicaoServiceTest {
 
         return processoDTO;
     }
-
-    private static DiaUtilDTO getDiaUtilDTO() {
-        DiaUtilDTO diaUtilDTO = new DiaUtilDTO();
-        diaUtilDTO.setEhDiaUtil(true);
-        diaUtilDTO.setEhDiaNaoUtil(false);
-        diaUtilDTO.setDescricao(null);
-        return diaUtilDTO;
-    }
-
     private static AreaEnvolvidaDTO getAreaEnvolvidaDTO() {
         AreaEnvolvidaDTO areaEnvolvidaDTO = new AreaEnvolvidaDTO();
         areaEnvolvidaDTO.setIdAreaEnvolvida(10);
