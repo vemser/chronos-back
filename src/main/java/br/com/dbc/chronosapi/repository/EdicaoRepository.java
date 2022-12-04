@@ -11,6 +11,8 @@ import java.util.List;
 public interface EdicaoRepository extends JpaRepository<EdicaoEntity, Integer> {
     @Query(" select e from EDICAO e " +
             " where e.status = 1 " +
-            " order by e.dataInicial")
+            " and exists (select et from ETAPA et " +
+            " where et.idEdicao = e.idEdicao ) " +
+            " order by e.dataInicial ")
     List<EdicaoEntity> findByEdicoesAtivasOrderByDataInicial();
 }
