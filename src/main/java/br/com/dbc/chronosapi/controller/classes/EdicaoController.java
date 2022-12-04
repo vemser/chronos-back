@@ -38,10 +38,10 @@ public class EdicaoController implements EdicaoControllerInterface {
         return new ResponseEntity<>(edicaoService.clone(idEdicao), HttpStatus.OK);
     }
 
-    @GetMapping("/calendario-geral")
-    public ResponseEntity <List<DiaCalendarioGeralDTO>> gerarCalendarioGeral() throws RegraDeNegocioException {
-        return new ResponseEntity<>(edicaoService.gerarCalendarioGeral(), HttpStatus.OK);
-    }
+//    @GetMapping("/calendario-geral")
+//    public ResponseEntity <List<DiaCalendarioGeralDTO>> gerarCalendarioGeral() throws RegraDeNegocioException {
+//        return new ResponseEntity<>(edicaoService.gerarCalendarioGeral(), HttpStatus.OK);
+//    }
 
     @GetMapping("/calendario-edicao/{idEdicao}")
     public ResponseEntity<List<DiaCalendarioEdicaoDTO>> gerarCalendarioEdicao(@PathVariable Integer idEdicao) throws RegraDeNegocioException {
