@@ -156,9 +156,9 @@ public class UsuarioService {
         String gestor = "ROLE_GESTAO_DE_PESSOAS";
 
         for (CargoCreateDTO cargo: cargoEntities) {
-            if (!Objects.equals(cargo.getNome(), admin) &&
-                    !Objects.equals(cargo.getNome(), instrutor) &&
-                        !Objects.equals(cargo.getNome(), gestor)) {
+            if (!Objects.equals(cargo.getNome().trim(), admin) &&
+                    !Objects.equals(cargo.getNome().trim(), instrutor) &&
+                        !Objects.equals(cargo.getNome().trim(), gestor)) {
                 return false;
             }
         }
