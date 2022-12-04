@@ -10,5 +10,7 @@ public class DiaCalendarioGeralDTO {
     private String edicao;
     private Integer idEtapa;
     private String etapa;
+    private Integer idProcesso;
+    private String processo;
     private String feriado;
 }

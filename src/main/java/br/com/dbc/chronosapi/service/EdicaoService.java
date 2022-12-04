@@ -145,6 +145,8 @@ public class EdicaoService {
                 diaCalendarioGeralDTO.setEdicao(edicao.getNome());
                 diaCalendarioGeralDTO.setIdEtapa(diaEdicao.getIdEtapa());
                 diaCalendarioGeralDTO.setEtapa(diaEdicao.getEtapa());
+                diaCalendarioGeralDTO.setIdProcesso(diaEdicao.getIdProcesso());
+                diaCalendarioGeralDTO.setProcesso(diaEdicao.getProcesso());
                 diaCalendarioGeralDTO.setFeriado(diaEdicao.getFeriado());
                 dias.add(diaCalendarioGeralDTO);
             }
@@ -180,6 +182,7 @@ public class EdicaoService {
                                         diaCalendarioEdicaoDTO.setDia(dia);
                                         diaCalendarioEdicaoDTO.setIdEtapa(null);
                                         diaCalendarioEdicaoDTO.setEtapa(null);
+                                        diaCalendarioEdicaoDTO.setIdProcesso(null);
                                         diaCalendarioEdicaoDTO.setProcesso(null);
                                         diaCalendarioEdicaoDTO.setAreas(null);
                                         diaCalendarioEdicaoDTO.setFeriado(null);
@@ -192,6 +195,7 @@ public class EdicaoService {
                                             diaCalendarioEdicaoDTO.setDia(dia);
                                             diaCalendarioEdicaoDTO.setIdEtapa(null);
                                             diaCalendarioEdicaoDTO.setEtapa(null);
+                                            diaCalendarioEdicaoDTO.setIdProcesso(null);
                                             diaCalendarioEdicaoDTO.setProcesso(null);
                                             diaCalendarioEdicaoDTO.setAreas(null);
                                             diaCalendarioEdicaoDTO.setFeriado(feriadoDTO.getDescricao());
@@ -204,6 +208,7 @@ public class EdicaoService {
                                         diaCalendarioEdicaoDTO.setDia(dia);
                                         diaCalendarioEdicaoDTO.setIdEtapa(etapaEntity.getIdEtapa());
                                         diaCalendarioEdicaoDTO.setEtapa(etapaEntity.getNome());
+                                        diaCalendarioEdicaoDTO.setIdProcesso(processoEntity.getIdProcesso());
                                         diaCalendarioEdicaoDTO.setProcesso(processoEntity.getNome());
                                         diaCalendarioEdicaoDTO.setAreas(new ArrayList<>());
                                         processoEntity.getAreasEnvolvidas().forEach(area -> {
