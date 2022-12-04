@@ -136,50 +136,16 @@ public class EdicaoService {
             throw new RegraDeNegocioException("Não existem edições cadastradas!");
         }
         List<DiaCalendarioGeralDTO> dias = new ArrayList<>();
-        List<DiaCalendarioEdicaoDTO> diaCalendarioEdicaoDTOS;
-
-//        diaCalendarioEdicaoDTOS = gerarCalendarioEdicao(edicoes.get(0).getIdEdicao());
-//        EdicaoEntity edicaoEntity = edicoes.get(0);
-//        edicoes.remove(edicaoEntity);
-
-//        for(var diaEdicaoBase : diaCalendarioEdicaoDTOS) {
-//            DiaCalendarioGeralDTO diaCalendarioGeralDTO = new DiaCalendarioGeralDTO();
-//            diaCalendarioGeralDTO.setEdicoes(new ArrayList<>());
-//            JuncaoEdicoesDTO juncaoEdicoesDTO = new JuncaoEdicoesDTO();
-//            diaCalendarioGeralDTO.setDia(diaEdicaoBase.getDia());
-//            diaCalendarioGeralDTO.setDiaUtil(diaEdicaoBase.getDiaUtil());
-//            if(diaEdicaoBase.getDiaUtil().isEhDiaUtil()){
-//                juncaoEdicoesDTO.setEdicao(edicaoEntity.getNome());
-//                juncaoEdicoesDTO.setEtapa(diaEdicaoBase.getEtapa());
-//                juncaoEdicoesDTO.setProcesso(diaEdicaoBase.getProcesso());
-//                diaCalendarioGeralDTO.getEdicoes().add(juncaoEdicoesDTO);
-//            }
-//            dias.add(diaCalendarioGeralDTO);
-//        }
 
         for(var edicao : edicoes) {
             List<DiaCalendarioEdicaoDTO> diasCalendarioEdicao = gerarCalendarioEdicao(edicao.getIdEdicao());
-            for(var diaEdicaoJuncao : diasCalendarioEdicao) {
+            for(var diaEdicao : diasCalendarioEdicao) {
                 DiaCalendarioGeralDTO diaCalendarioGeralDTO = new DiaCalendarioGeralDTO();
-//                diaCalendarioGeralDTO.setEdicoes(new ArrayList<>());
-//                JuncaoEdicoesDTO juncaoEdicoesDTO = new JuncaoEdicoesDTO();
-//                diaCalendarioGeralDTO.setDiaUtil(diaEdicaoJuncao.getDiaUtil());
-                diaCalendarioGeralDTO.setDia(diaEdicaoJuncao.getDia());
+                diaCalendarioGeralDTO.setDia(diaEdicao.getDia());
                 diaCalendarioGeralDTO.setEdicao(edicao.getNome());
-                diaCalendarioGeralDTO.setEtapa(diaEdicaoJuncao.getEtapa());
-                diaCalendarioGeralDTO.setFeriado(diaEdicaoJuncao.getFeriado());
+                diaCalendarioGeralDTO.setEtapa(diaEdicao.getEtapa());
+                diaCalendarioGeralDTO.setFeriado(diaEdicao.getFeriado());
                 dias.add(diaCalendarioGeralDTO);
-//                if(diaEdicaoJuncao.getDiaUtil().isEhDiaUtil()){
-//                    juncaoEdicoesDTO.setEdicao(edicao.getNome());
-//                    juncaoEdicoesDTO.setEtapa(diaEdicaoJuncao.getEtapa());
-//                    juncaoEdicoesDTO.setProcesso(diaEdicaoJuncao.getProcesso());
-//                    diaCalendarioGeralDTO.getEdicoes().add(juncaoEdicoesDTO);
-//                }
-//                for(var diaEdicaoBase : dias) {
-//                    if(diaEdicaoBase.getDia().equals(diaEdicaoJuncao.getDia()) && diaEdicaoBase.getDiaUtil().isEhDiaUtil()) {
-//                        diaEdicaoBase.getEdicoes().add(juncaoEdicoesDTO);
-//                    }
-//                }
             }
         }
         return dias;
@@ -210,11 +176,6 @@ public class EdicaoService {
 
                                     if(diaDaSemana == DayOfWeek.SATURDAY || diaDaSemana == DayOfWeek.SUNDAY && feriadoDTO.getQtdDias() < UM_DIA) {
                                         DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
-//                                        DiaUtilDTO diaUtilDTO = new DiaUtilDTO();
-//                                        diaUtilDTO.setEhDiaUtil(false);
-//                                        diaUtilDTO.setEhDiaNaoUtil(true);
-//                                        diaUtilDTO.setDescricao(null);
-//                                        diaCalendarioEdicaoDTO.setDiaUtil(diaUtilDTO);
                                         diaCalendarioEdicaoDTO.setDia(dia);
                                         diaCalendarioEdicaoDTO.setEtapa(null);
                                         diaCalendarioEdicaoDTO.setProcesso(null);
@@ -226,11 +187,6 @@ public class EdicaoService {
                                         diasCorridos = UM_DIA;
                                         while (diasCorridos <= feriadoDTO.getQtdDias()){
                                             DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
-//                                            DiaUtilDTO diaUtilDTO = new DiaUtilDTO();
-//                                            diaUtilDTO.setEhDiaUtil(false);
-//                                            diaUtilDTO.setEhDiaNaoUtil(true);
-//                                            diaUtilDTO.setDescricao(feriadoDTO.getDescricao());
-//                                            diaCalendarioEdicaoDTO.setDiaUtil(diaUtilDTO);
                                             diaCalendarioEdicaoDTO.setDia(dia);
                                             diaCalendarioEdicaoDTO.setEtapa(null);
                                             diaCalendarioEdicaoDTO.setProcesso(null);
@@ -242,13 +198,6 @@ public class EdicaoService {
                                         }
                                     }else {
                                         DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
-//                                        DiaUtilDTO diaUtilDTO = new DiaUtilDTO();
-//                                        diaUtilDTO.setEhDiaUtil(true);
-//                                        diaUtilDTO.setEhDiaNaoUtil(false);
-//                                        diaUtilDTO.setDescricao(null);
-//                                        diaCalendarioEdicaoDTO.setDiaUtil(diaUtilDTO);
-//                                        diaCalendarioEdicaoDTO.setEtapa(objectMapper.convertValue(etapaEntity, EtapaDTO.class));
-//                                        ProcessoDTO processoDTO = objectMapper.convertValue(processoEntity, ProcessoDTO.class);
                                         diaCalendarioEdicaoDTO.setDia(dia);
                                         diaCalendarioEdicaoDTO.setEtapa(etapaEntity.getNome());
                                         diaCalendarioEdicaoDTO.setProcesso(processoEntity.getNome());
@@ -256,9 +205,6 @@ public class EdicaoService {
                                         processoEntity.getAreasEnvolvidas().forEach(area -> {
                                             diaCalendarioEdicaoDTO.getAreas().add(area.getNome());
                                         });
-//                                        processoDTO.setAreasEnvolvidas(this.getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
-//                                        processoDTO.setResponsaveis((this.getResponsavelDTO(processoEntity.getResponsaveis())));
-//                                        diaCalendarioEdicaoDTO.setProcesso(processoDTO);
                                         dias.add(diaCalendarioEdicaoDTO);
                                         dia = dia.plusDays(UM_DIA);
                                         contDiasUteis++;
