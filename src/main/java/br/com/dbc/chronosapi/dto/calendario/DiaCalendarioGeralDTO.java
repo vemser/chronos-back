@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public class DiaCalendarioGeralDTO {
     private LocalDate dia;
     private String edicao;
+    private Integer idEtapa;
     private String etapa;
     private String feriado;
 }

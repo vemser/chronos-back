@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 public class DiaCalendarioEdicaoDTO {
     private LocalDate dia;
+    private Integer idEtapa;
     private String etapa;
     private String processo;
     private List<String> areas;

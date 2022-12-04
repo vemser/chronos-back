@@ -143,6 +143,7 @@ public class EdicaoService {
                 DiaCalendarioGeralDTO diaCalendarioGeralDTO = new DiaCalendarioGeralDTO();
                 diaCalendarioGeralDTO.setDia(diaEdicao.getDia());
                 diaCalendarioGeralDTO.setEdicao(edicao.getNome());
+                diaCalendarioGeralDTO.setIdEtapa(diaEdicao.getIdEtapa());
                 diaCalendarioGeralDTO.setEtapa(diaEdicao.getEtapa());
                 diaCalendarioGeralDTO.setFeriado(diaEdicao.getFeriado());
                 dias.add(diaCalendarioGeralDTO);
@@ -177,6 +178,7 @@ public class EdicaoService {
                                     if(diaDaSemana == DayOfWeek.SATURDAY || diaDaSemana == DayOfWeek.SUNDAY && feriadoDTO.getQtdDias() < UM_DIA) {
                                         DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
                                         diaCalendarioEdicaoDTO.setDia(dia);
+                                        diaCalendarioEdicaoDTO.setIdEtapa(null);
                                         diaCalendarioEdicaoDTO.setEtapa(null);
                                         diaCalendarioEdicaoDTO.setProcesso(null);
                                         diaCalendarioEdicaoDTO.setAreas(null);
@@ -188,6 +190,7 @@ public class EdicaoService {
                                         while (diasCorridos <= feriadoDTO.getQtdDias()){
                                             DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
                                             diaCalendarioEdicaoDTO.setDia(dia);
+                                            diaCalendarioEdicaoDTO.setIdEtapa(null);
                                             diaCalendarioEdicaoDTO.setEtapa(null);
                                             diaCalendarioEdicaoDTO.setProcesso(null);
                                             diaCalendarioEdicaoDTO.setAreas(null);
@@ -199,6 +202,7 @@ public class EdicaoService {
                                     }else {
                                         DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
                                         diaCalendarioEdicaoDTO.setDia(dia);
+                                        diaCalendarioEdicaoDTO.setIdEtapa(etapaEntity.getIdEtapa());
                                         diaCalendarioEdicaoDTO.setEtapa(etapaEntity.getNome());
                                         diaCalendarioEdicaoDTO.setProcesso(processoEntity.getNome());
                                         diaCalendarioEdicaoDTO.setAreas(new ArrayList<>());
