@@ -1,5 +1,6 @@
 package br.com.dbc.chronosapi.service;
 
+import br.com.dbc.chronosapi.dto.EtapaCorDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioEdicaoDTO;
 import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioGeralDTO;
@@ -43,6 +44,8 @@ public class EdicaoService {
 
     public final int UM_DIA = 1;
     public static LocalDate dia;
+    public static List<String> colorArray = List.of("#ef4444", "#3b82f6", "#84cc16", "#8b5cf6", "#ec4899", "#f97316", "#eab308", "#10b981", "#0ea5e9", "#a855f7", "#f43f5e", "#6366f1", "#f59e0b", "#14b8a6");
+    public static int countCor = 0;
     private final EdicaoRepository edicaoRepository;
     private final ObjectMapper objectMapper;
     private final EtapaRepository etapaRepository;
@@ -54,7 +57,7 @@ public class EdicaoService {
 
         if (edicaoCreateDTO.getDataInicial().isBefore(edicaoCreateDTO.getDataFinal())) {
             edicaoEntity.setStatus(Status.ATIVO);
-            edicaoEntity.setEtapas(new HashSet<>());
+            edicaoEntity.setEtapas(new ArrayList<>());
             EdicaoEntity edicaoSaved = edicaoRepository.save(edicaoEntity);
             return objectMapper.convertValue(edicaoSaved, EdicaoDTO.class);
         } else {
@@ -102,7 +105,7 @@ public class EdicaoService {
         edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
         edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
         EdicaoEntity edicaoEntityCloneSaved = edicaoRepository.save(edicaoEntityClone);
-        Set<EtapaEntity> etapaEntities = edicaoEntity.getEtapas().stream()
+        List<EtapaEntity> etapaEntities = edicaoEntity.getEtapas().stream()
                 .map(etapaEntity -> {
                     EtapaEntity etapaEntityClone = new EtapaEntity();
                     etapaEntityClone.setEdicao(edicaoEntityCloneSaved);
@@ -125,7 +128,7 @@ public class EdicaoService {
                             }).collect(Collectors.toSet());
                     etapaEntityClone.setProcessos(processoEntities);
                     return etapaEntityCloneSaved;
-                }).collect(Collectors.toSet());
+                }).collect(Collectors.toList());
         edicaoEntityClone.setEtapas(etapaEntities);
         return objectMapper.convertValue(edicaoEntityCloneSaved, EdicaoDTO.class);
     }
@@ -147,6 +150,7 @@ public class EdicaoService {
                 diaCalendarioGeralDTO.setEtapa(diaEdicao.getEtapa());
                 diaCalendarioGeralDTO.setIdProcesso(diaEdicao.getIdProcesso());
                 diaCalendarioGeralDTO.setProcesso(diaEdicao.getProcesso());
+                diaCalendarioGeralDTO.setCor(diaEdicao.getCor());
                 diaCalendarioGeralDTO.setFeriado(diaEdicao.getFeriado());
                 dias.add(diaCalendarioGeralDTO);
             }
@@ -157,7 +161,14 @@ public class EdicaoService {
     public List<DiaCalendarioEdicaoDTO> gerarCalendarioEdicao(Integer idEdicao) throws RegraDeNegocioException {
         List<DiaNaoUtilEntity> diasNaoUteis = diaNaoUtilRepository.findAll(Sort.by("dataInicial").ascending());
         EdicaoEntity edicaoEntity = findById(idEdicao);
-        Set<EtapaEntity> etapas = edicaoEntity.getEtapas();
+
+        List<EtapaEntity> etapas = edicaoEntity.getEtapas();
+        List<EtapaCorDTO> etapaCorDTOS = etapas.stream().map(etapaEntity -> objectMapper.convertValue(etapaEntity, EtapaCorDTO.class)).toList();
+
+        for (int i = 0; i < etapaCorDTOS.size(); i++) {
+            etapaCorDTOS.get(i).setCor(colorArray.get(i));
+        }
+
         if(etapas.isEmpty()) {
             throw new RegraDeNegocioException("A edição selecionada não possui etapas e processos!");
         }
@@ -167,6 +178,9 @@ public class EdicaoService {
 
         etapas.stream()
                 .map(etapaEntity -> {
+                    countCor++;
+                    String cor = colorArray.get(countCor);
+
                     return etapaEntity.getProcessos().stream()
                             .map(processoEntity -> {
                                 Integer diasUteisProcesso = processoEntity.getDiasUteis();
@@ -184,6 +198,7 @@ public class EdicaoService {
                                         diaCalendarioEdicaoDTO.setEtapa(null);
                                         diaCalendarioEdicaoDTO.setIdProcesso(null);
                                         diaCalendarioEdicaoDTO.setProcesso(null);
+                                        diaCalendarioEdicaoDTO.setCor(null);
                                         diaCalendarioEdicaoDTO.setAreas(null);
                                         diaCalendarioEdicaoDTO.setFeriado(null);
                                         dias.add(diaCalendarioEdicaoDTO);
@@ -197,6 +212,7 @@ public class EdicaoService {
                                             diaCalendarioEdicaoDTO.setEtapa(null);
                                             diaCalendarioEdicaoDTO.setIdProcesso(null);
                                             diaCalendarioEdicaoDTO.setProcesso(null);
+                                            diaCalendarioEdicaoDTO.setCor(null);
                                             diaCalendarioEdicaoDTO.setAreas(null);
                                             diaCalendarioEdicaoDTO.setFeriado(feriadoDTO.getDescricao());
                                             dias.add(diaCalendarioEdicaoDTO);
@@ -211,6 +227,7 @@ public class EdicaoService {
                                         diaCalendarioEdicaoDTO.setIdProcesso(processoEntity.getIdProcesso());
                                         diaCalendarioEdicaoDTO.setProcesso(processoEntity.getNome());
                                         diaCalendarioEdicaoDTO.setAreas(new ArrayList<>());
+                                        diaCalendarioEdicaoDTO.setCor(cor);
                                         processoEntity.getAreasEnvolvidas().forEach(area -> {
                                             diaCalendarioEdicaoDTO.getAreas().add(area.getNome());
                                         });
@@ -221,6 +238,7 @@ public class EdicaoService {
                                 }
                                 return processoEntity;
                             }).toList();
+
                 }).toList();
         return dias;
     }

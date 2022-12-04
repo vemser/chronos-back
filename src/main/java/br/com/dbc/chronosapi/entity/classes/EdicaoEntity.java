@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -41,5 +41,5 @@ public class EdicaoEntity {
     @JsonIgnore
     @OrderBy(value = "ordemExecucao, nome asc")
     @OneToMany(mappedBy = "edicao", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<EtapaEntity> etapas;
+    private List<EtapaEntity> etapas;
 }
