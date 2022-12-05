@@ -26,7 +26,7 @@ public class AreaEnvolvidaEntity {
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "PROCESSO_ARE_ENVOLVIDA",
+            name = "PROCESSO_AREA_ENVOLVIDA",
             joinColumns = @JoinColumn(name = "ID_AREA_ENVOLVIDA"),
             inverseJoinColumns = @JoinColumn(name = "ID_PROCESSO")
     )
