@@ -5,6 +5,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -49,7 +50,7 @@ public class EmailService {
             mimeMessageHelper.setSubject(assunto);
             mimeMessageHelper.setText(getContentFromTemplate(usuario, nomeTemplate, senha), true);
             emailSender.send(mimeMessageHelper.getMimeMessage());
-        } catch (MessagingException | IOException | TemplateException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
