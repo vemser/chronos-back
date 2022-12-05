@@ -1,6 +1,5 @@
 package br.com.dbc.chronosapi.service;
 
-import br.com.dbc.chronosapi.dto.EtapaCorDTO;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioEdicaoDTO;
 import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioGeralDTO;
@@ -137,8 +136,16 @@ public class EdicaoService {
         }
         List<DiaCalendarioGeralDTO> dias = new ArrayList<>();
 
+        Set<String> nomesEtapas = new HashSet<>();
+        for (EdicaoEntity edicao : edicoes) {
+            for (EtapaEntity etapaEntity : edicao.getEtapas()) {
+                nomesEtapas.add(etapaEntity.getNome());
+            }
+        }
+        Map<String, String> coresOrganizadas = organizarCores(nomesEtapas);
+
         for (var edicao : edicoes) {
-            List<DiaCalendarioEdicaoDTO> diasCalendarioEdicao = gerarCalendarioEdicao(edicao.getIdEdicao());
+            List<DiaCalendarioEdicaoDTO> diasCalendarioEdicao = gerarCalendarioEdicao(edicao.getIdEdicao(), coresOrganizadas);
             for (var diaEdicao : diasCalendarioEdicao) {
                 DiaCalendarioGeralDTO diaCalendarioGeralDTO = new DiaCalendarioGeralDTO();
                 diaCalendarioGeralDTO.setDia(diaEdicao.getDia());
@@ -155,12 +162,17 @@ public class EdicaoService {
         return dias;
     }
 
-    public List<DiaCalendarioEdicaoDTO> gerarCalendarioEdicao(Integer idEdicao) throws RegraDeNegocioException {
+    public List<DiaCalendarioEdicaoDTO> gerarCalendarioEdicao(Integer idEdicao, Map<String, String> coresPorEtapa) throws RegraDeNegocioException {
         List<DiaNaoUtilEntity> diasNaoUteis = diaNaoUtilRepository.findAll(Sort.by("dataInicial").ascending());
         EdicaoEntity edicaoEntity = findById(idEdicao);
 
         List<EtapaEntity> etapas = edicaoEntity.getEtapas();
-        Map<Integer, String> coresPorEtapa = organizarCores(etapas);
+
+        if (coresPorEtapa == null) {
+            coresPorEtapa = organizarCores(edicaoEntity.getEtapas().stream()
+                    .map(EtapaEntity::getNome)
+                    .collect(Collectors.toSet()));
+        }
 
         if (etapas.isEmpty()) {
             throw new RegraDeNegocioException("A edição selecionada não possui etapas e processos!");
@@ -168,6 +180,8 @@ public class EdicaoService {
         LocalDate dataInicial = edicaoEntity.getDataInicial();
         List<DiaCalendarioEdicaoDTO> dias = new ArrayList<>();
         dia = dataInicial;
+
+        Map<String, String> finalCoresPorEtapa = coresPorEtapa;
 
         etapas.stream()
                 .map(etapaEntity -> etapaEntity.getProcessos().stream()
@@ -216,7 +230,7 @@ public class EdicaoService {
                                     diaCalendarioEdicaoDTO.setIdProcesso(processoEntity.getIdProcesso());
                                     diaCalendarioEdicaoDTO.setProcesso(processoEntity.getNome());
                                     diaCalendarioEdicaoDTO.setAreas(new ArrayList<>());
-                                    diaCalendarioEdicaoDTO.setCor(coresPorEtapa.get(etapaEntity.getIdEtapa()));
+                                    diaCalendarioEdicaoDTO.setCor(finalCoresPorEtapa.get(etapaEntity.getNome()));
                                     processoEntity.getAreasEnvolvidas().forEach(area -> {
                                         diaCalendarioEdicaoDTO.getAreas().add(area.getNome());
                                     });
@@ -230,14 +244,15 @@ public class EdicaoService {
         return dias;
     }
 
-    private Map<Integer, String> organizarCores(List<EtapaEntity> etapas) {
-        Map<Integer, String> cores = new HashMap<>();
+    private Map<String, String> organizarCores(Set<String> etapas) {
+        Map<String, String> cores = new HashMap<>();
         int contador = 0;
-        for (int i = 0; i < etapas.size(); i++) {
+        for (String nome : etapas) {
             if (contador == 10) {
                 contador = 0;
             }
-            cores.put(etapas.get(i).getIdEtapa(), COLOR_ARRAY.get(contador));
+            cores.put(nome, COLOR_ARRAY.get(contador));
+            contador++;
         }
         return cores;
     }
