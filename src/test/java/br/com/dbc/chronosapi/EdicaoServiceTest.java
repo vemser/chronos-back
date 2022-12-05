@@ -185,9 +185,11 @@ public class EdicaoServiceTest {
         EdicaoEntity edicaoEntity = getEdicaoEntity();
         Set<EtapaEntity> etapaEntities = new HashSet<>();
 
+        Map<String, String> coresPorEtapa = new HashMap<>();
+
         when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
 
-        edicaoService.gerarCalendarioEdicao(edicaoEntity.getIdEdicao());
+        edicaoService.gerarCalendarioEdicao(edicaoEntity.getIdEdicao(), coresPorEtapa);
     }
 
     @Test
@@ -413,6 +415,10 @@ public class EdicaoServiceTest {
 
         LocalDate dia = LocalDate.parse("2022-03-03");
 
+        Map<String, String> coresPorEtapa = new HashMap<>();
+        EtapaEntity etapaEntity = getEtapaEntity();
+        Set<String> nomesEtapas = new HashSet<>();
+        nomesEtapas.add(etapaEntity.getNome());
 
         List<DiaNaoUtilEntity> diaNaoUtilEntityList = new ArrayList<>();
         DiaNaoUtilEntity diaNaoUtilEntity = getDiaNaoUtilEntity();
