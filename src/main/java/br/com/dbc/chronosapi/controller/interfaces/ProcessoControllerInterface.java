@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public interface ProcessoControllerInterface {
@@ -45,7 +46,7 @@ public interface ProcessoControllerInterface {
     )
     @PostMapping("/{idEtapa}")
     ResponseEntity<ProcessoDTO> create(@PathVariable("idEtapa") Integer idEtapa,
-                                       @RequestBody ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException ;
+                                       @Valid @RequestBody ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualizar processo", description = "Atualiza um processo do banco de dados")
     @ApiResponses(
@@ -57,7 +58,7 @@ public interface ProcessoControllerInterface {
     )
     @PutMapping("/{idProcesso}")
     ResponseEntity<ProcessoDTO> update(@PathVariable("idProcesso") Integer idProcesso,
-                                       @RequestBody ProcessoCreateDTO processoUpdate) throws RegraDeNegocioException;
+                                       @Valid @RequestBody ProcessoCreateDTO processoUpdate) throws RegraDeNegocioException;
 
     @Operation(summary = "Deletar processo", description = "Deleta um processo do banco de dados")
     @ApiResponses(
