@@ -186,6 +186,7 @@ public class EdicaoServiceTest {
         Set<EtapaEntity> etapaEntities = new HashSet<>();
 
         Map<String, String> coresPorEtapa = new HashMap<>();
+        coresPorEtapa = null;
 
         when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
 

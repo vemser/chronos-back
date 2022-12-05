@@ -193,7 +193,6 @@ public class EdicaoService {
                                 DayOfWeek diaDaSemana = dia.getDayOfWeek();
 
                                 FeriadoDTO feriadoDTO = verificarDiasNaoUteis(dia, diasNaoUteis);
-
                                 if (diaDaSemana == DayOfWeek.SATURDAY || diaDaSemana == DayOfWeek.SUNDAY && feriadoDTO.getQtdDias() < UM_DIA) {
                                     DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
                                     diaCalendarioEdicaoDTO.setDia(dia);
