@@ -632,6 +632,7 @@ public class EdicaoServiceTest {
     private static EtapaEntity getEtapaEntityComProcessoComAreas() {
         EtapaEntity etapaEntity = new EtapaEntity();
         etapaEntity.setIdEtapa(2);
+        etapaEntity.setOrdemExecucao(3);
         etapaEntity.setNome("Etapa1");
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();
