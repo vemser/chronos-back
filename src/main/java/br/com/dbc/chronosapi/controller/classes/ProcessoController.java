@@ -10,14 +10,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/processo")
+@Validated
 public class ProcessoController implements ProcessoControllerInterface {
 
     private final ProcessoService processoService;
@@ -31,12 +34,12 @@ public class ProcessoController implements ProcessoControllerInterface {
     }
     @PostMapping("/{idEtapa}")
     public ResponseEntity<ProcessoDTO> create(@PathVariable("idEtapa") Integer idEtapa,
-                                              @RequestBody ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException {
+                                              @Valid @RequestBody ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException {
         return new ResponseEntity<>(processoService.create(idEtapa, processoCreateDTO), HttpStatus.OK);
     }
     @PutMapping("/{idProcesso}")
     public ResponseEntity<ProcessoDTO> update(@PathVariable("idProcesso") Integer idProcesso,
-                                              @RequestBody ProcessoCreateDTO processoUpdate) throws RegraDeNegocioException {
+                                              @Valid @RequestBody ProcessoCreateDTO processoUpdate) throws RegraDeNegocioException {
         return new ResponseEntity<>(processoService.update(idProcesso, processoUpdate), HttpStatus.OK);
     }
     @DeleteMapping("/{idProcesso}")
