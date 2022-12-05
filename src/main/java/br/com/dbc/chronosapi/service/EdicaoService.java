@@ -243,7 +243,7 @@ public class EdicaoService {
         return dias;
     }
 
-    private Map<String, String> organizarCores(Set<String> etapas) {
+    public Map<String, String> organizarCores(Set<String> etapas) {
         Map<String, String> cores = new HashMap<>();
         int contador = 0;
         for (String nome : etapas) {

@@ -396,23 +396,23 @@ public class EdicaoServiceTest {
         edicaoEntityList.add(getEdicaoEntity());
         edicaoEntityList.add(getEdicaoEntity2());
 
-        when(edicaoRepository.findByEdicoesAtivasOrderByDataInicial()).thenReturn(edicaoEntityList);
+        List<EtapaEntity> etapaEntities = new ArrayList<>();
+        etapaEntities.add(getEtapaEntity());
+        etapaEntities.add(getEtapaEntityComProcessoComAreas());
+        etapaEntities.add(getEtapaEntity2());
+
+        edicaoEntityList.get(0).setEtapas(etapaEntities);
+
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        edicaoEntity.setEtapas(etapaEntities);
 
         List<DiaCalendarioEdicaoDTO> diaCalendarioEdicaoDTOList = new ArrayList<>();
         diaCalendarioEdicaoDTOList.add(getDiaCalendarioEdicaoDTO());
 
-        EdicaoEntity edicaoEntity = getEdicaoEntity();
+        when(edicaoRepository.findByEdicoesAtivasOrderByDataInicial()).thenReturn(edicaoEntityList);
         when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
 
-
-        List<EtapaEntity> etapaEntities = new ArrayList<>();
-        etapaEntities.add(getEtapaEntityComProcessoComAreas());
-        etapaEntities.add(getEtapaEntity2());
-
-        edicaoEntity.setEtapas(etapaEntities);
-
         FeriadoDTO feriadoDTO = getFeriadoDTO();
-
 
         LocalDate dia = LocalDate.parse("2022-03-03");
 
@@ -456,6 +456,31 @@ public class EdicaoServiceTest {
         FeriadoDTO feriadoReturn = edicaoService.verificarDiasNaoUteis(dia, diaNaoUtilEntityList);
 
         assertNotNull(feriadoReturn);
+
+    }
+    @Test
+    public void testOrganizarCoresSuccess() {
+
+        Set<String> etapas = new HashSet<>();
+        etapas.add("Etapa1");
+        etapas.add("Etapa2");
+        etapas.add("Etapa3");
+        etapas.add("Etapa4");
+        etapas.add("Etapa5");
+        etapas.add("Etapa6");
+        etapas.add("Etapa7");
+        etapas.add("Etapa8");
+        etapas.add("Etapa9");
+        etapas.add("Etapa10");
+        etapas.add("Etapa11");
+
+        Set<String> nomesEtapas = new HashSet<>();
+
+        Map<String, String> map = edicaoService.organizarCores(etapas);
+
+        assertNotNull(map);
+
+
 
     }
 
