@@ -136,11 +136,9 @@ public class EdicaoService {
         }
         List<DiaCalendarioGeralDTO> dias = new ArrayList<>();
 
-        Set<String> nomesEtapas = new HashSet<>();
+        List<EtapaEntity> nomesEtapas = new ArrayList<>();
         for (EdicaoEntity edicao : edicoes) {
-            for (EtapaEntity etapaEntity : edicao.getEtapas()) {
-                nomesEtapas.add(etapaEntity.getNome());
-            }
+            nomesEtapas.addAll(edicao.getEtapas());
         }
         Map<String, String> coresOrganizadas = organizarCores(nomesEtapas);
 
@@ -169,9 +167,7 @@ public class EdicaoService {
         List<EtapaEntity> etapas = edicaoEntity.getEtapas();
 
         if (coresPorEtapa == null) {
-            coresPorEtapa = organizarCores(edicaoEntity.getEtapas().stream()
-                    .map(EtapaEntity::getNome)
-                    .collect(Collectors.toSet()));
+            coresPorEtapa = organizarCores(etapas);
         }
 
         if (etapas.isEmpty()) {
@@ -243,15 +239,46 @@ public class EdicaoService {
         return dias;
     }
 
-    public Map<String, String> organizarCores(Set<String> etapas) {
+    public Map<String, String> organizarCores(List<EtapaEntity> etapas) {
+        // 1 - Treinamento - ed 1 2
+        // 2 - Contratacao - ed 1 1
+        // 3 - Contrato    - ed 1 3
+        // 4 - Treinamento - ed 2 1
+        // 5 - Contrato    - ed 2 2
+
+
+        List<String> nomes = etapas.stream()
+                .sorted(Comparator.comparing(EtapaEntity::getOrdemExecucao)
+                        .thenComparing(EtapaEntity::getNome))
+
+
+                // 2 - Contratacao - ed 1 1
+                // 4 - Treinamento - ed 2 1
+                // 1 - Treinamento - ed 1 2
+                // 5 - Contrato    - ed 2 2
+                // 3 - Contrato    - ed 1 3
+
+                .map(EtapaEntity::getNome)
+
+                // Contratacao
+                // Treinamento
+                // Treinamento
+                // Contrato
+                // Contrato
+
+                .collect(Collectors.toList());
+        // key=Nome value=cor
         Map<String, String> cores = new HashMap<>();
+        // { Contratacao:0, Treinamento:1, Contrato:2  }
         int contador = 0;
-        for (String nome : etapas) {
+        for (String nome : nomes) { // Contrato
             if (contador == 10) {
                 contador = 0;
             }
-            cores.put(nome, COLOR_ARRAY.get(contador));
-            contador++;
+            if(!cores.containsKey(nome)) {
+                cores.put(nome, COLOR_ARRAY.get(contador));
+                contador++;
+            }
         }
         return cores;
     }

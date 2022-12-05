@@ -460,28 +460,29 @@ public class EdicaoServiceTest {
     }
     @Test
     public void testOrganizarCoresSuccess() {
+        List<EtapaEntity> etapas = new ArrayList<>();
+        etapas.add(getEtapaEntity2());
+        etapas.add(getEtapaEntity());
 
-        Set<String> etapas = new HashSet<>();
-        etapas.add("Etapa1");
-        etapas.add("Etapa2");
-        etapas.add("Etapa3");
-        etapas.add("Etapa4");
-        etapas.add("Etapa5");
-        etapas.add("Etapa6");
-        etapas.add("Etapa7");
-        etapas.add("Etapa8");
-        etapas.add("Etapa9");
-        etapas.add("Etapa10");
-        etapas.add("Etapa11");
 
-        Set<String> nomesEtapas = new HashSet<>();
+        List<EtapaEntity> etapas2 = new ArrayList<>();
+        etapas2.add(getEtapaEntity());
+        etapas2.add(getEtapaEntity2());
+        EtapaEntity etapaEntity = getEtapaEntity();
+        etapaEntity.setNome("ABC");
+        etapaEntity.setOrdemExecucao(3);
+        etapas2.add(etapaEntity);
 
-        Map<String, String> map = edicaoService.organizarCores(etapas);
+        List<EtapaEntity> novaListaEtapas = new ArrayList<>();
+        novaListaEtapas.addAll(etapas);
+        novaListaEtapas.addAll(etapas2);
+
+        Map<String, String> map = edicaoService.organizarCores(novaListaEtapas);
 
         assertNotNull(map);
-
-
-
+        assertEquals("#ef4444",map.get("Etapa1"));
+        assertEquals("#3b82f6",map.get("Etapa2"));
+        assertEquals("#84cc16",map.get("ABC"));
     }
 
     private static FeriadoDTO getFeriadoDTO(){
@@ -617,6 +618,7 @@ public class EdicaoServiceTest {
     private static EtapaEntity getEtapaEntity() {
         EtapaEntity etapaEntity = new EtapaEntity();
         etapaEntity.setIdEtapa(2);
+        etapaEntity.setOrdemExecucao(1);
         etapaEntity.setNome("Etapa1");
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();
@@ -644,6 +646,7 @@ public class EdicaoServiceTest {
         EtapaEntity etapaEntity = new EtapaEntity();
         etapaEntity.setIdEtapa(3);
         etapaEntity.setNome("Etapa2");
+        etapaEntity.setOrdemExecucao(2);
 
         Set<ProcessoEntity> processoEntities = new HashSet<>();
         processoEntities.add(getProcessoEntity());
