@@ -45,7 +45,7 @@ public class EdicaoController implements EdicaoControllerInterface {
 
     @GetMapping("/calendario-edicao/{idEdicao}")
     public ResponseEntity<List<DiaCalendarioEdicaoDTO>> gerarCalendarioEdicao(@PathVariable Integer idEdicao) throws RegraDeNegocioException {
-        return new ResponseEntity<>(edicaoService.gerarCalendarioEdicao(idEdicao), HttpStatus.OK);
+        return new ResponseEntity<>(edicaoService.gerarCalendarioEdicao(idEdicao, null), HttpStatus.OK);
     }
 
     @PutMapping("/{idEdicao}")
