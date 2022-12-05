@@ -272,12 +272,12 @@ public class EdicaoService {
         // { Contratacao:0, Treinamento:1, Contrato:2  }
         int contador = 0;
         for (String nome : nomes) { // Contrato
-            if (contador == 10) {
-                contador = 0;
-            }
             if(!cores.containsKey(nome)) {
                 cores.put(nome, COLOR_ARRAY.get(contador));
                 contador++;
+            }
+            if (contador == 10) {
+                contador = 0;
             }
         }
         return cores;
