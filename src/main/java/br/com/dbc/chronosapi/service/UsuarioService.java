@@ -39,17 +39,7 @@ public class UsuarioService {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         Page<UsuarioEntity> paginaDoRepositorio = usuarioRepository.findAll(pageRequest);
         List<UsuarioDTO> usuarios = paginaDoRepositorio.getContent().stream()
-                .map(usuario -> {
-                    UsuarioDTO usuarioDTO = objectMapper.convertValue(usuario, UsuarioDTO.class);
-                    usuarioDTO.setCargos(getCargosDTO(usuario.getCargos()));
-                    FotoEntity foto = usuario.getFoto();
-                    if(foto == null) {
-                        usuarioDTO.setImagem(null);
-                    }else {
-                        usuarioDTO.setImagem(usuario.getFoto().getArquivo());
-                    }
-                    return usuarioDTO;
-                })
+                .map(this::convertToUsuarioDTOAndVerifyFoto)
                 .toList();
         return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
                 paginaDoRepositorio.getTotalPages(),
@@ -62,15 +52,7 @@ public class UsuarioService {
     public UsuarioDTO buscarUsuarioLogado() throws RegraDeNegocioException {
         UsuarioDTO loggedUser = loginService.getLoggedUser();
         UsuarioEntity usuarioEntity = findById(loggedUser.getIdUsuario());
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
-        usuarioDTO.setCargos(getCargosDTO(usuarioEntity.getCargos()));
-        FotoEntity foto = usuarioEntity.getFoto();
-        if(foto == null) {
-            usuarioDTO.setImagem(null);
-        }else {
-            usuarioDTO.setImagem(usuarioEntity.getFoto().getArquivo());
-        }
-        return usuarioDTO;
+        return convertToUsuarioDTOAndVerifyFoto(usuarioEntity);
     }
 
     public UsuarioDTO create(UsuarioCreateDTO usuarioCreateDTO) throws IOException, RegraDeNegocioException {
@@ -94,7 +76,7 @@ public class UsuarioService {
                 .map(cargo -> (cargoService.findByNome(cargo.getNome()))).collect(Collectors.toSet());
         usuarioEntity.setCargos(cargos);
         usuarioEntity.setStatus(Status.ATIVO);
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
+        UsuarioDTO usuarioDTO = convertToUsuarioDTOAndVerifyFoto(usuarioRepository.save(usuarioEntity));
         Set<CargoDTO> cargosDTO = getCargosDTO(cargos);
         usuarioDTO.setCargos(cargosDTO);
         emailService.sendEmailEnvioSenha(usuarioDTO, senha);
@@ -113,7 +95,7 @@ public class UsuarioService {
             } else {
                 throw new RegraDeNegocioException("Senhas incompatíveis!");
             }
-            UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRecover, UsuarioDTO.class);
+            UsuarioDTO usuarioDTO = convertToUsuarioDTOAndVerifyFoto(usuarioRecover);
             Set<CargoEntity> cargosEntities = usuarioRecover.getCargos();
             return getUsuarioDTO(usuarioRecover, usuarioDTO, cargosEntities);
         } else {
@@ -144,7 +126,7 @@ public class UsuarioService {
         Set<CargoEntity> cargos = usuarioUpdate.getCargos().stream()
                 .map(cargo -> (cargoService.findByNome(cargo.getNome()))).collect(Collectors.toSet());
         usuarioRecover.setCargos(cargos);
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioRepository.save(usuarioRecover), UsuarioDTO.class);
+        UsuarioDTO usuarioDTO = convertToUsuarioDTOAndVerifyFoto(usuarioRepository.save(usuarioRecover));
 
         return getUsuarioDTO(usuarioRecover, usuarioDTO, cargos);
     }
@@ -174,14 +156,7 @@ public class UsuarioService {
             usuarioEntity.setStatus(Status.ATIVO);
             usuarioRepository.save(usuarioEntity);
         }
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
-        FotoEntity foto = usuarioEntity.getFoto();
-        if(foto == null) {
-            usuarioDTO.setImagem(null);
-        }else {
-            usuarioDTO.setImagem(usuarioEntity.getFoto().getArquivo());
-        }
-        return usuarioDTO;
+        return convertToUsuarioDTOAndVerifyFoto(usuarioEntity);
     }
 
     public void delete(Integer idUsuario) throws RegraDeNegocioException {
@@ -191,7 +166,7 @@ public class UsuarioService {
 
     public Set<CargoDTO> getCargosDTO(Set<CargoEntity> cargos) {
         return cargos.stream()
-                .map(cargoEntity -> objectMapper.convertValue(cargoEntity, CargoDTO.class))
+                .map(this::convertToCargoDTO)
                 .collect(Collectors.toSet());
     }
 
@@ -206,5 +181,21 @@ public class UsuarioService {
 
     public UsuarioDTO salvarUsuario(UsuarioEntity usuario) {
         return objectMapper.convertValue(usuarioRepository.save(usuario), UsuarioDTO.class);
+    }
+
+    private UsuarioDTO convertToUsuarioDTOAndVerifyFoto(UsuarioEntity usuario) {
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuario, UsuarioDTO.class);
+        usuarioDTO.setCargos(getCargosDTO(usuario.getCargos()));
+        FotoEntity foto = usuario.getFoto();
+        if(foto == null) {
+            usuarioDTO.setImagem(null);
+        }else {
+            usuarioDTO.setImagem(usuario.getFoto().getArquivo());
+        }
+        return usuarioDTO;
+    }
+
+    private CargoDTO convertToCargoDTO(CargoEntity cargoEntity) {
+        return objectMapper.convertValue(cargoEntity, CargoDTO.class);
     }
 }

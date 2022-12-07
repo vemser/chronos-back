@@ -52,14 +52,13 @@ public class ProcessoService {
     public List<ProcessoDTO> listProcessosDaEtapa(Integer idEtapa) throws RegraDeNegocioException {
 
         EtapaEntity etapaEntity = etapaService.findById(idEtapa);
-        List<ProcessoDTO> processoDTOS = etapaEntity.getProcessos().stream()
+        return etapaEntity.getProcessos().stream()
                 .map(processoEntity -> {
                     ProcessoDTO processoDTO = objectMapper.convertValue(processoEntity, ProcessoDTO.class);
                     processoDTO.setAreasEnvolvidas(getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
                     processoDTO.setResponsaveis(getResponsavelDTO(processoEntity.getResponsaveis()));
                     return processoDTO;
                 }).toList();
-        return processoDTOS;
     }
 
     public ProcessoDTO create(Integer idEtapa, ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException {

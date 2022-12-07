@@ -67,7 +67,7 @@ public class EdicaoController implements EdicaoControllerInterface {
     }
 
     @GetMapping("/listar-com-etapa")
-    public ResponseEntity<PageDTO<EdicaoDTO>> listComEtapa(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+    public ResponseEntity<PageDTO<EdicaoDTO>> listComEtapa(Integer pagina, Integer tamanho) {
         return new ResponseEntity<>(edicaoService.listComEtapa(pagina, tamanho), HttpStatus.OK);
     }
 
