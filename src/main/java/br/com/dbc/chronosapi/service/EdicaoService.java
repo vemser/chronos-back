@@ -41,7 +41,6 @@ public class EdicaoService {
     public final int UM_DIA = 1;
     public static LocalDate dia;
     private static final List<String> COLOR_ARRAY = List.of("#ef4444", "#3b82f6", "#84cc16", "#8b5cf6", "#ec4899", "#f97316", "#eab308", "#10b981", "#0ea5e9", "#a855f7", "#f43f5e", "#6366f1", "#f59e0b", "#14b8a6");
-    public static int countCor = 0;
     private final EdicaoRepository edicaoRepository;
     private final ObjectMapper objectMapper;
     private final EtapaRepository etapaRepository;
@@ -191,28 +190,14 @@ public class EdicaoService {
                                 FeriadoDTO feriadoDTO = verificarDiasNaoUteis(dia, diasNaoUteis);
                                 if (diaDaSemana == DayOfWeek.SATURDAY || diaDaSemana == DayOfWeek.SUNDAY && feriadoDTO.getQtdDias() < UM_DIA) {
                                     DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
-                                    diaCalendarioEdicaoDTO.setDia(dia);
-                                    diaCalendarioEdicaoDTO.setIdEtapa(null);
-                                    diaCalendarioEdicaoDTO.setEtapa(null);
-                                    diaCalendarioEdicaoDTO.setIdProcesso(null);
-                                    diaCalendarioEdicaoDTO.setProcesso(null);
-                                    diaCalendarioEdicaoDTO.setCor(null);
-                                    diaCalendarioEdicaoDTO.setAreas(null);
-                                    diaCalendarioEdicaoDTO.setFeriado(null);
+                                    setCalendario(diaCalendarioEdicaoDTO);
                                     dias.add(diaCalendarioEdicaoDTO);
                                     dia = dia.plusDays(UM_DIA);
                                 } else if (feriadoDTO.getQtdDias() > 0) {
                                     diasCorridos = UM_DIA;
                                     while (diasCorridos <= feriadoDTO.getQtdDias()) {
                                         DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
-                                        diaCalendarioEdicaoDTO.setDia(dia);
-                                        diaCalendarioEdicaoDTO.setIdEtapa(null);
-                                        diaCalendarioEdicaoDTO.setEtapa(null);
-                                        diaCalendarioEdicaoDTO.setIdProcesso(null);
-                                        diaCalendarioEdicaoDTO.setProcesso(null);
-                                        diaCalendarioEdicaoDTO.setCor(null);
-                                        diaCalendarioEdicaoDTO.setAreas(null);
-                                        diaCalendarioEdicaoDTO.setFeriado(feriadoDTO.getDescricao());
+                                        setCalendario(diaCalendarioEdicaoDTO);
                                         dias.add(diaCalendarioEdicaoDTO);
                                         dia = dia.plusDays(UM_DIA);
                                         diasCorridos++;
@@ -239,37 +224,28 @@ public class EdicaoService {
         return dias;
     }
 
-    public Map<String, String> organizarCores(List<EtapaEntity> etapas) {
-        // 1 - Treinamento - ed 1 2
-        // 2 - Contratacao - ed 1 1
-        // 3 - Contrato    - ed 1 3
-        // 4 - Treinamento - ed 2 1
-        // 5 - Contrato    - ed 2 2
+    public DiaCalendarioEdicaoDTO setCalendario(DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO) {
+        diaCalendarioEdicaoDTO.setDia(dia);
+        diaCalendarioEdicaoDTO.setIdEtapa(null);
+        diaCalendarioEdicaoDTO.setEtapa(null);
+        diaCalendarioEdicaoDTO.setIdProcesso(null);
+        diaCalendarioEdicaoDTO.setProcesso(null);
+        diaCalendarioEdicaoDTO.setCor(null);
+        diaCalendarioEdicaoDTO.setAreas(null);
+        diaCalendarioEdicaoDTO.setFeriado(null);
+        return diaCalendarioEdicaoDTO;
+    }
 
+    public Map<String, String> organizarCores(List<EtapaEntity> etapas) {
 
         List<String> nomes = etapas.stream()
                 .sorted(Comparator.comparing(EtapaEntity::getOrdemExecucao)
                         .thenComparing(EtapaEntity::getNome))
 
+                .map(EtapaEntity::getNome).toList();
 
-                // 2 - Contratacao - ed 1 1
-                // 4 - Treinamento - ed 2 1
-                // 1 - Treinamento - ed 1 2
-                // 5 - Contrato    - ed 2 2
-                // 3 - Contrato    - ed 1 3
-
-                .map(EtapaEntity::getNome)
-
-                // Contratacao
-                // Treinamento
-                // Treinamento
-                // Contrato
-                // Contrato
-
-                .collect(Collectors.toList());
-        // key=Nome value=cor
         Map<String, String> cores = new HashMap<>();
-        // { Contratacao:0, Treinamento:1, Contrato:2  }
+
         int contador = 0;
         for (String nome : nomes) { // Contrato
             if(!cores.containsKey(nome)) {
