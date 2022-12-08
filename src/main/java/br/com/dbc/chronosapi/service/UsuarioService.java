@@ -180,7 +180,7 @@ public class UsuarioService {
     }
 
     public UsuarioDTO salvarUsuario(UsuarioEntity usuario) {
-        return objectMapper.convertValue(usuarioRepository.save(usuario), UsuarioDTO.class);
+        return convertToUsuarioDTOAndVerifyFoto(usuarioRepository.save(usuario));
     }
 
     private UsuarioDTO convertToUsuarioDTOAndVerifyFoto(UsuarioEntity usuario) {

@@ -28,8 +28,7 @@ public class DiaNaoUtilService {
         DiaNaoUtilEntity diaNaoUtilEntity = objectMapper.convertValue(diaNaoUtilCreateDTO, DiaNaoUtilEntity.class);
         diaNaoUtilEntity.setDescricao(diaNaoUtilCreateDTO.getDescricao());
         verify(diaNaoUtilCreateDTO, diaNaoUtilEntity);
-        DiaNaoUtilEntity diaSaved = diaNaoUtilRepository.save(diaNaoUtilEntity);
-        return objectMapper.convertValue(diaSaved, DiaNaoUtilDTO.class);
+        return convertDiaNaoUtilToDTO(diaNaoUtilRepository.save(diaNaoUtilEntity));
 
     }
 
@@ -41,7 +40,7 @@ public class DiaNaoUtilService {
         diaNaoUtilRecover.setDataFinal(diaNaoUtilUpdate.getDataFinal());
 
         verify(diaNaoUtilUpdate, diaNaoUtilRecover);
-        return objectMapper.convertValue(diaNaoUtilRepository.save(diaNaoUtilRecover), DiaNaoUtilDTO.class);
+        return convertDiaNaoUtilToDTO(diaNaoUtilRepository.save(diaNaoUtilRecover));
 
     }
 
@@ -70,7 +69,7 @@ public class DiaNaoUtilService {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         Page<DiaNaoUtilEntity> paginaDoRepositorio = diaNaoUtilRepository.findAll(pageRequest);
         List<DiaNaoUtilDTO> diaNaoUtilDTOList = paginaDoRepositorio.getContent().stream()
-                .map(diaNaoUtil -> objectMapper.convertValue(diaNaoUtil, DiaNaoUtilDTO.class))
+                .map(this::convertDiaNaoUtilToDTO)
                 .toList();
         return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
                 paginaDoRepositorio.getTotalPages(),
@@ -87,7 +86,11 @@ public class DiaNaoUtilService {
 
     public List<DiaNaoUtilDTO> getDiasNaoUteis() {
        return diaNaoUtilRepository.findAll().stream()
-                .map(dia -> objectMapper.convertValue(dia, DiaNaoUtilDTO.class))
+                .map(this::convertDiaNaoUtilToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public DiaNaoUtilDTO convertDiaNaoUtilToDTO(DiaNaoUtilEntity diaNaoUtilEntity) {
+        return objectMapper.convertValue(diaNaoUtilEntity, DiaNaoUtilDTO.class);
     }
 }

@@ -21,7 +21,7 @@ public class AreaEnvolvidaService {
     public AreaEnvolvidaDTO create(AreaEnvolvidaCreateDTO areaEnvolvidaCreateDTO) {
         AreaEnvolvidaEntity areaEnvolvidaEntity = objectMapper.convertValue(areaEnvolvidaCreateDTO, AreaEnvolvidaEntity.class);
         areaEnvolvidaEntity.setNome(areaEnvolvidaCreateDTO.getNome());
-        AreaEnvolvidaDTO areaEnvolvidaDTO = objectMapper.convertValue(areaEnvolvidaRepository.save(areaEnvolvidaEntity), AreaEnvolvidaDTO.class);
+        AreaEnvolvidaDTO areaEnvolvidaDTO = convertAreaEnvolvidaToDTO(areaEnvolvidaRepository.save(areaEnvolvidaEntity));
         areaEnvolvidaDTO.setNome(areaEnvolvidaCreateDTO.getNome().toUpperCase());
         return areaEnvolvidaDTO;
     }
@@ -44,7 +44,11 @@ public class AreaEnvolvidaService {
     public List<AreaEnvolvidaDTO> listarAreas(){
 
         return areaEnvolvidaRepository.findAll().stream()
-                .map(area -> objectMapper.convertValue(area, AreaEnvolvidaDTO.class))
+                .map(area -> convertAreaEnvolvidaToDTO(area))
                 .toList();
+    }
+
+    public AreaEnvolvidaDTO convertAreaEnvolvidaToDTO(AreaEnvolvidaEntity areaEnvolvidaEntity) {
+        return objectMapper.convertValue(areaEnvolvidaEntity, AreaEnvolvidaDTO.class);
     }
 }

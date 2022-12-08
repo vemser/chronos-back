@@ -53,8 +53,7 @@ public class EdicaoService {
         if (edicaoCreateDTO.getDataInicial().isBefore(edicaoCreateDTO.getDataFinal())) {
             edicaoEntity.setStatus(Status.ATIVO);
             edicaoEntity.setEtapas(new ArrayList<>());
-            EdicaoEntity edicaoSaved = edicaoRepository.save(edicaoEntity);
-            return objectMapper.convertValue(edicaoSaved, EdicaoDTO.class);
+            return convertEdicaoToDTO(edicaoRepository.save(edicaoEntity));
         } else {
             throw new RegraDeNegocioException("A data final antecede a data inicial.");
         }
@@ -68,7 +67,7 @@ public class EdicaoService {
             edicaoRecover.setDataInicial(edicaoUpdate.getDataInicial());
             edicaoRecover.setDataFinal(edicaoUpdate.getDataFinal());
             edicaoRepository.save(edicaoRecover);
-            return objectMapper.convertValue(edicaoRecover, EdicaoDTO.class);
+            return convertEdicaoToDTO(edicaoRecover);
         } else {
             throw new RegraDeNegocioException("A data final antecede a data inicial.");
         }
@@ -88,7 +87,7 @@ public class EdicaoService {
             edicaoEntity.setStatus(Status.ATIVO);
             edicaoRepository.save(edicaoEntity);
         }
-        return objectMapper.convertValue(edicaoEntity, EdicaoDTO.class);
+        return convertEdicaoToDTO(edicaoEntity);
     }
 
 
@@ -125,7 +124,7 @@ public class EdicaoService {
                     return etapaEntityCloneSaved;
                 }).collect(Collectors.toList());
         edicaoEntityClone.setEtapas(etapaEntities);
-        return objectMapper.convertValue(edicaoEntityCloneSaved, EdicaoDTO.class);
+        return convertEdicaoToDTO(edicaoEntityCloneSaved);
     }
 
     public List<DiaCalendarioGeralDTO> gerarCalendarioGeral() throws RegraDeNegocioException {
@@ -211,9 +210,7 @@ public class EdicaoService {
                                     diaCalendarioEdicaoDTO.setProcesso(processoEntity.getNome());
                                     diaCalendarioEdicaoDTO.setAreas(new ArrayList<>());
                                     diaCalendarioEdicaoDTO.setCor(finalCoresPorEtapa.get(etapaEntity.getNome()));
-                                    processoEntity.getAreasEnvolvidas().forEach(area -> {
-                                        diaCalendarioEdicaoDTO.getAreas().add(area.getNome());
-                                    });
+                                    processoEntity.getAreasEnvolvidas().forEach(area -> diaCalendarioEdicaoDTO.getAreas().add(area.getNome()));
                                     dias.add(diaCalendarioEdicaoDTO);
                                     dia = dia.plusDays(UM_DIA);
                                     contDiasUteis++;
@@ -282,7 +279,7 @@ public class EdicaoService {
         Page<EdicaoEntity> paginaDoRepositorio = edicaoRepository.findAll(pageRequest);
         List<EdicaoDTO> edicaoDTOList = paginaDoRepositorio.getContent().stream()
                 .map(edicao -> {
-                    EdicaoDTO edicaoDTO = objectMapper.convertValue(edicao, EdicaoDTO.class);
+                    EdicaoDTO edicaoDTO = convertEdicaoToDTO(edicao);
                     edicaoDTO.setEtapas(edicao.getEtapas().stream()
                             .map(etapaEntity -> objectMapper.convertValue(etapaEntity, EtapaDTO.class)
                             ).collect(Collectors.toList()));
@@ -302,7 +299,7 @@ public class EdicaoService {
         Page<EdicaoEntity> paginaDoRepositorio = edicaoRepository.findAll(pageRequest);
 
         List<EdicaoDTO> edicaoDTOList = paginaDoRepositorio.getContent().stream()
-                .map(edicao -> objectMapper.convertValue(edicao, EdicaoDTO.class)).toList();
+                .map(this::convertEdicaoToDTO).toList();
 
         return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
                 paginaDoRepositorio.getTotalPages(),
@@ -317,8 +314,7 @@ public class EdicaoService {
     }
 
     public EdicaoDTO save(EdicaoEntity edicaoEntity) {
-        edicaoRepository.save(edicaoEntity);
-        return objectMapper.convertValue(edicaoEntity, EdicaoDTO.class);
+        return convertEdicaoToDTO(edicaoRepository.save(edicaoEntity));
     }
 
     public Set<ResponsavelDTO> getResponsavelDTO(Set<ResponsavelEntity> responsaveis) {
@@ -331,5 +327,9 @@ public class EdicaoService {
         return AreasEnvolvidas.stream()
                 .map(areaEnvolvidaEntity -> objectMapper.convertValue(areaEnvolvidaEntity, AreaEnvolvidaDTO.class))
                 .collect(Collectors.toSet());
+    }
+
+    public EdicaoDTO convertEdicaoToDTO(EdicaoEntity edicaoEntity) {
+        return objectMapper.convertValue(edicaoEntity, EdicaoDTO.class);
     }
 }
