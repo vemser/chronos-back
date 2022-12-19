@@ -88,6 +88,6 @@ public class DiaNaoUtilService {
     public List<DiaNaoUtilDTO> getDiasNaoUteis() {
        return diaNaoUtilRepository.findAll().stream()
                 .map(dia -> objectMapper.convertValue(dia, DiaNaoUtilDTO.class))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()); // FIXME trocar para stream.tolist
     }
 }

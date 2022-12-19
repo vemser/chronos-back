@@ -37,6 +37,7 @@ public class UsuarioEntity implements UserDetails {
     @Column(name = "SENHA")
     private String senha;
 
+    // FIXME deve ser serializable
     @JsonIgnore
     @OneToOne(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private FotoEntity foto;

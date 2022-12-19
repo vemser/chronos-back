@@ -45,7 +45,7 @@ public class EtapaService {
                                 processoDTO.setAreasEnvolvidas(this.getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
                                 processoDTO.setResponsaveis(this.getResponsavelDTO(processoEntity.getResponsaveis()));
                                 return processoDTO;
-                            }).collect(Collectors.toList()));
+                            }).collect(Collectors.toList())); // FIXME trocar collector para stream
                     return etapaDTO;
                 }).toList();
         return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
@@ -69,7 +69,7 @@ public class EtapaService {
                                         return processoDTO;
                                     }).collect(Collectors.toList()));
                     return etapaDTO;
-                }).collect(Collectors.toList());
+                }).collect(Collectors.toList()); // FIXME trocar collector para stream
     }
 
     public EtapaDTO create(Integer idEdicao, EtapaCreateDTO etapaCreateDTO) throws RegraDeNegocioException {
@@ -103,7 +103,7 @@ public class EtapaService {
         etapaRepository.save(etapaEntity);
         return objectMapper.convertValue(etapaEntity, EtapaDTO.class);
     }
-
+    // FIXME trocar collector para stream
     public List<ProcessoDTO> getProcessosDTO(Set<ProcessoEntity> processos) {
         return processos.stream()
                 .map(processoEntity -> objectMapper.convertValue(processoEntity, ProcessoDTO.class))

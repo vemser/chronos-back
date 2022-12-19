@@ -20,7 +20,7 @@ public class AuthenticationService implements UserDetailsService {
         try {
             usuario = usuarioService.findByEmail(email);
         } catch (RegraDeNegocioException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e); // FIXME RUNTIME ???????????
         }
         if(usuario == null) {
             throw new UsernameNotFoundException("Usuario inválido");

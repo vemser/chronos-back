@@ -215,12 +215,12 @@ public class EdicaoService {
                                         diaCalendarioEdicaoDTO.getAreas().add(area.getNome());
                                     });
                                     dias.add(diaCalendarioEdicaoDTO);
-                                    dia = dia.plusDays(UM_DIA);
+                                    dia = dia.plusDays(UM_DIA); // FIXME ??
                                     contDiasUteis++;
                                 }
                             }
                             return processoEntity;
-                        }).toList()).toList();
+                        }).toList()).toList(); // FIXME usado?
         return dias;
     }
 
@@ -285,7 +285,7 @@ public class EdicaoService {
                     EdicaoDTO edicaoDTO = objectMapper.convertValue(edicao, EdicaoDTO.class);
                     edicaoDTO.setEtapas(edicao.getEtapas().stream()
                             .map(etapaEntity -> objectMapper.convertValue(etapaEntity, EtapaDTO.class)
-                            ).collect(Collectors.toList()));
+                            ).collect(Collectors.toList())); // FIXME trocar collector para stream
                     return edicaoDTO;
                 }).toList();
 
