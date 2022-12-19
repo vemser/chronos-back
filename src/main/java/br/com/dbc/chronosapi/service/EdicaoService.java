@@ -199,6 +199,7 @@ public class EdicaoService {
                                         DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
                                         setCalendario(diaCalendarioEdicaoDTO);
                                         dias.add(diaCalendarioEdicaoDTO);
+                                        diaCalendarioEdicaoDTO.setFeriado(feriadoDTO.getDescricao());
                                         dia = dia.plusDays(UM_DIA);
                                         diasCorridos++;
                                     }
