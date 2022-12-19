@@ -52,13 +52,14 @@ public class ProcessoService {
     public List<ProcessoDTO> listProcessosDaEtapa(Integer idEtapa) throws RegraDeNegocioException {
 
         EtapaEntity etapaEntity = etapaService.findById(idEtapa);
-        return etapaEntity.getProcessos().stream()
+        List<ProcessoDTO> processoDTOS = etapaEntity.getProcessos().stream()
                 .map(processoEntity -> {
                     ProcessoDTO processoDTO = convertProcessoToDTO(processoEntity);
                     processoDTO.setAreasEnvolvidas(getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
                     processoDTO.setResponsaveis(getResponsavelDTO(processoEntity.getResponsaveis()));
                     return processoDTO;
                 }).toList();
+        return processoDTOS;
     }
 
     public ProcessoDTO create(Integer idEtapa, ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException {
@@ -66,7 +67,17 @@ public class ProcessoService {
         ProcessoEntity processoEntity = objectMapper.convertValue(processoCreateDTO, ProcessoEntity.class);
         processoEntity.setEtapa(etapaEntity);
         etapaService.save(etapaEntity);
-        Set<AreaEnvolvidaEntity> areas = mapProcessoCreateDTO(processoCreateDTO);
+        Set<AreaEnvolvidaEntity> areas = processoCreateDTO.getAreasEnvolvidas().stream()
+                .map(area -> {
+                    String nomeArea = area.getNome().trim().toUpperCase();
+                    AreaEnvolvidaEntity areaEnvolvidaEntity = areaEnvolvidaService.findByNomeArea(nomeArea);
+                    if(areaEnvolvidaEntity == null) {
+                        String nomeAreaEntity = area.getNome().trim();
+                        area.setNome(nomeAreaEntity);
+                        return objectMapper.convertValue(areaEnvolvidaService.create(area), AreaEnvolvidaEntity.class);
+                    }
+                    return areaEnvolvidaEntity;
+                }).collect(Collectors.toSet());
         processoEntity.setAreasEnvolvidas(areas);
         Set<ResponsavelEntity> responsaveis = processoCreateDTO.getResponsaveis().stream()
                 .map(responsavel -> {
@@ -93,7 +104,17 @@ public class ProcessoService {
         processoRecover.setOrdemExecucao(processoUpdate.getOrdemExecucao());
         processoRecover.setDuracaoProcesso(processoUpdate.getDuracaoProcesso());
         processoRecover.setDiasUteis(processoUpdate.getDiasUteis());
-        Set<AreaEnvolvidaEntity> areas = mapProcessoCreateDTO(processoUpdate);
+        Set<AreaEnvolvidaEntity> areas = processoUpdate.getAreasEnvolvidas().stream()
+                .map(area -> {
+                    String nomeArea = area.getNome().trim().toUpperCase();
+                    AreaEnvolvidaEntity areaEnvolvidaEntity = areaEnvolvidaService.findByNomeArea(nomeArea);
+                    if(areaEnvolvidaEntity == null) {
+                        String nomeAreaEntity = area.getNome().trim();
+                        area.setNome(nomeAreaEntity);
+                        return objectMapper.convertValue(areaEnvolvidaService.create(area), AreaEnvolvidaEntity.class);
+                    }
+                    return areaEnvolvidaEntity;
+                }).collect(Collectors.toSet());
         processoRecover.setAreasEnvolvidas(areas);
         Set<ResponsavelEntity> responsaveis = processoUpdate.getResponsaveis().stream()
                 .map(responsavel -> {
@@ -136,20 +157,6 @@ public class ProcessoService {
 
     public ProcessoDTO convertProcessoToDTO(ProcessoEntity processoEntity) {
         return objectMapper.convertValue(processoEntity, ProcessoDTO.class);
-    }
-
-    public Set<AreaEnvolvidaEntity> mapProcessoCreateDTO(ProcessoCreateDTO processoCreateDTO) {
-       return processoCreateDTO.getAreasEnvolvidas().stream()
-                .map(area -> {
-                    String nomeArea = area.getNome().trim().toUpperCase();
-                    AreaEnvolvidaEntity areaEnvolvidaEntity = areaEnvolvidaService.findByNomeArea(nomeArea);
-                    if(areaEnvolvidaEntity == null) {
-                        String nomeAreaEntity = area.getNome().trim();
-                        area.setNome(nomeAreaEntity);
-                        return objectMapper.convertValue(areaEnvolvidaService.create(area), AreaEnvolvidaEntity.class);
-                    }
-                    return areaEnvolvidaEntity;
-                }).collect(Collectors.toSet());
     }
 }
 

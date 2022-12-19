@@ -189,14 +189,28 @@ public class EdicaoService {
                                 FeriadoDTO feriadoDTO = verificarDiasNaoUteis(dia, diasNaoUteis);
                                 if (diaDaSemana == DayOfWeek.SATURDAY || diaDaSemana == DayOfWeek.SUNDAY && feriadoDTO.getQtdDias() < UM_DIA) {
                                     DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
-                                    setCalendario(diaCalendarioEdicaoDTO);
+                                    diaCalendarioEdicaoDTO.setDia(dia);
+                                    diaCalendarioEdicaoDTO.setIdEtapa(null);
+                                    diaCalendarioEdicaoDTO.setEtapa(null);
+                                    diaCalendarioEdicaoDTO.setIdProcesso(null);
+                                    diaCalendarioEdicaoDTO.setProcesso(null);
+                                    diaCalendarioEdicaoDTO.setCor(null);
+                                    diaCalendarioEdicaoDTO.setAreas(null);
+                                    diaCalendarioEdicaoDTO.setFeriado(null);
                                     dias.add(diaCalendarioEdicaoDTO);
                                     dia = dia.plusDays(UM_DIA);
                                 } else if (feriadoDTO.getQtdDias() > 0) {
                                     diasCorridos = UM_DIA;
                                     while (diasCorridos <= feriadoDTO.getQtdDias()) {
                                         DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO = new DiaCalendarioEdicaoDTO();
-                                        setCalendario(diaCalendarioEdicaoDTO);
+                                        diaCalendarioEdicaoDTO.setDia(dia);
+                                        diaCalendarioEdicaoDTO.setIdEtapa(null);
+                                        diaCalendarioEdicaoDTO.setEtapa(null);
+                                        diaCalendarioEdicaoDTO.setIdProcesso(null);
+                                        diaCalendarioEdicaoDTO.setProcesso(null);
+                                        diaCalendarioEdicaoDTO.setCor(null);
+                                        diaCalendarioEdicaoDTO.setAreas(null);
+                                        diaCalendarioEdicaoDTO.setFeriado(null);
                                         dias.add(diaCalendarioEdicaoDTO);
                                         dia = dia.plusDays(UM_DIA);
                                         diasCorridos++;
@@ -219,18 +233,6 @@ public class EdicaoService {
                             return processoEntity;
                         }).toList());
         return dias;
-    }
-
-    public DiaCalendarioEdicaoDTO setCalendario(DiaCalendarioEdicaoDTO diaCalendarioEdicaoDTO) {
-        diaCalendarioEdicaoDTO.setDia(dia);
-        diaCalendarioEdicaoDTO.setIdEtapa(null);
-        diaCalendarioEdicaoDTO.setEtapa(null);
-        diaCalendarioEdicaoDTO.setIdProcesso(null);
-        diaCalendarioEdicaoDTO.setProcesso(null);
-        diaCalendarioEdicaoDTO.setCor(null);
-        diaCalendarioEdicaoDTO.setAreas(null);
-        diaCalendarioEdicaoDTO.setFeriado(null);
-        return diaCalendarioEdicaoDTO;
     }
 
     public Map<String, String> organizarCores(List<EtapaEntity> etapas) {
