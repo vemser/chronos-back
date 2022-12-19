@@ -7,6 +7,7 @@ import java.time.LocalDate;
 @Data
 public class DiaCalendarioGeralDTO {
     private LocalDate dia;
+    private Integer idEdicao;
     private String edicao;
     private Integer idEtapa;
     private String etapa;

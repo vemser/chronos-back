@@ -146,6 +146,7 @@ public class EdicaoService {
             for (var diaEdicao : diasCalendarioEdicao) {
                 DiaCalendarioGeralDTO diaCalendarioGeralDTO = new DiaCalendarioGeralDTO();
                 diaCalendarioGeralDTO.setDia(diaEdicao.getDia());
+                diaCalendarioGeralDTO.setIdEdicao(edicao.getIdEdicao());
                 diaCalendarioGeralDTO.setEdicao(edicao.getNome());
                 diaCalendarioGeralDTO.setIdEtapa(diaEdicao.getIdEtapa());
                 diaCalendarioGeralDTO.setEtapa(diaEdicao.getEtapa());
