@@ -170,7 +170,7 @@ public class UsuarioService {
                 .collect(Collectors.toSet());
     }
 
-    public UsuarioEntity findByEmail(String email) {
+    public UsuarioEntity findByEmail(String email) throws RegraDeNegocioException {
         return usuarioRepository.findByEmail(email);
     }
 
@@ -180,7 +180,7 @@ public class UsuarioService {
     }
 
     public UsuarioDTO salvarUsuario(UsuarioEntity usuario) {
-        return convertToUsuarioDTOAndVerifyFoto(usuarioRepository.save(usuario));
+        return objectMapper.convertValue(usuarioRepository.save(usuario), UsuarioDTO.class);
     }
 
     private UsuarioDTO convertToUsuarioDTOAndVerifyFoto(UsuarioEntity usuario) {

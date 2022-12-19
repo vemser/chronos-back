@@ -313,18 +313,18 @@ public class EdicaoServiceTest {
 
     }
 
-//    @Test
-//    public void testSaveSuccess(){
-//
-//        //SETUP
-//        EdicaoEntity edicaoEntity = getEdicaoEntity();
-//
-//        //ACT
-//        EdicaoDTO edicaoDTO = edicaoService.save(edicaoEntity);
-//
-//        //ASSERT
-//        assertEquals(10, edicaoDTO.getIdEdicao());
-//    }
+    @Test
+    public void testSaveSuccess(){
+
+        //SETUP
+        EdicaoEntity edicaoEntity = getEdicaoEntity();
+
+        //ACT
+        EdicaoDTO edicaoDTO = edicaoService.save(edicaoEntity);
+
+        //ASSERT
+        assertEquals(10, edicaoDTO.getIdEdicao());
+    }
 
     @Test
     public void testGetResponsavelDTOSuccess(){

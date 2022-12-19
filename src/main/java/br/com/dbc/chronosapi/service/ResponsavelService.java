@@ -19,7 +19,7 @@ public class ResponsavelService {
 
     public ResponsavelDTO create(ResponsavelCreateDTO responsavelCreateDTO) {
         ResponsavelEntity responsavelEntity = objectMapper.convertValue(responsavelCreateDTO, ResponsavelEntity.class);
-        ResponsavelDTO responsavelDTO = convertResponsavelToDTO(responsavelRepository.save(responsavelEntity));
+        ResponsavelDTO responsavelDTO = objectMapper.convertValue(responsavelRepository.save(responsavelEntity), ResponsavelDTO.class);
         responsavelDTO.setNome(responsavelCreateDTO.getNome().toUpperCase());
         return responsavelDTO;
     }
@@ -40,11 +40,7 @@ public class ResponsavelService {
     public List<ResponsavelDTO> listarResponsaveis(){
 
         return responsavelRepository.findAll().stream()
-                .map(this::convertResponsavelToDTO)
+                .map(responsavel -> objectMapper.convertValue(responsavel, ResponsavelDTO.class))
                 .toList();
-    }
-
-    public ResponsavelDTO convertResponsavelToDTO(ResponsavelEntity responsavelEntity) {
-        return objectMapper.convertValue(responsavelEntity, ResponsavelDTO.class);
     }
 }

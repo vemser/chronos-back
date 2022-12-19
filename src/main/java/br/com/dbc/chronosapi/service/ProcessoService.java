@@ -37,7 +37,7 @@ public class ProcessoService {
         Page<ProcessoEntity> paginaDoRepositorio = processoRepository.findAll(pageRequest);
         List<ProcessoDTO> processoDTOList = paginaDoRepositorio.getContent().stream()
                 .map(processo -> {
-                    ProcessoDTO processoDTO = convertProcessoToDTO(processo);
+                    ProcessoDTO processoDTO = objectMapper.convertValue(processo, ProcessoDTO.class);
                     processoDTO.setAreasEnvolvidas(getAreaEnvolvidaDTO(processo.getAreasEnvolvidas()));
                     processoDTO.setResponsaveis(getResponsavelDTO(processo.getResponsaveis()));
                     return processoDTO;
@@ -52,14 +52,13 @@ public class ProcessoService {
     public List<ProcessoDTO> listProcessosDaEtapa(Integer idEtapa) throws RegraDeNegocioException {
 
         EtapaEntity etapaEntity = etapaService.findById(idEtapa);
-        List<ProcessoDTO> processoDTOS = etapaEntity.getProcessos().stream()
+        return etapaEntity.getProcessos().stream()
                 .map(processoEntity -> {
-                    ProcessoDTO processoDTO = convertProcessoToDTO(processoEntity);
+                    ProcessoDTO processoDTO = objectMapper.convertValue(processoEntity, ProcessoDTO.class);
                     processoDTO.setAreasEnvolvidas(getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
                     processoDTO.setResponsaveis(getResponsavelDTO(processoEntity.getResponsaveis()));
                     return processoDTO;
                 }).toList();
-        return processoDTOS;
     }
 
     public ProcessoDTO create(Integer idEtapa, ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException {
@@ -92,7 +91,7 @@ public class ProcessoService {
                 }).collect(Collectors.toSet());
         processoEntity.setResponsaveis(responsaveis);
         ProcessoEntity processoSaved = processoRepository.save(processoEntity);
-        ProcessoDTO processoDTO = convertProcessoToDTO(processoSaved);
+        ProcessoDTO processoDTO = objectMapper.convertValue(processoSaved, ProcessoDTO.class);
         processoDTO.setAreasEnvolvidas(getAreaEnvolvidaDTO(processoSaved.getAreasEnvolvidas()));
         processoDTO.setResponsaveis(getResponsavelDTO(processoSaved.getResponsaveis()));
         return processoDTO;
@@ -128,7 +127,7 @@ public class ProcessoService {
                     return responsavelEntity;
                 }).collect(Collectors.toSet());
         processoRecover.setResponsaveis(responsaveis);
-        ProcessoDTO processoDTO = convertProcessoToDTO(processoRepository.save(processoRecover));
+        ProcessoDTO processoDTO = objectMapper.convertValue(processoRepository.save(processoRecover), ProcessoDTO.class);
         processoDTO.setResponsaveis(getResponsavelDTO(responsaveis));
         processoDTO.setAreasEnvolvidas(getAreaEnvolvidaDTO(areas));
         return processoDTO;
@@ -153,10 +152,6 @@ public class ProcessoService {
         return AreasEnvolvidas.stream()
                 .map(areaEnvolvidaEntity -> objectMapper.convertValue(areaEnvolvidaEntity, AreaEnvolvidaDTO.class))
                 .collect(Collectors.toSet());
-    }
-
-    public ProcessoDTO convertProcessoToDTO(ProcessoEntity processoEntity) {
-        return objectMapper.convertValue(processoEntity, ProcessoDTO.class);
     }
 }
 
