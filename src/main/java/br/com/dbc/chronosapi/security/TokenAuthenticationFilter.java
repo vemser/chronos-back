@@ -1,5 +1,6 @@
 package br.com.dbc.chronosapi.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,11 +20,15 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String authorization = request.getHeader("Authorization");
+        try {
+            String authorization = request.getHeader("Authorization");
 
-        UsernamePasswordAuthenticationToken dtoToken = tokenService.isValid(authorization);
-        SecurityContextHolder.getContext().setAuthentication(dtoToken);
+            UsernamePasswordAuthenticationToken dtoToken = tokenService.isValid(authorization);
+            SecurityContextHolder.getContext().setAuthentication(dtoToken);
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+        }catch(ExpiredJwtException e) {
+            response.setStatus(403);
+        }
     }
 }
