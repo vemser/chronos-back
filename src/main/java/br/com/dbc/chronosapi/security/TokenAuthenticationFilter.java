@@ -23,13 +23,12 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         try {
             String authorization = request.getHeader("Authorization");
 
-
             UsernamePasswordAuthenticationToken dtoToken = tokenService.isValid(authorization);
             SecurityContextHolder.getContext().setAuthentication(dtoToken);
 
             filterChain.doFilter(request, response);
         }catch (ExpiredJwtException e) {
-            response.setStatus(404);
+            response.setStatus(403);
         }
     }
 }
