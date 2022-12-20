@@ -83,6 +83,8 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
+
+
     public UsuarioDTO updatePerfil(UsuarioUpdateDTO usuarioUpdate) throws RegraDeNegocioException {
         Integer idLoggedUser = loginService.getIdLoggedUser();
 

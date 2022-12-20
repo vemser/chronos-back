@@ -36,12 +36,10 @@ public class LoginController implements LoginControllerInterface {
         return new ResponseEntity<>(tokenService.authAccess(loginDTO, authenticationManager), HttpStatus.OK);
 
     }
-
     @PostMapping("/forgot-password")
     public ResponseEntity<String> sendRecoverPasswordEmail(String email) {
         return ResponseEntity.ok(loginService.sendRecoverPasswordEmail(email));
     }
-
     @PostMapping("/change-password")
     public ResponseEntity<String> updatePassword(String password) throws RegraDeNegocioException {
         return ResponseEntity.ok(loginService.updatePassword(password));
