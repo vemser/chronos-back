@@ -1,6 +1,7 @@
 package br.com.dbc.chronosapi.entity.classes.processos;
 
 import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
+import br.com.dbc.chronosapi.entity.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
@@ -60,6 +61,6 @@ public class ProcessoEntity {
     private Integer diasUteis;
 
     @Column(name = "PROCESSO_CRITICO")
-    private Integer processoCritico;
+    private Status processoCritico;
 
 }

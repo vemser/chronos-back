@@ -1,6 +1,7 @@
 package br.com.dbc.chronosapi.dto.processo;
 
 
+import br.com.dbc.chronosapi.entity.enums.Status;
 import lombok.Data;
 
 import java.util.Set;
@@ -14,5 +15,5 @@ public class ProcessoDTO {
     private String duracaoProcesso;
     private Integer diasUteis;
     private Integer ordemExecucao;
-    private Integer processoCritico;
+    private Status processoCritico;
 }
