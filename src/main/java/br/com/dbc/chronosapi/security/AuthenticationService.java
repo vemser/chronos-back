@@ -17,11 +17,7 @@ public class AuthenticationService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UsuarioEntity usuario = null;
-        try {
             usuario = usuarioService.findByEmail(email);
-        } catch (RegraDeNegocioException e) {
-            throw new RuntimeException(e);
-        }
         if(usuario == null) {
             throw new UsernameNotFoundException("Usuario inválido");
         } else {

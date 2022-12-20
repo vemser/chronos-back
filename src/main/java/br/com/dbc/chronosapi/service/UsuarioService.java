@@ -170,7 +170,7 @@ public class UsuarioService {
                 .collect(Collectors.toSet());
     }
 
-    public UsuarioEntity findByEmail(String email) throws RegraDeNegocioException {
+    public UsuarioEntity findByEmail(String email) {
         return usuarioRepository.findByEmail(email);
     }
 
