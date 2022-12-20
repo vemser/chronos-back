@@ -1,5 +1,6 @@
 package br.com.dbc.chronosapi.dto.processo;
 
+import br.com.dbc.chronosapi.entity.enums.Status;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -28,4 +29,7 @@ public class ProcessoCreateDTO {
 
     @NotNull
     private Integer ordemExecucao;
+
+    @NotNull
+    private Status processoCritico;
 }
