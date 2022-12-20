@@ -28,4 +28,7 @@ public class ProcessoCreateDTO {
 
     @NotNull
     private Integer ordemExecucao;
+
+    @NotNull
+    private Integer processoCritico;
 }

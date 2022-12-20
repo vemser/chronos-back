@@ -58,4 +58,8 @@ public class ProcessoEntity {
 
     @Column(name = "DIAS_UTEIS")
     private Integer diasUteis;
+
+    @Column(name = "PROCESSO_CRITICO")
+    private Integer processoCritico;
+
 }

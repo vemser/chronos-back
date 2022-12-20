@@ -14,4 +14,5 @@ public class ProcessoDTO {
     private String duracaoProcesso;
     private Integer diasUteis;
     private Integer ordemExecucao;
+    private Integer processoCritico;
 }
