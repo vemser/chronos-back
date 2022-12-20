@@ -49,6 +49,13 @@ public class UsuarioService {
         );
     }
 
+    public List<UsuarioDTO> filtrarNome(String login) {
+        return usuarioRepository.findByLoginContainingIgnoreCase(login)
+                .stream()
+                .map(usuarioEntity -> objectMapper.convertValue(usuarioEntity, UsuarioDTO.class))
+                .toList();
+    }
+
     public UsuarioDTO buscarUsuarioLogado() throws RegraDeNegocioException {
         UsuarioDTO loggedUser = loginService.getLoggedUser();
         UsuarioEntity usuarioEntity = findById(loggedUser.getIdUsuario());
@@ -82,6 +89,8 @@ public class UsuarioService {
         emailService.sendEmailEnvioSenha(usuarioDTO, senha);
         return usuarioDTO;
     }
+
+
 
     public UsuarioDTO updatePerfil(UsuarioUpdateDTO usuarioUpdate) throws RegraDeNegocioException {
         Integer idLoggedUser = loginService.getIdLoggedUser();
