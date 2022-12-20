@@ -45,7 +45,7 @@ public class EtapaService {
                                 processoDTO.setAreasEnvolvidas(this.getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
                                 processoDTO.setResponsaveis(this.getResponsavelDTO(processoEntity.getResponsaveis()));
                                 return processoDTO;
-                            }).collect(Collectors.toList()));
+                            }).toList());
                     return etapaDTO;
                 }).toList();
         return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
@@ -67,7 +67,7 @@ public class EtapaService {
                                         processoDTO.setAreasEnvolvidas(this.getAreaEnvolvidaDTO(processoEntity.getAreasEnvolvidas()));
                                         processoDTO.setResponsaveis(this.getResponsavelDTO(processoEntity.getResponsaveis()));
                                         return processoDTO;
-                                    }).collect(Collectors.toList()));
+                                    }).toList());
                     return etapaDTO;
                 }).collect(Collectors.toList());
     }
@@ -107,7 +107,7 @@ public class EtapaService {
     public List<ProcessoDTO> getProcessosDTO(Set<ProcessoEntity> processos) {
         return processos.stream()
                 .map(processoEntity -> objectMapper.convertValue(processoEntity, ProcessoDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Set<ResponsavelDTO> getResponsavelDTO(Set<ResponsavelEntity> responsaveis) {
