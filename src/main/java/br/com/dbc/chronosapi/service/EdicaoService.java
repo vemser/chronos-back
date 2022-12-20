@@ -152,6 +152,7 @@ public class EdicaoService {
                 diaCalendarioGeralDTO.setEtapa(diaEdicao.getEtapa());
                 diaCalendarioGeralDTO.setIdProcesso(diaEdicao.getIdProcesso());
                 diaCalendarioGeralDTO.setProcesso(diaEdicao.getProcesso());
+                diaCalendarioGeralDTO.setCritico(diaEdicao.getCritico());
                 diaCalendarioGeralDTO.setCor(diaEdicao.getCor());
                 diaCalendarioGeralDTO.setFeriado(diaEdicao.getFeriado());
                 dias.add(diaCalendarioGeralDTO);
@@ -211,6 +212,7 @@ public class EdicaoService {
                                     diaCalendarioEdicaoDTO.setEtapa(etapaEntity.getNome());
                                     diaCalendarioEdicaoDTO.setIdProcesso(processoEntity.getIdProcesso());
                                     diaCalendarioEdicaoDTO.setProcesso(processoEntity.getNome());
+                                    diaCalendarioEdicaoDTO.setCritico(processoEntity.getProcessoCritico());
                                     diaCalendarioEdicaoDTO.setAreas(new ArrayList<>());
                                     diaCalendarioEdicaoDTO.setCor(finalCoresPorEtapa.get(etapaEntity.getNome()));
                                     processoEntity.getAreasEnvolvidas().forEach(area -> {
@@ -232,6 +234,7 @@ public class EdicaoService {
         diaCalendarioEdicaoDTO.setEtapa(null);
         diaCalendarioEdicaoDTO.setIdProcesso(null);
         diaCalendarioEdicaoDTO.setProcesso(null);
+        diaCalendarioEdicaoDTO.setCritico(null);
         diaCalendarioEdicaoDTO.setCor(null);
         diaCalendarioEdicaoDTO.setAreas(null);
         diaCalendarioEdicaoDTO.setFeriado(null);

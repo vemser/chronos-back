@@ -1,5 +1,6 @@
 package br.com.dbc.chronosapi.dto.calendario;
 
+import br.com.dbc.chronosapi.entity.enums.Status;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ public class DiaCalendarioGeralDTO {
     private String etapa;
     private Integer idProcesso;
     private String processo;
+    private Status critico;
     private String cor;
     private String feriado;
 }
