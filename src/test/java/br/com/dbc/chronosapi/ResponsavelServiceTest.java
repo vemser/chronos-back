@@ -1,12 +1,9 @@
 package br.com.dbc.chronosapi;
 
-import br.com.dbc.chronosapi.dto.PageDTO;
-import br.com.dbc.chronosapi.dto.etapa.EtapaDTO;
 import br.com.dbc.chronosapi.dto.processo.ResponsavelCreateDTO;
 import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
-import br.com.dbc.chronosapi.entity.classes.EtapaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
-import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
+import br.com.dbc.chronosapi.repository.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.ResponsavelRepository;
 import br.com.dbc.chronosapi.service.ResponsavelService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -19,9 +16,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;

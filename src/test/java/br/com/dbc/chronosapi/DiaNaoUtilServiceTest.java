@@ -5,7 +5,7 @@ import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilCreateDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilDTO;
 import br.com.dbc.chronosapi.entity.classes.DiaNaoUtilEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
-import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
+import br.com.dbc.chronosapi.repository.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.DiaNaoUtilRepository;
 import br.com.dbc.chronosapi.service.DiaNaoUtilService;
 import com.fasterxml.jackson.databind.DeserializationFeature;

@@ -25,10 +25,10 @@ public class CargoEntity implements GrantedAuthority {
     @Column(name = "ID_CARGO")
     private Integer idCargo;
     @Column(name = "NOME")
-    private String nome ;
+    private String nome;
 
     @Column(name = "DESCRICAO")
-    private String descricao ;
+    private String descricao;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)

@@ -17,7 +17,7 @@ import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
-import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
+import br.com.dbc.chronosapi.repository.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.DiaNaoUtilRepository;
 import br.com.dbc.chronosapi.repository.EdicaoRepository;
 import br.com.dbc.chronosapi.repository.EtapaRepository;
