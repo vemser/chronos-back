@@ -119,6 +119,7 @@ public class EdicaoService {
                                 processoEntityClone.setDuracaoProcesso(processoEntity.getDuracaoProcesso());
                                 processoEntityClone.setAreasEnvolvidas(areasEnvolvidasEntities);
                                 processoEntityClone.setResponsaveis(responsaveisEntities);
+                                processoEntityClone.setProcessoCritico(processoEntity.getProcessoCritico());
                                 return processoRepository.save(processoEntityClone);
                             }).collect(Collectors.toSet());
                     etapaEntityClone.setProcessos(processoEntities);
