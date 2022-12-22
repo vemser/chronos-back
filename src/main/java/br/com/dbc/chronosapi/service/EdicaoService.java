@@ -224,7 +224,7 @@ public class EdicaoService {
                                 }
                             }
                             return processoEntity;
-                        }).toList());
+                        }).toList()).toList();
         return dias;
     }
 
