@@ -62,6 +62,9 @@ public class ProcessoService {
     }
 
     public ProcessoDTO create(Integer idEtapa, ProcessoCreateDTO processoCreateDTO) throws RegraDeNegocioException {
+        if (processoCreateDTO.getAreasEnvolvidas().isEmpty() || processoCreateDTO.getResponsaveis().isEmpty()) {
+            throw new RegraDeNegocioException("Dados invalidos");
+        }
         EtapaEntity etapaEntity = etapaService.findById(idEtapa);
         ProcessoEntity processoEntity = objectMapper.convertValue(processoCreateDTO, ProcessoEntity.class);
         processoEntity.setEtapa(etapaEntity);
