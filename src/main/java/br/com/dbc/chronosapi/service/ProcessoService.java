@@ -109,6 +109,7 @@ public class ProcessoService {
         processoRecover.setOrdemExecucao(processoUpdate.getOrdemExecucao());
         processoRecover.setDuracaoProcesso(processoUpdate.getDuracaoProcesso());
         processoRecover.setDiasUteis(processoUpdate.getDiasUteis());
+        processoRecover.setProcessoCritico(processoUpdate.getProcessoCritico());
         Set<AreaEnvolvidaEntity> areas = processoUpdate.getAreasEnvolvidas().stream()
                 .map(area -> {
                     String nomeArea = area.getNome().trim().toUpperCase();
