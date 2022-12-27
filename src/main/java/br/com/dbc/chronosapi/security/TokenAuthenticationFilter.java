@@ -1,4 +1,4 @@
-package br.com.dbc.chronosapi.dto.security;
+package br.com.dbc.chronosapi.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
