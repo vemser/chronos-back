@@ -6,6 +6,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioEdicaoDTO;
+import br.com.dbc.chronosapi.entity.enums.Status;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -70,7 +71,10 @@ public class CalendarioExcelExporter {
             createCell(row, columnCount++, calendario.getDia().toString(), style);
             createCell(row, columnCount++, calendario.getEtapa(), style);
             createCell(row, columnCount++, calendario.getProcesso(), style);
-            createCell(row, columnCount++, calendario.getCritico(), style);
+            if(calendario.getCritico() == null){
+                calendario.setCritico(Status.INATIVO);
+            }
+            createCell(row, columnCount++, calendario.getCritico().toString(), style);
             createCell(row, columnCount++, calendario.getFeriado(), style);
 
         }
