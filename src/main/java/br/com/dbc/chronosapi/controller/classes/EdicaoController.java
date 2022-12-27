@@ -7,6 +7,7 @@ import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioGeralDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
+import br.com.dbc.chronosapi.service.CalendarioExcelExporter;
 import br.com.dbc.chronosapi.service.EdicaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -74,5 +80,23 @@ public class EdicaoController implements EdicaoControllerInterface {
     @GetMapping("/listar")
     public ResponseEntity<PageDTO<EdicaoDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         return new ResponseEntity<>(edicaoService.list(pagina, tamanho), HttpStatus.OK);
+    }
+
+
+    @GetMapping("/users/export/excel/{idEdicao}")
+    public void exportToExcel(HttpServletResponse response, @PathVariable Integer idEdicao) throws IOException, RegraDeNegocioException {
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=calendario_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        List<DiaCalendarioEdicaoDTO> listCalendario = edicaoService.gerarCalendarioEdicao(idEdicao, null);
+
+        CalendarioExcelExporter excelExporter = new CalendarioExcelExporter(listCalendario);
+
+        excelExporter.export(response);
     }
 }

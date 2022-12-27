@@ -1,4 +1,4 @@
-package br.com.dbc.chronosapi.security;
+package br.com.dbc.chronosapi.dto.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

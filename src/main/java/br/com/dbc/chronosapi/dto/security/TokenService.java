@@ -1,4 +1,4 @@
-package br.com.dbc.chronosapi.security;
+package br.com.dbc.chronosapi.dto.security;
 
 import br.com.dbc.chronosapi.entity.classes.CargoEntity;
 import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
