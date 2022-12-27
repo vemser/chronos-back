@@ -37,7 +37,8 @@ public class CalendarioExcelExporter {
         createCell(row, 0, "Dia", style);
         createCell(row, 1, "Etapa", style);
         createCell(row, 2, "Processo", style);
-        createCell(row, 3, "Feriado", style);
+        createCell(row, 3, "Crítico", style);
+        createCell(row, 4, "Feriado", style);
 
     }
 
@@ -69,6 +70,7 @@ public class CalendarioExcelExporter {
             createCell(row, columnCount++, calendario.getDia().toString(), style);
             createCell(row, columnCount++, calendario.getEtapa(), style);
             createCell(row, columnCount++, calendario.getProcesso(), style);
+            createCell(row, columnCount++, calendario.getCritico(), style);
             createCell(row, columnCount++, calendario.getFeriado(), style);
 
         }
