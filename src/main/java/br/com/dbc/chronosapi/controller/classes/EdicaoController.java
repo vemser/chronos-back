@@ -83,7 +83,7 @@ public class EdicaoController implements EdicaoControllerInterface {
     }
 
 
-    @GetMapping("/users/export/excel/{idEdicao}")
+    @GetMapping("/calendario/export/excel/{idEdicao}")
     public void exportToExcel(HttpServletResponse response, @PathVariable Integer idEdicao) throws IOException, RegraDeNegocioException {
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");

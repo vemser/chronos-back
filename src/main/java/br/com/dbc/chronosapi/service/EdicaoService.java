@@ -131,10 +131,12 @@ public class EdicaoService {
 
     public List<DiaCalendarioGeralDTO> gerarCalendarioGeral() throws RegraDeNegocioException {
         List<EdicaoEntity> edicoes = edicaoRepository.findByEdicoesAtivasOrderByDataInicial();
-        if (edicoes.isEmpty()) {
-            throw new RegraDeNegocioException("Não existem edições cadastradas!");
-        }
         List<DiaCalendarioGeralDTO> dias = new ArrayList<>();
+
+        if (edicoes.isEmpty()) {
+//            throw new RegraDeNegocioException("Não existem edições cadastradas!");
+            return dias;
+        }
 
         List<EtapaEntity> nomesEtapas = new ArrayList<>();
         for (EdicaoEntity edicao : edicoes) {
