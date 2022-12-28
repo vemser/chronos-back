@@ -86,5 +86,6 @@ public class EdicaoController implements EdicaoControllerInterface {
     @GetMapping("/calendario/export/excel/{idEdicao}")
     public void exportToExcel(HttpServletResponse response, @PathVariable Integer idEdicao) throws IOException, RegraDeNegocioException {
         edicaoService.getExport(response, idEdicao);
+           
     }
 }
