@@ -30,7 +30,6 @@ public class SecurityConfiguration {
                 .and().cors()
                 .and().csrf().disable()
                 .authorizeHttpRequests((auth) -> auth.antMatchers("/", "/login", "/login-forgot-password").permitAll()
-//                        .authorizeHttpRequests((auth) -> auth.antMatchers("/**").permitAll()
 
                                 .antMatchers(HttpMethod.PUT, "/foto/upload-image/**").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.PUT, "/foto/upload-image-perfil").hasAnyRole("INSTRUTOR", "GESTAO_DE_PESSOAS", "ADMIN")
@@ -45,6 +44,7 @@ public class SecurityConfiguration {
                                 .antMatchers(HttpMethod.GET, "/edicao/listar-com-etapa").hasAnyRole("GESTAO_DE_PESSOAS", "INSTRUTOR")
                                 .antMatchers(HttpMethod.GET, "/edicao/calendario-geral").hasAnyRole("GESTAO_DE_PESSOAS", "INSTRUTOR")
                                 .antMatchers(HttpMethod.GET, "/edicao/calendario-edicao/**").hasAnyRole("GESTAO_DE_PESSOAS", "INSTRUTOR")
+                                .antMatchers(HttpMethod.GET, "/edicao/calendario/export/excel/**").hasAnyRole("INSTRUTOR", "GESTAO_DE_PESSOAS", "ADMIN")
                                 .antMatchers(HttpMethod.POST, "/edicao").hasRole("GESTAO_DE_PESSOAS")
                                 .antMatchers(HttpMethod.DELETE, "/edicao/**").hasRole("GESTAO_DE_PESSOAS")
                                 .antMatchers("/edicao/**").hasRole("GESTAO_DE_PESSOAS")
