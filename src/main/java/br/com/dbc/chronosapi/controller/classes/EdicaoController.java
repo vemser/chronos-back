@@ -85,18 +85,6 @@ public class EdicaoController implements EdicaoControllerInterface {
 
     @GetMapping("/calendario/export/excel/{idEdicao}")
     public void exportToExcel(HttpServletResponse response, @PathVariable Integer idEdicao) throws IOException, RegraDeNegocioException {
-        response.setContentType("application/octet-stream");
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-        String currentDateTime = dateFormatter.format(new Date());
-
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=calendario_" + currentDateTime + ".xlsx";
-        response.setHeader(headerKey, headerValue);
-
-        List<DiaCalendarioEdicaoDTO> listCalendario = edicaoService.gerarCalendarioEdicao(idEdicao, null);
-
-        CalendarioExcelExporter excelExporter = new CalendarioExcelExporter(listCalendario);
-
-        excelExporter.export(response);
+        edicaoService.getExport(response, idEdicao);
     }
 }

@@ -28,6 +28,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Period;
@@ -339,5 +343,20 @@ public class EdicaoService {
         return AreasEnvolvidas.stream()
                 .map(areaEnvolvidaEntity -> objectMapper.convertValue(areaEnvolvidaEntity, AreaEnvolvidaDTO.class))
                 .collect(Collectors.toSet());
+    }
+
+    public void getExport(HttpServletResponse response, Integer idEdicao) throws RegraDeNegocioException, IOException {
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=calendario_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        List<DiaCalendarioEdicaoDTO> listCalendario = gerarCalendarioEdicao(idEdicao, null);
+        CalendarioExcelExporter excelExporter = new CalendarioExcelExporter(listCalendario);
+
+        excelExporter.export(response);
     }
 }
