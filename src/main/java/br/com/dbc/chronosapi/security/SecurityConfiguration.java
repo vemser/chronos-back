@@ -29,7 +29,7 @@ public class SecurityConfiguration {
                 .frameOptions().disable()
                 .and().cors()
                 .and().csrf().disable()
-                .authorizeHttpRequests((auth) -> auth.antMatchers("/", "/login", "/login-forgot-password").permitAll()
+                .authorizeHttpRequests((auth) -> auth.antMatchers("/").permitAll()
 
                                 .antMatchers(HttpMethod.PUT, "/foto/upload-image/**").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.PUT, "/foto/upload-image-perfil").hasAnyRole("INSTRUTOR", "GESTAO_DE_PESSOAS", "ADMIN")
@@ -103,16 +103,5 @@ public class SecurityConfiguration {
                         .exposedHeaders("Authorization");
             }
         };
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
     }
 }
