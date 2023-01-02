@@ -21,32 +21,9 @@ import java.util.List;
 public class TokenService {
 
     private static final String CHAVE_CARGOS = "cargos";
-    private static final String CHAVE_LOGIN = "login";
 
     @Value("${jwt.secret}")
     private String secret;
-
-    @Value("${jwt.expiration}")
-    private int expiration;
-
-    public String getToken(UsuarioEntity usuarioEntity) {
-
-        LocalDateTime localDateExpiration = LocalDateTime.now().plusDays(expiration);
-        Date dateExpiration = Date.from(localDateExpiration.atZone(ZoneId.systemDefault()).toInstant());
-
-        List<String> cargosDoUsuario = usuarioEntity.getCargos().stream()
-                .map(CargoEntity::getAuthority)
-                .toList();
-
-        return Jwts.builder()
-                .claim(CHAVE_LOGIN, usuarioEntity.getUsername())
-                .claim(Claims.ID, usuarioEntity.getIdUsuario().toString())
-                .claim(CHAVE_CARGOS, cargosDoUsuario)
-                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .setExpiration(dateExpiration)
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
-    }
 
     public UsernamePasswordAuthenticationToken isValid(String token) {
         if (token == null) {
