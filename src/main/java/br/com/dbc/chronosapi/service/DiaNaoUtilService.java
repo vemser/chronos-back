@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -94,11 +95,11 @@ public class DiaNaoUtilService {
     }
 
 
-    public PageDTO<DiaNaoUtilDTO> filtrar(Integer pagina, Integer tamanho, FiltroDiaNaoUtilDTO filtroDiaNaoUtilDTO) {
+    public PageDTO<DiaNaoUtilDTO> filtrar(Integer pagina, Integer tamanho, LocalDate dataInicial, LocalDate dataFinal, String descricao) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
 
         Page<DiaNaoUtilEntity> diaNaoUtilEntitiesPage = diaNaoUtilRepository
-                .findAllByFiltro(pageRequest, filtroDiaNaoUtilDTO.getDescricao(), filtroDiaNaoUtilDTO.getDataFinal(), filtroDiaNaoUtilDTO.getDataInicial());
+                .findAllByFiltro(pageRequest, descricao, dataFinal, dataInicial);
 
         List<DiaNaoUtilDTO> diaNaoUtilDTOList = diaNaoUtilEntitiesPage.stream()
                 .map(dia -> objectMapper.convertValue(dia, DiaNaoUtilDTO.class))

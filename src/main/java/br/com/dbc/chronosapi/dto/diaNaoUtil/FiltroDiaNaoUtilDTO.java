@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Data
 public class FiltroDiaNaoUtilDTO {
 
-    private String Descricao;
+    private String descricao;
     private LocalDate dataInicial;
     private LocalDate dataFinal;
 }

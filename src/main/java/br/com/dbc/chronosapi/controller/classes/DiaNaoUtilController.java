@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 
 @RequiredArgsConstructor
 @Validated
@@ -49,7 +50,9 @@ public class DiaNaoUtilController implements DiaNaoUtilControllerInterface {
     }
 
     @GetMapping("/filtro-dia-nao-util")
-    public ResponseEntity<PageDTO<DiaNaoUtilDTO>> filtrarDiaNaoUtil(Integer pagina, Integer tamanho, FiltroDiaNaoUtilDTO filtroDiaNaoUtilDTO) {
-        return new ResponseEntity<>(diaNaoUtilService.filtrar(pagina, tamanho, filtroDiaNaoUtilDTO), HttpStatus.OK);
+    public ResponseEntity<PageDTO<DiaNaoUtilDTO>> filtrarDiaNaoUtil(Integer pagina, Integer tamanho, LocalDate dataInicial, LocalDate dataFinal, String descricao) {
+        return new ResponseEntity<>(diaNaoUtilService.filtrar(pagina, tamanho, dataInicial, dataFinal, descricao), HttpStatus.OK);
     }
+
+
 }

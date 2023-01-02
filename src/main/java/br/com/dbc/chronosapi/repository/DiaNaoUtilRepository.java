@@ -17,7 +17,7 @@ public interface DiaNaoUtilRepository extends JpaRepository<DiaNaoUtilEntity, In
     @Query(" SELECT obj " +
             " from DIA_NAO_UTIL obj " +
             " WHERE (:descricao is null or UPPER(obj.descricao) LIKE UPPER(concat('%', :descricao, '%'))) AND " +
-            " (:dtFinal is null or obj.dataInicial BETWEEN :dtInicial AND :dtFinal) "
+            " (:dtFinal is null or :dtInicial is null or obj.dataInicial BETWEEN :dtInicial AND :dtFinal) "
     )
     Page<DiaNaoUtilEntity> findAllByFiltro(Pageable pageable, String descricao, LocalDate dtFinal, LocalDate dtInicial);
 
