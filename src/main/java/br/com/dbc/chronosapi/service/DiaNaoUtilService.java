@@ -3,7 +3,9 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilCreateDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilDTO;
+import br.com.dbc.chronosapi.dto.diaNaoUtil.FiltroDiaNaoUtilDTO;
 import br.com.dbc.chronosapi.entity.classes.DiaNaoUtilEntity;
+import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.DiaNaoUtilRepository;
@@ -13,7 +15,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -21,7 +26,6 @@ public class DiaNaoUtilService {
 
     private final ObjectMapper objectMapper;
     private final DiaNaoUtilRepository diaNaoUtilRepository;
-
 
     public DiaNaoUtilDTO create(DiaNaoUtilCreateDTO diaNaoUtilCreateDTO) throws RegraDeNegocioException {
         DiaNaoUtilEntity diaNaoUtilEntity = objectMapper.convertValue(diaNaoUtilCreateDTO, DiaNaoUtilEntity.class);
@@ -81,12 +85,29 @@ public class DiaNaoUtilService {
     public DiaNaoUtilEntity findById(Integer id) throws RegraDeNegocioException {
         return diaNaoUtilRepository.findById(id)
                 .orElseThrow(() -> new RegraDeNegocioException("Dia não util não encontrado"));
-
     }
 
     public List<DiaNaoUtilDTO> getDiasNaoUteis() {
        return diaNaoUtilRepository.findAll().stream()
                 .map(dia -> objectMapper.convertValue(dia, DiaNaoUtilDTO.class))
                 .toList();
+    }
+
+
+    public PageDTO<DiaNaoUtilDTO> filtrar(Integer pagina, Integer tamanho, FiltroDiaNaoUtilDTO filtroDiaNaoUtilDTO) throws RegraDeNegocioException {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+
+        Page<DiaNaoUtilEntity> usuarioEntityPage = diaNaoUtilRepository
+                .findAllByFiltro(pageRequest);
+
+        List<DiaNaoUtilDTO> diaNaoUtilDTOList = usuarioEntityPage.stream()
+                .map(dia -> objectMapper.convertValue(dia, DiaNaoUtilDTO.class))
+                .toList();
+
+        return new PageDTO<>(usuarioEntityPage.getTotalElements(),
+                usuarioEntityPage.getTotalPages(),
+                pagina,
+                tamanho,
+                diaNaoUtilDTOList);
     }
 }

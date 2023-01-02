@@ -3,11 +3,13 @@ package br.com.dbc.chronosapi.controller.interfaces;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilCreateDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilDTO;
+import br.com.dbc.chronosapi.dto.diaNaoUtil.FiltroDiaNaoUtilDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -55,4 +57,15 @@ public interface DiaNaoUtilControllerInterface {
             }
     )
     ResponseEntity<Void> delete(@Valid @PathVariable("idDiaNaoUtil") Integer idDiaNaoUtil) throws RegraDeNegocioException;
+
+    @Operation(summary = "Filtar dia nao util", description = "Filtar por descricao data inicial e data final")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "filtrado com sucesso"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/filtro-dia-nao-util")
+    ResponseEntity<PageDTO<DiaNaoUtilDTO>> filtrarDiaNaoUtil(Integer pagina, Integer tamanho,@RequestBody FiltroDiaNaoUtilDTO filtroDiaNaoUtilDTO) throws RegraDeNegocioException;
 }

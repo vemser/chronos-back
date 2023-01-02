@@ -5,6 +5,7 @@ import br.com.dbc.chronosapi.controller.interfaces.DiaNaoUtilControllerInterface
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilCreateDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilDTO;
+import br.com.dbc.chronosapi.dto.diaNaoUtil.FiltroDiaNaoUtilDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.service.DiaNaoUtilService;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +46,10 @@ public class DiaNaoUtilController implements DiaNaoUtilControllerInterface {
     public ResponseEntity<Void> delete(@Valid @PathVariable("idDiaNaoUtil") Integer idDiaNaoUtil) throws RegraDeNegocioException {
         diaNaoUtilService.delete(idDiaNaoUtil);
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<PageDTO<DiaNaoUtilDTO>> filtrarDiaNaoUtil(Integer pagina, Integer tamanho, FiltroDiaNaoUtilDTO filtroDiaNaoUtilDTO) throws RegraDeNegocioException {
+        return null;
     }
 }

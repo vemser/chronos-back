@@ -7,7 +7,6 @@ import br.com.dbc.chronosapi.dto.calendario.DiaCalendarioGeralDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoCreateDTO;
 import br.com.dbc.chronosapi.dto.edicao.EdicaoDTO;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
-import br.com.dbc.chronosapi.service.CalendarioExcelExporter;
 import br.com.dbc.chronosapi.service.EdicaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
