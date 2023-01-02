@@ -48,8 +48,8 @@ public class DiaNaoUtilController implements DiaNaoUtilControllerInterface {
         return ResponseEntity.noContent().build();
     }
 
-    @Override
-    public ResponseEntity<PageDTO<DiaNaoUtilDTO>> filtrarDiaNaoUtil(Integer pagina, Integer tamanho, FiltroDiaNaoUtilDTO filtroDiaNaoUtilDTO) throws RegraDeNegocioException {
-        return null;
+    @GetMapping("/filtro-dia-nao-util")
+    public ResponseEntity<PageDTO<DiaNaoUtilDTO>> filtrarDiaNaoUtil(Integer pagina, Integer tamanho, FiltroDiaNaoUtilDTO filtroDiaNaoUtilDTO) {
+        return new ResponseEntity<>(diaNaoUtilService.filtrar(pagina, tamanho, filtroDiaNaoUtilDTO), HttpStatus.OK);
     }
 }

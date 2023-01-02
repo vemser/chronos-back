@@ -73,6 +73,7 @@ public class SecurityConfiguration {
 
                                 .antMatchers(HttpMethod.GET, "/dia-nao-util").hasAnyRole("GESTAO_DE_PESSOAS", "INSTRUTOR")
                                 .antMatchers(HttpMethod.POST, "/dia-nao-util").hasRole("GESTAO_DE_PESSOAS")
+                                .antMatchers(HttpMethod.GET, "/dia-nao-util/filtro-dia-nao-util").hasAnyRole("GESTAO_DE_PESSOAS", "INSTRUTOR")
                                 .antMatchers(HttpMethod.DELETE, "/dia-nao-util").hasRole("GESTAO_DE_PESSOAS")
                                 .antMatchers("/dia-nao-util/**").hasRole("GESTAO_DE_PESSOAS")
 

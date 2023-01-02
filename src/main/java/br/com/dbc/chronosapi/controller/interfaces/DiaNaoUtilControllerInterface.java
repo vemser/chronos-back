@@ -67,5 +67,5 @@ public interface DiaNaoUtilControllerInterface {
             }
     )
     @GetMapping("/filtro-dia-nao-util")
-    ResponseEntity<PageDTO<DiaNaoUtilDTO>> filtrarDiaNaoUtil(Integer pagina, Integer tamanho,@RequestBody FiltroDiaNaoUtilDTO filtroDiaNaoUtilDTO) throws RegraDeNegocioException;
+    ResponseEntity<PageDTO<DiaNaoUtilDTO>> filtrarDiaNaoUtil(Integer pagina, Integer tamanho, FiltroDiaNaoUtilDTO filtroDiaNaoUtilDTO);
 }

@@ -94,18 +94,18 @@ public class DiaNaoUtilService {
     }
 
 
-    public PageDTO<DiaNaoUtilDTO> filtrar(Integer pagina, Integer tamanho, FiltroDiaNaoUtilDTO filtroDiaNaoUtilDTO) throws RegraDeNegocioException {
+    public PageDTO<DiaNaoUtilDTO> filtrar(Integer pagina, Integer tamanho, FiltroDiaNaoUtilDTO filtroDiaNaoUtilDTO) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
 
-        Page<DiaNaoUtilEntity> usuarioEntityPage = diaNaoUtilRepository
-                .findAllByFiltro(pageRequest);
+        Page<DiaNaoUtilEntity> diaNaoUtilEntitiesPage = diaNaoUtilRepository
+                .findAllByFiltro(pageRequest, filtroDiaNaoUtilDTO.getDescricao(), filtroDiaNaoUtilDTO.getDataFinal(), filtroDiaNaoUtilDTO.getDataInicial());
 
-        List<DiaNaoUtilDTO> diaNaoUtilDTOList = usuarioEntityPage.stream()
+        List<DiaNaoUtilDTO> diaNaoUtilDTOList = diaNaoUtilEntitiesPage.stream()
                 .map(dia -> objectMapper.convertValue(dia, DiaNaoUtilDTO.class))
                 .toList();
 
-        return new PageDTO<>(usuarioEntityPage.getTotalElements(),
-                usuarioEntityPage.getTotalPages(),
+        return new PageDTO<>(diaNaoUtilEntitiesPage.getTotalElements(),
+                diaNaoUtilEntitiesPage.getTotalPages(),
                 pagina,
                 tamanho,
                 diaNaoUtilDTOList);
