@@ -99,7 +99,6 @@ public class EdicaoServiceTest {
         EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
         EdicaoEntity edicaoEntity = getEdicaoEntity();
         edicaoCreateDTO.setDataInicial(LocalDate.parse("2022-12-25"));
-        edicaoCreateDTO.setDataFinal(LocalDate.parse("1900-12-25"));
 
         //ACT
         EdicaoDTO edicaoDTO = edicaoService.create(edicaoCreateDTO);
