@@ -16,6 +16,4 @@ public class EdicaoCreateDTO {
     @NotNull
     private LocalDate dataInicial;
 
-    @NotNull
-    private LocalDate dataFinal;
 }

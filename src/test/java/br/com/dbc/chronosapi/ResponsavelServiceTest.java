@@ -3,7 +3,7 @@
 //import br.com.dbc.chronosapi.dto.processo.ResponsavelCreateDTO;
 //import br.com.dbc.chronosapi.dto.processo.ResponsavelDTO;
 //import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
-//import br.com.dbc.chronosapi.repository.exceptions.RegraDeNegocioException;
+//import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 //import br.com.dbc.chronosapi.repository.ResponsavelRepository;
 //import br.com.dbc.chronosapi.service.ResponsavelService;
 //import com.fasterxml.jackson.databind.DeserializationFeature;

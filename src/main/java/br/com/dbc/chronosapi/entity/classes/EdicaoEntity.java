@@ -32,9 +32,6 @@ public class EdicaoEntity {
     @Column(name = "DATA_INICIAL")
     private LocalDate dataInicial;
 
-    @Column(name = "DATA_FINAL")
-    private LocalDate dataFinal;
-
     @Column(name = "STATUS")
     private Status status;
 

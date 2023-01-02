@@ -17,11 +17,12 @@
 //import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 //import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
 //import br.com.dbc.chronosapi.entity.enums.Status;
-//import br.com.dbc.chronosapi.repository.exceptions.RegraDeNegocioException;
+//import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 //import br.com.dbc.chronosapi.repository.DiaNaoUtilRepository;
 //import br.com.dbc.chronosapi.repository.EdicaoRepository;
 //import br.com.dbc.chronosapi.repository.EtapaRepository;
 //import br.com.dbc.chronosapi.repository.ProcessoRepository;
+//import br.com.dbc.chronosapi.service.CalendarioExcelExporter;
 //import br.com.dbc.chronosapi.service.EdicaoService;
 //import com.fasterxml.jackson.databind.DeserializationFeature;
 //import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,8 +38,11 @@
 //import org.springframework.data.domain.PageImpl;
 //import org.springframework.data.domain.Pageable;
 //import org.springframework.data.domain.Sort;
+//import org.springframework.mock.web.MockHttpServletResponse;
 //import org.springframework.test.util.ReflectionTestUtils;
 //
+//import javax.servlet.http.HttpServletResponse;
+//import java.io.IOException;
 //import java.time.LocalDate;
 //import java.util.*;
 //
@@ -60,6 +64,9 @@
 //    private ProcessoRepository processoRepository;
 //    @Mock
 //    private DiaNaoUtilRepository diaNaoUtilRepository;
+//
+//    @Mock
+//    private CalendarioExcelExporter calendarioExcelExporter;
 //    private ObjectMapper objectMapper = new ObjectMapper();
 //
 //    @Before
@@ -92,7 +99,6 @@
 //        EdicaoCreateDTO edicaoCreateDTO = getEdicaoCreateDTO();
 //        EdicaoEntity edicaoEntity = getEdicaoEntity();
 //        edicaoCreateDTO.setDataInicial(LocalDate.parse("2022-12-25"));
-//        edicaoCreateDTO.setDataFinal(LocalDate.parse("1900-12-25"));
 //
 //        //ACT
 //        EdicaoDTO edicaoDTO = edicaoService.create(edicaoCreateDTO);
@@ -132,7 +138,7 @@
 //        EdicaoEntity edicaoEntity = getEdicaoEntity();
 //        EdicaoEntity edicaoEntity1 = getEdicaoEntity();
 //        edicaoCreateDTO.setDataInicial(LocalDate.parse("2022-12-25"));
-//        edicaoCreateDTO.setDataFinal(LocalDate.parse("1900-12-25"));
+//
 //        edicaoEntity1.setNome("nomeDiferente");
 //
 //        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
@@ -159,7 +165,6 @@
 //        edicaoEntityClone.setIdEdicao(12);
 //        edicaoEntityClone.setStatus(Status.INATIVO);
 //        edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
-//        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
 //        when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
 //        when(edicaoRepository.save(any())).thenReturn(edicaoEntityClone);
 //
@@ -435,15 +440,6 @@
 //
 //    }
 //
-//    @Test(expected = RegraDeNegocioException.class)
-//    public void testGerarCalendarioGeralFail() throws RegraDeNegocioException {
-//        List<EdicaoEntity> edicaoEntityList = new ArrayList<>();
-//
-//        when(edicaoRepository.findByEdicoesAtivasOrderByDataInicial()).thenReturn(edicaoEntityList);
-//
-//        edicaoService.gerarCalendarioGeral();
-//
-//    }
 //    @Test
 //    public void testVerificarDiasNaoUteisElseIf() {
 //        FeriadoDTO feriado = new FeriadoDTO();
@@ -587,7 +583,6 @@
 //        EdicaoCreateDTO edicaoCreateDTO = new EdicaoCreateDTO();
 //        edicaoCreateDTO.setNome("Edicao1");
 //        edicaoCreateDTO.setDataInicial(LocalDate.of(2022,8,1));
-//        edicaoCreateDTO.setDataFinal(LocalDate.of(2022,8,10));
 //
 //        return edicaoCreateDTO;
 //    }
@@ -597,7 +592,6 @@
 //        edicaoEntity.setIdEdicao(10);
 //        edicaoEntity.setNome("Edicao1");
 //        edicaoEntity.setDataInicial(LocalDate.of(2022, 10, 11));
-//        edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));
 //        edicaoEntity.setEtapas(new ArrayList<>());
 //
 //        return edicaoEntity;
@@ -609,7 +603,6 @@
 //        edicaoEntity.setIdEdicao(11);
 //        edicaoEntity.setNome("Edicao2");
 //        edicaoEntity.setDataInicial(LocalDate.of(2022, 11, 11));
-//        edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));
 //        edicaoEntity.setEtapas(new ArrayList<>());
 //
 //        return edicaoEntity;

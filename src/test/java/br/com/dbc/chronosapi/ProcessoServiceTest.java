@@ -12,7 +12,7 @@
 //import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
 //import br.com.dbc.chronosapi.entity.classes.processos.ProcessoEntity;
 //import br.com.dbc.chronosapi.entity.classes.processos.ResponsavelEntity;
-//import br.com.dbc.chronosapi.repository.exceptions.RegraDeNegocioException;
+//import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 //import br.com.dbc.chronosapi.repository.ProcessoRepository;
 //import br.com.dbc.chronosapi.service.AreaEnvolvidaService;
 //import br.com.dbc.chronosapi.service.EtapaService;
@@ -274,7 +274,6 @@
 //        edicaoEntity.setIdEdicao(5);
 //        edicaoEntity.setNome("Edicao1");
 //        edicaoEntity.setDataInicial(LocalDate.of(2022, 10, 11));
-//        edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));
 //        edicaoEntity.setEtapas(new ArrayList<>());
 //
 //        return edicaoEntity;

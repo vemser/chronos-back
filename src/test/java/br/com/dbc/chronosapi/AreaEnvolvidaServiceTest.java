@@ -3,7 +3,7 @@
 //import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaCreateDTO;
 //import br.com.dbc.chronosapi.dto.processo.AreaEnvolvidaDTO;
 //import br.com.dbc.chronosapi.entity.classes.processos.AreaEnvolvidaEntity;
-//import br.com.dbc.chronosapi.repository.exceptions.RegraDeNegocioException;
+//import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 //import br.com.dbc.chronosapi.repository.AreaEnvolvidaRepository;
 //import br.com.dbc.chronosapi.service.AreaEnvolvidaService;
 //import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -100,7 +100,7 @@
 //    }
 //
 //    @Test
-//    public void testFindByNome() throws RegraDeNegocioException {
+//    public void testFindByNome() {
 //        // SETUP
 //        AreaEnvolvidaEntity areaEnvolvidaEntity = getAreaEnvolvidaEntity();
 //        when(areaEnvolvidaRepository.findByNomeArea(anyString())).thenReturn(areaEnvolvidaEntity);
@@ -142,13 +142,5 @@
 //        AreaEnvolvidaCreateDTO areaEnvolvidaCreateDTO = new AreaEnvolvidaCreateDTO();
 //        areaEnvolvidaCreateDTO.setNome("area1");
 //        return areaEnvolvidaCreateDTO;
-//    }
-//
-//    private static AreaEnvolvidaDTO getAreaEnvolvidaDTO() {
-//        AreaEnvolvidaDTO areaEnvolvidaDTO = new AreaEnvolvidaDTO();
-//        areaEnvolvidaDTO.setIdAreaEnvolvida(10);
-//        areaEnvolvidaDTO.setNome("area1");
-//        areaEnvolvidaDTO.setIdAreaEnvolvida(10);
-//        return areaEnvolvidaDTO;
 //    }
 //}

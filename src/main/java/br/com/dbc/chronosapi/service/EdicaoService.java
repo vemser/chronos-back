@@ -54,28 +54,22 @@ public class EdicaoService {
     public EdicaoDTO create(EdicaoCreateDTO edicaoCreateDTO) throws RegraDeNegocioException {
         EdicaoEntity edicaoEntity = objectMapper.convertValue(edicaoCreateDTO, EdicaoEntity.class);
 
-        if (edicaoCreateDTO.getDataInicial().isBefore(edicaoCreateDTO.getDataFinal())) {
-            edicaoEntity.setStatus(Status.ATIVO);
-            edicaoEntity.setEtapas(new ArrayList<>());
-            EdicaoEntity edicaoSaved = edicaoRepository.save(edicaoEntity);
-            return objectMapper.convertValue(edicaoSaved, EdicaoDTO.class);
-        } else {
-            throw new RegraDeNegocioException("A data final antecede a data inicial.");
-        }
+
+        edicaoEntity.setStatus(Status.ATIVO);
+        edicaoEntity.setEtapas(new ArrayList<>());
+        EdicaoEntity edicaoSaved = edicaoRepository.save(edicaoEntity);
+        return objectMapper.convertValue(edicaoSaved, EdicaoDTO.class);
+
     }
 
     public EdicaoDTO update(Integer idEdicao, EdicaoCreateDTO edicaoUpdate) throws RegraDeNegocioException {
         EdicaoEntity edicaoRecover = findById(idEdicao);
 
-        if (edicaoUpdate.getDataInicial().isBefore(edicaoUpdate.getDataFinal())) {
-            edicaoRecover.setNome(edicaoUpdate.getNome());
-            edicaoRecover.setDataInicial(edicaoUpdate.getDataInicial());
-            edicaoRecover.setDataFinal(edicaoUpdate.getDataFinal());
-            edicaoRepository.save(edicaoRecover);
-            return objectMapper.convertValue(edicaoRecover, EdicaoDTO.class);
-        } else {
-            throw new RegraDeNegocioException("A data final antecede a data inicial.");
-        }
+        edicaoRecover.setNome(edicaoUpdate.getNome());
+        edicaoRecover.setDataInicial(edicaoUpdate.getDataInicial());
+        edicaoRepository.save(edicaoRecover);
+        return objectMapper.convertValue(edicaoRecover, EdicaoDTO.class);
+
     }
 
     public void delete(Integer idEdicao) throws RegraDeNegocioException {
@@ -102,7 +96,6 @@ public class EdicaoService {
         edicaoEntityClone.setNome(edicaoEntity.getNome() + " - Clone");
         edicaoEntityClone.setStatus(Status.INATIVO);
         edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
-        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
         EdicaoEntity edicaoEntityCloneSaved = edicaoRepository.save(edicaoEntityClone);
         List<EtapaEntity> etapaEntities = edicaoEntity.getEtapas().stream()
                 .map(etapaEntity -> {
