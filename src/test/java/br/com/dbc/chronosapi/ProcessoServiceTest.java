@@ -274,7 +274,6 @@ public class ProcessoServiceTest {
         edicaoEntity.setIdEdicao(5);
         edicaoEntity.setNome("Edicao1");
         edicaoEntity.setDataInicial(LocalDate.of(2022, 10, 11));
-        edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));
         edicaoEntity.setEtapas(new ArrayList<>());
 
         return edicaoEntity;

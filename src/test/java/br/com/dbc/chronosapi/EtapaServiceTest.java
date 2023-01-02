@@ -227,7 +227,6 @@ public class EtapaServiceTest {
         EdicaoCreateDTO edicaoCreateDTO = new EdicaoCreateDTO();
         edicaoCreateDTO.setNome("Edicao1");
         edicaoCreateDTO.setDataInicial(LocalDate.of(2022,8,1));
-        edicaoCreateDTO.setDataFinal(LocalDate.of(2022,8,10));
         return edicaoCreateDTO;
     }
 
@@ -244,7 +243,6 @@ public class EtapaServiceTest {
         edicaoEntity.setIdEdicao(5);
         edicaoEntity.setNome("Edicao1");
         edicaoEntity.setDataInicial(LocalDate.of(2022, 10, 11));
-        edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));
         edicaoEntity.setEtapas(new ArrayList<>());
 
         return edicaoEntity;

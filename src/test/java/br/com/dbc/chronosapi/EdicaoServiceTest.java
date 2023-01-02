@@ -138,7 +138,7 @@ public class EdicaoServiceTest {
         EdicaoEntity edicaoEntity = getEdicaoEntity();
         EdicaoEntity edicaoEntity1 = getEdicaoEntity();
         edicaoCreateDTO.setDataInicial(LocalDate.parse("2022-12-25"));
-        edicaoCreateDTO.setDataFinal(LocalDate.parse("1900-12-25"));
+
         edicaoEntity1.setNome("nomeDiferente");
 
         when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
@@ -165,7 +165,6 @@ public class EdicaoServiceTest {
         edicaoEntityClone.setIdEdicao(12);
         edicaoEntityClone.setStatus(Status.INATIVO);
         edicaoEntityClone.setDataInicial(edicaoEntity.getDataInicial());
-        edicaoEntityClone.setDataFinal(edicaoEntity.getDataFinal());
         when(edicaoRepository.findById(anyInt())).thenReturn(Optional.of(edicaoEntity));
         when(edicaoRepository.save(any())).thenReturn(edicaoEntityClone);
 
@@ -584,7 +583,6 @@ public class EdicaoServiceTest {
         EdicaoCreateDTO edicaoCreateDTO = new EdicaoCreateDTO();
         edicaoCreateDTO.setNome("Edicao1");
         edicaoCreateDTO.setDataInicial(LocalDate.of(2022,8,1));
-        edicaoCreateDTO.setDataFinal(LocalDate.of(2022,8,10));
 
         return edicaoCreateDTO;
     }
@@ -594,7 +592,6 @@ public class EdicaoServiceTest {
         edicaoEntity.setIdEdicao(10);
         edicaoEntity.setNome("Edicao1");
         edicaoEntity.setDataInicial(LocalDate.of(2022, 10, 11));
-        edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));
         edicaoEntity.setEtapas(new ArrayList<>());
 
         return edicaoEntity;
@@ -606,7 +603,6 @@ public class EdicaoServiceTest {
         edicaoEntity.setIdEdicao(11);
         edicaoEntity.setNome("Edicao2");
         edicaoEntity.setDataInicial(LocalDate.of(2022, 11, 11));
-        edicaoEntity.setDataFinal(LocalDate.of(2022, 12, 10));
         edicaoEntity.setEtapas(new ArrayList<>());
 
         return edicaoEntity;
