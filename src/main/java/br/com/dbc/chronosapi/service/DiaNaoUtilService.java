@@ -3,9 +3,7 @@ package br.com.dbc.chronosapi.service;
 import br.com.dbc.chronosapi.dto.PageDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilCreateDTO;
 import br.com.dbc.chronosapi.dto.diaNaoUtil.DiaNaoUtilDTO;
-import br.com.dbc.chronosapi.dto.diaNaoUtil.FiltroDiaNaoUtilDTO;
 import br.com.dbc.chronosapi.entity.classes.DiaNaoUtilEntity;
-import br.com.dbc.chronosapi.entity.classes.UsuarioEntity;
 import br.com.dbc.chronosapi.entity.enums.Status;
 import br.com.dbc.chronosapi.exceptions.RegraDeNegocioException;
 import br.com.dbc.chronosapi.repository.DiaNaoUtilRepository;
@@ -13,13 +11,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -71,7 +67,8 @@ public class DiaNaoUtilService {
     }
 
     public PageDTO<DiaNaoUtilDTO> list(Integer pagina, Integer tamanho) {
-        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        Sort orderBy = Sort.by("dataInicial");
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho, orderBy);
         Page<DiaNaoUtilEntity> paginaDoRepositorio = diaNaoUtilRepository.findAll(pageRequest);
         List<DiaNaoUtilDTO> diaNaoUtilDTOList = paginaDoRepositorio.getContent().stream()
                 .map(diaNaoUtil -> objectMapper.convertValue(diaNaoUtil, DiaNaoUtilDTO.class))
@@ -87,13 +84,6 @@ public class DiaNaoUtilService {
         return diaNaoUtilRepository.findById(id)
                 .orElseThrow(() -> new RegraDeNegocioException("Dia não util não encontrado"));
     }
-
-    public List<DiaNaoUtilDTO> getDiasNaoUteis() {
-       return diaNaoUtilRepository.findAll().stream()
-                .map(dia -> objectMapper.convertValue(dia, DiaNaoUtilDTO.class))
-                .toList();
-    }
-
 
     public PageDTO<DiaNaoUtilDTO> filtrar(Integer pagina, Integer tamanho, LocalDate dataInicial, LocalDate dataFinal, String descricao) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);

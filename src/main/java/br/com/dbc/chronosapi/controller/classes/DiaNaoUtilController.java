@@ -53,6 +53,4 @@ public class DiaNaoUtilController implements DiaNaoUtilControllerInterface {
     public ResponseEntity<PageDTO<DiaNaoUtilDTO>> filtrarDiaNaoUtil(Integer pagina, Integer tamanho, LocalDate dataInicial, LocalDate dataFinal, String descricao) {
         return new ResponseEntity<>(diaNaoUtilService.filtrar(pagina, tamanho, dataInicial, dataFinal, descricao), HttpStatus.OK);
     }
-
-
 }
