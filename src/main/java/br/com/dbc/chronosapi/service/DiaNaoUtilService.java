@@ -58,6 +58,11 @@ public class DiaNaoUtilService {
         } else {
             diaNaoUtilEntity.setRepeticaoAnual(Status.ATIVO);
             diaNaoUtilEntity.setDataFinal(null);
+            if(diaNaoUtilEntity.getDataInicial().getYear() != LocalDate.now().getYear()) {
+                diaNaoUtilEntity.setDataInicial(LocalDate.of(LocalDate.now().getYear(),
+                        diaNaoUtilEntity.getDataInicial().getMonthValue(),
+                        diaNaoUtilEntity.getDataInicial().getDayOfMonth()));
+            }
         }
     }
 
@@ -68,8 +73,9 @@ public class DiaNaoUtilService {
 
     public PageDTO<DiaNaoUtilDTO> list(Integer pagina, Integer tamanho) {
         Sort orderBy = Sort.by("dataInicial");
+        int ano = LocalDate.now().getYear();
         PageRequest pageRequest = PageRequest.of(pagina, tamanho, orderBy);
-        Page<DiaNaoUtilEntity> paginaDoRepositorio = diaNaoUtilRepository.findAll(pageRequest);
+        Page<DiaNaoUtilEntity> paginaDoRepositorio = diaNaoUtilRepository.findAllByAno(pageRequest, ano);
         List<DiaNaoUtilDTO> diaNaoUtilDTOList = paginaDoRepositorio.getContent().stream()
                 .map(diaNaoUtil -> objectMapper.convertValue(diaNaoUtil, DiaNaoUtilDTO.class))
                 .toList();
@@ -87,18 +93,53 @@ public class DiaNaoUtilService {
 
     public PageDTO<DiaNaoUtilDTO> filtrar(Integer pagina, Integer tamanho, LocalDate dataInicial, LocalDate dataFinal, String descricao) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        Page<DiaNaoUtilEntity> diaNaoUtilEntitiesPage;
 
-        Page<DiaNaoUtilEntity> diaNaoUtilEntitiesPage = diaNaoUtilRepository
-                .findAllByFiltro(pageRequest, descricao, dataFinal, dataInicial);
+        if(dataInicial == null && dataFinal == null && descricao == null) {
+            return this.list(pagina, tamanho);
+        }else if(dataInicial == null && dataFinal == null && descricao != null) {
+            int ano = LocalDate.now().getYear();
+            diaNaoUtilEntitiesPage = diaNaoUtilRepository.findByDescricaoAndAno(pageRequest, descricao, ano);
+        }else if(dataInicial != null && dataFinal != null && descricao == null){
+            verificarDiasComRepeticaoAnual(dataInicial, dataFinal);
+            diaNaoUtilEntitiesPage = diaNaoUtilRepository.findAllByFiltro(pageRequest, descricao, dataFinal, dataInicial);
+        }else if(dataInicial != null && dataFinal != null && descricao != null){
+            verificarDiasComRepeticaoAnual(dataInicial, dataFinal);
+            diaNaoUtilEntitiesPage = diaNaoUtilRepository.findAllByFiltro(pageRequest, descricao, dataFinal, dataInicial);
+        }else {
+            int ano = LocalDate.now().getYear();
+            diaNaoUtilEntitiesPage = diaNaoUtilRepository.findByDescricaoAndAno(pageRequest, descricao, ano);
+        }
 
         List<DiaNaoUtilDTO> diaNaoUtilDTOList = diaNaoUtilEntitiesPage.stream()
-                .map(dia -> objectMapper.convertValue(dia, DiaNaoUtilDTO.class))
-                .toList();
+                .map(dia -> objectMapper.convertValue(dia, DiaNaoUtilDTO.class)).toList();
 
         return new PageDTO<>(diaNaoUtilEntitiesPage.getTotalElements(),
                 diaNaoUtilEntitiesPage.getTotalPages(),
                 pagina,
                 tamanho,
                 diaNaoUtilDTOList);
+    }
+
+    private void verificarDiasComRepeticaoAnual(LocalDate dataInicial, LocalDate dataFinal) {
+        List<DiaNaoUtilEntity> diasComRepeticaoAnual = diaNaoUtilRepository.findByRepeticaoAnual(Status.ATIVO);
+        LocalDate dataCompare = dataInicial;
+
+        while (dataCompare.isBefore(dataFinal)) {
+            for (DiaNaoUtilEntity dia : diasComRepeticaoAnual) {
+                if (dataCompare.getDayOfMonth() == dia.getDataInicial().getDayOfMonth() && dataCompare.getMonthValue() == dia.getDataInicial().getMonthValue()) {
+                    DiaNaoUtilEntity byDataInicial = diaNaoUtilRepository.findByDataInicial(dataCompare);
+                    if (byDataInicial == null) {
+                        DiaNaoUtilEntity novoDiaComRepeticaoAnual = new DiaNaoUtilEntity();
+                        novoDiaComRepeticaoAnual.setDataInicial(LocalDate.of(dataCompare.getYear(), dia.getDataInicial().getMonthValue(), dia.getDataInicial().getDayOfMonth()));
+                        novoDiaComRepeticaoAnual.setDataFinal(null);
+                        novoDiaComRepeticaoAnual.setRepeticaoAnual(Status.ATIVO);
+                        novoDiaComRepeticaoAnual.setDescricao(dia.getDescricao());
+                        diaNaoUtilRepository.save(novoDiaComRepeticaoAnual);
+                    }
+                }
+            }
+            dataCompare = dataCompare.plusDays(1);
+        }
     }
 }
