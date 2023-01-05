@@ -68,7 +68,13 @@ public class DiaNaoUtilService {
 
     public void delete(Integer idDiaNaoUtil) throws RegraDeNegocioException {
         DiaNaoUtilEntity diaNaoUtil = findById(idDiaNaoUtil);
-        diaNaoUtilRepository.delete(diaNaoUtil);
+
+        if(diaNaoUtil.getRepeticaoAnual() == Status.ATIVO) {
+            List<DiaNaoUtilEntity> byDescricao = diaNaoUtilRepository.findByDescricao(diaNaoUtil.getDescricao());
+            diaNaoUtilRepository.deleteAll(byDescricao);
+        }else {
+            diaNaoUtilRepository.delete(diaNaoUtil);
+        }
     }
 
     public PageDTO<DiaNaoUtilDTO> list(Integer pagina, Integer tamanho) {

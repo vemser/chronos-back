@@ -36,4 +36,6 @@ public interface DiaNaoUtilRepository extends JpaRepository<DiaNaoUtilEntity, In
             " WHERE (UPPER(obj.descricao) = UPPER(:descricao)) AND (EXTRACT(YEAR FROM obj.dataInicial) = :ano) "
     )
     Page<DiaNaoUtilEntity> findByDescricaoAndAno(Pageable pageable, String descricao, int ano);
+
+    List<DiaNaoUtilEntity> findByDescricao(String descricao);
 }
